@@ -1,7 +1,7 @@
-export default function Home() {
+export default function Staff() {
   return (
     <div className="h-screen flex justify-center items-center font-mono">
-      <p>Home</p>
+      <p>Equipe</p>
     </div>
   );
 }
