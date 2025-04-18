@@ -11,7 +11,6 @@ export default async function Dashboard() {
   const refresh_token = (await cookieStore).get("refresh_token")?.value;
 
   const refreshTokens = await handleGetRefreshTokens();
-  const tokens = refreshTokens[0];
   return (
     <div className="h-screen flex flex-col items-center font-mono p-4">
       <h1 className="font-black text-lg mb-3.5">Nome: {user_info?.name} {user_info?.last_name}</h1>
@@ -25,7 +24,7 @@ export default async function Dashboard() {
         Refresh Token: {refresh_token ?? ""}
       </p>
       <h1 className="font-black text-lg mt-3.5 mb-3.5">Refresh Tokens:</h1>
-      {tokens && <RefreshTokenList tokens={tokens} />}
+      {refreshTokens.items && <RefreshTokenList tokens={refreshTokens.items} />}
     </div>
   );
 }

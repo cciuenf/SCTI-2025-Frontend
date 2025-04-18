@@ -1,9 +1,10 @@
 import { FetchError } from "@/types/utility-classes";
+import { FetchResponse } from "@/types/utilityI";
 
 export async function fetchWrapper<T = unknown>(
   input: string,
   init?: RequestInit
-): Promise<T> {
+): Promise<FetchResponse<T>> {
   const baseUrl = process.env.API_BASE_URL?.replace("//+$/", "");
   const path = input.replace(/^\/+/, "");
   const url = `${baseUrl}/${path}`;
@@ -15,7 +16,8 @@ export async function fetchWrapper<T = unknown>(
       throw new FetchError(`Erro ${res.status}: ${errorText}`, res.status);
     }
 
-    return (await res.json()) as T;
+    const data = (await res.json()) as T;
+    return { data: data, headers: res.headers, status: res.status };
   } catch (err) {
     console.error("Erro desconhecido ao realizar a consulta: ", err);
     throw err;
