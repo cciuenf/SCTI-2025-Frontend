@@ -10,7 +10,6 @@ export async function handleLoginSubmit(
   _previousState: string,
   formData: FormData
 ) {
-  await new Promise((res) => setTimeout(res, 2000));
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
@@ -43,3 +42,5 @@ export async function handleLoginSubmit(
   }
   redirect("/dashboard");
 }
+
+export async function handleGetRefreshTokens() {}
