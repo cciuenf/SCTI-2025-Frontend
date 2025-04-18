@@ -1,5 +1,5 @@
 ## Pré-Projeto
-- [ ] Fazer setup do projeto react 
+- [X] Fazer setup do projeto react 
 - [ ] Criar container docker para o projeto
 - [ ] Criar template para pull request
 
