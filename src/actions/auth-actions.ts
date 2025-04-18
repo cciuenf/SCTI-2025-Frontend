@@ -16,18 +16,8 @@ export async function handleLoginSubmit(_previousState: string, formData: FormDa
       body: JSON.stringify({ email, password }),
     });
 
-    (await cookies()).set("access_token", res.data.access_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 * 60 * 1, // 1 Hora
-    });
-    (await cookies()).set("refresh_token", res.data.refresh_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 * 60 * 1, // 1 Hora
-    });
+    await saveTokens(res.data.access_token, res.data.refresh_token);
+
   } catch (err: unknown) {
     if (err instanceof FetchError) {
       console.error("Erro ao realizar o login: ", err.message);
@@ -40,10 +30,11 @@ export async function handleLoginSubmit(_previousState: string, formData: FormDa
   redirect("/dashboard");
 }
 
-export async function handleGetRefreshTokens(): Promise<{ items: null | RefreshTokenI[], msg: string }> {
+export async function handleGetRefreshTokens(): Promise<{ items: null | RefreshTokenI[], msg: string, headers: Headers | null }> {
+  const cookieStore = cookies();
   try {
-    const accessToken = (await cookies()).get("access_token")?.value;
-    const refreshToken = (await cookies()).get("refresh_token")?.value;
+    const accessToken = (await cookieStore).get("access_token")?.value;
+    const refreshToken = (await cookieStore).get("refresh_token")?.value;
     const res = await fetchWrapper<RefreshTokenI[]>("refresh-tokens", {
       method: "GET",
       headers: {
@@ -51,22 +42,23 @@ export async function handleGetRefreshTokens(): Promise<{ items: null | RefreshT
         Refresh: `Bearer ${refreshToken}`,
       },
     });
-    return {items: res.data, msg: "Tokens resgatados com Sucesso!"};
+    return { items: res.data, msg: "Tokens resgatados com Sucesso!", headers: res.headers };
   } catch (err: unknown) {
     if (err instanceof FetchError) {
       console.error("Erro ao resgatar os tokens: ", err.message);
-      return { items: null, msg: err.message };
+      return { items: null, msg: err.message, headers: err.headers };
     } else {
       console.error("Erro ao resgatar os tokens: ", err);
-      return { items: null, msg: "Erro desconhecido ao resgatar os tokens" };
+      return { items: null, msg: "Erro desconhecido ao resgatar os tokens", headers: null };
     }
   }
 }
 
 export async function handleRevokeToken(token: string): Promise<{ items: null | RefreshTokenI[], msg: string }> {
+  const cookieStore = cookies();
   try {
-    const accessToken = (await cookies()).get("access_token")?.value;
-    const refreshToken = (await cookies()).get("refresh_token")?.value;
+    const accessToken = (await cookieStore).get("access_token")?.value;
+    const refreshToken = (await cookieStore).get("refresh_token")?.value;
     const res = await fetchWrapper<RefreshTokenI[]>("revoke-refresh-token", {
       method: "POST",
       headers: {
@@ -87,26 +79,46 @@ export async function handleRevokeToken(token: string): Promise<{ items: null | 
   }
 }
 
-// export async function handleVerifyTokens(): Promise<{ items: null | RefreshTokenI[], msg: string }> {
-//   try {
-//     const accessToken = (await cookies()).get("access_token")?.value;
-//     const refreshToken = (await cookies()).get("refresh_token")?.value;
-//     const res = await fetchWrapper<RefreshTokenI[]>("verify-tokens", {
-//       method: "POST",
-//       headers: {
-//         Authorization: `Bearer ${accessToken}`,
-//         Refresh: `Bearer ${refreshToken}`,
-//       },
-//     });
-//     console.log(res.headers)
-//     return {items: res.data, msg: "Tokens resgatados com Sucesso!"};
-//   } catch (err: unknown) {
-//     if (err instanceof FetchError) {
-//       console.error("Erro ao resgatar os tokens: ", err.message);
-//       return {items: null, msg: err.message};
-//     } else {
-//       console.error("Erro ao resgatar os tokens: ", err);
-//       return {items: null, msg: "Erro desconhecido ao resgatar os tokens"};
-//     }
-//   }
-// }
+export async function handleVerifyTokens(): Promise<{ status: number, msg: string }> {
+  const cookieStore = cookies();
+  try {
+    const accessToken = (await cookieStore).get("access_token")?.value;
+    const refreshToken = (await cookieStore).get("refresh_token")?.value;
+    const res = await fetchWrapper("verify-tokens", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+    });
+    return { status: res.status, msg: "Você está autenticado!" };
+  } catch (err: unknown) {
+    if (err instanceof FetchError) {
+      console.error("Erro ao verificar autenticação: ", err.message);
+      return { status: err.status, msg: err.message };
+    } else {
+      console.error("Erro ao verificar autenticação: ", err);
+      return { status: 500, msg: "Erro desconhecido ao verificar autenticação" };
+    }
+  }
+}
+
+export async function saveTokens(access_token: string | null, refresh_token: string | null) {
+  const cookieStore = cookies();
+  if(access_token) {
+    (await cookieStore).set("access_token", access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 5 * 0.98, // 5 Minutos com uma margem de erro
+    });
+  }
+  if(refresh_token) {
+    (await cookieStore).set("refresh_token", refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24 * 1.98, // 2 Dias com uma margem de erro
+    });
+  }
+}

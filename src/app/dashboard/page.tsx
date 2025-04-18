@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import { UserAccessTokenJwtPayload } from "@/types/authI";
 
 export default async function Dashboard() {
-  const cookieStore = cookies() as ReturnType<typeof cookies>;
+  const cookieStore = cookies();
   const access_token = (await cookieStore).get("access_token")?.value;
   const user_info = jwt.decode(access_token as string) as UserAccessTokenJwtPayload | null
   const refresh_token = (await cookieStore).get("refresh_token")?.value;
