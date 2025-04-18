@@ -1,6 +1,6 @@
 "use server";
 
-import { AuthCredentialsI } from "@/types/authI";
+import { AuthCredentialsI, RefreshTokenI } from "@/types/authI";
 import { fetchWrapper } from "@/lib/fetch";
 import { cookies } from "next/headers";
 import { FetchError } from "@/types/utility-classes";
@@ -36,11 +36,58 @@ export async function handleLoginSubmit(
       console.error("Erro ao realizar o login: ", err.message);
       return err.message; // Trocar depois por um toast ou algo similar.
     } else {
-      console.error("Error ao realizar o login: ", err);
+      console.error("Erro ao realizar o login: ", err);
       return "Erro desconhecido ao realizar o login"; // Trocar depois por um toast ou algo similar.
     }
   }
   redirect("/dashboard");
 }
 
-export async function handleGetRefreshTokens() {}
+export async function handleGetRefreshTokens(): Promise<
+  [items: null | RefreshTokenI[], msg: string]
+> {
+  try {
+    const accessToken = (await cookies()).get("access_token")?.value;
+    const refreshToken = (await cookies()).get("refresh_token")?.value;
+    const res = await fetchWrapper<RefreshTokenI[]>("refresh-tokens", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+    });
+    return [res, "Tokens resgatados com Sucesso!"];
+  } catch (err: unknown) {
+    if (err instanceof FetchError) {
+      console.error("Erro ao resgatar os tokens: ", err.message);
+      return [null, err.message];
+    } else {
+      console.error("Erro ao resgatar os tokens: ", err);
+      return [null, "Erro desconhecido ao resgatar os tokens"];
+    }
+  }
+}
+
+export async function handleRevokeToken(token: string): Promise<[items: null | RefreshTokenI[], msg: string]> {
+  try {
+    const accessToken = (await cookies()).get("access_token")?.value;
+    const refreshToken = (await cookies()).get("refresh_token")?.value;
+    const res = await fetchWrapper<RefreshTokenI[]>("revoke-refresh-token", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+      body: JSON.stringify({ refresh_token: token }),
+    });
+    return [res, "Tokens resgatados com Sucesso!"];
+  } catch (err: unknown) {
+    if (err instanceof FetchError) {
+      console.error("Erro ao resgatar os tokens: ", err.message);
+      return [null, err.message];
+    } else {
+      console.error("Erro ao resgatar os tokens: ", err);
+      return [null, "Erro desconhecido ao resgatar os tokens"];
+    }
+  }
+}
