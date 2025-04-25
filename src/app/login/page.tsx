@@ -2,9 +2,17 @@
 import { handleLoginSubmitNew, handleSignUp } from "@/actions/auth-actions";
 import { useActionState, useState } from "react";
 import LoginForm from "@/components/LoginForm";
+import { Button } from "@/components/ui/button";
 
 export default function Login() {
-  const [isLoading, setIsLoading] = useState(false)
+    //const [isLoading, setIsLoading] = useState(false)
+    const [currentType, setCurrentType] = useState<"Login" | "Sign Up">("Login")
+
+
+  const switchType = () => {
+    currentType == "Login" ? setCurrentType("Sign Up") : setCurrentType("Login")
+    console.log(currentType)
+  }
  // const [state, formAction, isLoading] = useActionState(handleLoginSubmit, "");
   return (
     // <form
@@ -50,9 +58,12 @@ export default function Login() {
     //   </button>
     //   {state && <p className="text-red-600 text-sm">{state}</p>}
     // </form>
-    <div className="h-screen flex justify-center items-center">
+    <div className="h-screen flex flex-col justify-center items-center gap-3">
 
-    <LoginForm type="sign up" handleSignUpSubmit={handleSignUp}/>
+      <LoginForm type={currentType} handleSignUpSubmit={handleSignUp} />
+      <Button variant={"outline"} onClick={(e) => switchType()}>
+        {currentType == "Login" ? <p>Sign Up</p> : <p>Login</p>}
+      </Button>
     </div>
 
   );

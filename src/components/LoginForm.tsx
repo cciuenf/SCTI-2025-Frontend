@@ -14,8 +14,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 
+enum FormType {
+  Login = 0,
+  SignUp = 1
+}
+
 type LoginFormProps = {
-  type: "login" | "sign up";
+  type: "Login" | "Sign Up";
   handleLoginSubmit?: (
     values: { email: string; password: string }
   ) => Promise<String>;
@@ -41,6 +46,7 @@ const loginFormSchema = z.object({
 });
 
 export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit }: LoginFormProps) {
+
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: { email: "", password: "" },
@@ -69,8 +75,8 @@ export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit 
   };
 
   return (
-    <>
-      {type == "login" ? (
+    <div>
+      {type == "Login" ? (
         <Form {...loginForm}>
           <form
             onSubmit={loginForm.handleSubmit(onSubmitLogin)}
@@ -167,6 +173,6 @@ export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit 
           </form>
         </Form>
       )}
-    </>
+    </div>
   );
 }
