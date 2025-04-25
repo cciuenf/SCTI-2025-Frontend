@@ -19,7 +19,7 @@ export async function handleLoginSubmit(
       body: JSON.stringify({ email, password }),
     });
 
-    await saveTokens(res.data.access_token, res.data.refresh_token);
+  //  await saveTokens(res.data.access_token, res.data.refresh_token);
   } catch (err: unknown) {
     if (err instanceof FetchError) {
       console.error("Erro ao realizar o login: ", err.message);
@@ -39,7 +39,6 @@ export async function handleLoginSubmitNew({
   email: string;
   password: string;
   }) {
-  console.log(email, password)
 
   try {
     const res = await fetchWrapper<AuthCredentialsI>("login", {
@@ -47,7 +46,7 @@ export async function handleLoginSubmitNew({
       body: JSON.stringify({ email: email, password: password }),
     });
 
-    await saveTokens(res.data.access_token, res.data.refresh_token);
+    await saveTokens(res.data.data.access_token, res.data.data.refresh_token);
   } catch (err: unknown) {
     if (err instanceof FetchError) {
       console.error("Erro ao realizar o login: ", err.message);

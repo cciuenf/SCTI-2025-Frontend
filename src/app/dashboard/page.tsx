@@ -24,7 +24,7 @@ export default async function Dashboard() {
         Refresh Token: {refresh_token ?? ""}
       </p>
       <h1 className="font-black text-lg mt-3.5 mb-3.5">Refresh Tokens:</h1>
-      {refreshTokens.items && <RefreshTokenList tokens={refreshTokens.items} />}
+      {/*refreshTokens.items && <RefreshTokenList tokens={refreshTokens.items} />*/}
     </div>
   );
 }

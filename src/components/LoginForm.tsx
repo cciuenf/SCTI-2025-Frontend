@@ -59,7 +59,6 @@ export default function LoginForm({ type, handleSubmit }: LoginFormProps) {
   const onSubmitSign = (values: z.infer<typeof formSchema>) => {};
 
   const onSubmitLogin = async (values: z.infer<typeof loginFormSchema>) => {
-    console.log(values)
     handleSubmit(values);
   };
 
