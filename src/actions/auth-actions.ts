@@ -19,7 +19,7 @@ export async function handleLoginSubmit(
       body: JSON.stringify({ email, password }),
     });
 
-  //  await saveTokens(res.data.access_token, res.data.refresh_token);
+    //  await saveTokens(res.data.access_token, res.data.refresh_token);
   } catch (err: unknown) {
     if (err instanceof FetchError) {
       console.error("Erro ao realizar o login: ", err.message);
@@ -38,8 +38,7 @@ export async function handleLoginSubmitNew({
 }: {
   email: string;
   password: string;
-  }) {
-
+}) {
   try {
     const res = await fetchWrapper<AuthCredentialsI>("login", {
       method: "POST",
@@ -57,6 +56,36 @@ export async function handleLoginSubmitNew({
     }
   }
   redirect("/dashboard");
+}
+
+export async function handleSignUp({
+  name,
+  last_name,
+  email,
+  password,
+}: {
+  name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  }) {
+    try {
+      const res = await fetchWrapper<AuthCredentialsI>("register", {
+        method: "POST",
+        body: JSON.stringify({ name: name, last_name: last_name, email: email, password: password }),
+      });
+
+      await saveTokens(res.data.data.access_token, res.data.data.refresh_token);
+    } catch (err: unknown) {
+      if (err instanceof FetchError) {
+        console.error("Erro ao realizar o login: ", err.message);
+        return err.message; // Tratar esse e os outros similares depois em um toast ou algo similar.
+      } else {
+        console.error("Erro ao realizar o login: ", err);
+        return "Erro desconhecido ao realizar o login";
+      }
+    }
+    redirect("/dashboard");
 }
 
 export async function handleGetRefreshTokens(): Promise<{

@@ -1,5 +1,5 @@
 "use client";
-import { handleLoginSubmitNew } from "@/actions/auth-actions";
+import { handleLoginSubmitNew, handleSignUp } from "@/actions/auth-actions";
 import { useActionState, useState } from "react";
 import LoginForm from "@/components/LoginForm";
 
@@ -52,7 +52,7 @@ export default function Login() {
     // </form>
     <div className="h-screen flex justify-center items-center">
 
-    <LoginForm type="login" handleSubmit={handleLoginSubmitNew}/>
+    <LoginForm type="sign up" handleSignUpSubmit={handleSignUp}/>
     </div>
 
   );

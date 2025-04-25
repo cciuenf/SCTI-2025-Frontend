@@ -16,23 +16,23 @@ import { Button } from "@/components/ui/button";
 
 type LoginFormProps = {
   type: "login" | "sign up";
-  handleSubmit: (
-    values:
-      | { email: string; password: string }
-      | {
-          username: string;
-          email: string;
-          password: string;
-          confirm_password: string;
-        }
-  ) => void | Promise<String>;
+  handleLoginSubmit?: (
+    values: { email: string; password: string }
+  ) => Promise<String>;
+
+  handleSignUpSubmit?: (values: {
+    name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    }) => Promise<string>
 };
 
 const formSchema = z.object({
-  username: z.string().min(2).max(12),
+  name: z.string().min(2),
+  last_name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(8).max(20),
-  confirm_password: z.string().min(8).max(20),
 });
 
 const loginFormSchema = z.object({
@@ -40,7 +40,7 @@ const loginFormSchema = z.object({
   password: z.string().min(8).max(20),
 });
 
-export default function LoginForm({ type, handleSubmit }: LoginFormProps) {
+export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit }: LoginFormProps) {
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: { email: "", password: "" },
@@ -49,17 +49,23 @@ export default function LoginForm({ type, handleSubmit }: LoginFormProps) {
   const signForm = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
+      last_name: "",
       email: "",
       password: "",
-      confirm_password: "",
     },
   });
 
-  const onSubmitSign = (values: z.infer<typeof formSchema>) => {};
+  const onSubmitSign = (values: z.infer<typeof formSchema>) => {
+    if (handleSignUpSubmit) {
+      handleSignUpSubmit(values);
+    }
+  };
 
   const onSubmitLogin = async (values: z.infer<typeof loginFormSchema>) => {
-    handleSubmit(values);
+    if (handleLoginSubmit) {
+     handleLoginSubmit(values)
+   }
   };
 
   return (
@@ -107,12 +113,25 @@ export default function LoginForm({ type, handleSubmit }: LoginFormProps) {
           >
             <FormField
               control={signForm.control}
-              name="username"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>First Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your name" {...field} />
+                    <Input placeholder="Put your first name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={signForm.control}
+              name="last_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Put your last name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -139,19 +158,6 @@ export default function LoginForm({ type, handleSubmit }: LoginFormProps) {
                   <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input placeholder="Put your password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={signForm.control}
-              name="confirm_password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Confirm your password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
