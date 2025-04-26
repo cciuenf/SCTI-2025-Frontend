@@ -44,19 +44,59 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-gradient: var(--gradient);
+}
+
+@layer components {
+  .gradient {
+    transition-duration: 0.3s;
+    position: relative;
+    box-sizing: border-box;
+    background-color: #FFF;
+    background-clip: padding-box;
+    border: solid 1px transparent;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: -1;
+      margin: -1px;
+      border-radius: inherit;
+      background-image: linear-gradient(
+        to right,
+        oklch(0.59 0.1826 263.97),
+        oklch(0.62 0.2353 306.19)
+      );
+    }
+
+    &:hover{
+      background-color: transparent;
+    }
+
+    &:disabled{
+      &:before{
+        background-image: none;
+      }
+    }
+  }
+
 }
 
 :root {
   /* ShadCN Styles */
   --radius: 0.625rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(0.26 0.0696 247.5);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.58 0.165 250.89);
+  --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);

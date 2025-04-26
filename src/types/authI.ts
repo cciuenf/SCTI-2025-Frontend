@@ -1,6 +1,8 @@
 export interface AuthCredentialsI {
-  access_token: string;
-  refresh_token: string;
+  data: {
+    access_token: string;
+    refresh_token: string;
+  };
 }
 
 export interface RefreshTokenI {
@@ -15,5 +17,5 @@ export interface UserAccessTokenJwtPayload {
   last_name: string;
   email: string;
   admin_type: string;
-  // event: 
+  // event:
 }

@@ -1,6 +1,8 @@
+import LoginForm from "@/components/LoginForm";
 export default function Home() {
+
   return (
-    <div className="h-screen flex justify-center items-center font-mono">
+    <div className="h-screen flex flex-col gap-4 justify-center items-center font-mono">
       <p>Home</p>
     </div>
   );

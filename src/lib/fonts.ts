@@ -1,16 +1,14 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, League_Spartan } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
+const inter = Inter({
+  weight: ["400", "500", "600"],
+  subsets: ["latin"]
+})
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
+const spartan = League_Spartan({
+  weight: ["300", "400", "500", "600"],
+  subsets: ["latin"]
+})
 
-export const fontClass = cn(geistSans.variable, geistMono.variable);
+export const fontClass = cn(spartan.className);
