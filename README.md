@@ -1,7 +1,7 @@
 ## Pré-Projeto
 - [X] Fazer setup do projeto react 
 - [ ] Criar container docker para o projeto
-- [ ] Criar template para pull request
+- [X] Criar template para pull request
 
 ## Componentes Globais
 - [ ] Navbar
