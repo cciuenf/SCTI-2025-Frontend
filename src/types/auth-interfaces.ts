@@ -14,6 +14,7 @@ export interface UserAccessTokenJwtPayload {
   name: string;
   last_name: string;
   email: string;
-  admin_type: string;
+  // admin_status: 
+  // admin_type: string;
   // event: 
 }
