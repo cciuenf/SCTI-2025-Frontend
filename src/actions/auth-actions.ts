@@ -70,7 +70,7 @@ export async function handleSignUp({
   last_name: string;
   email: string;
   password: string;
-}) {
+}): Promise<boolean | string> {
   try {
     const res = await fetchWrapper<AuthCredentialsI>("register", {
       method: "POST",
@@ -91,6 +91,8 @@ export async function handleSignUp({
       console.error("Erro ao realizar o login: ", err);
       return "Erro desconhecido ao realizar o login";
     }
+  } finally {
+    return await handleIsVerified();
   }
 }
 
@@ -210,35 +212,47 @@ export async function saveTokens(
   }
 }
 
-export async function handleIsVerified(): Promise<void> {
+export async function handleIsVerified(): Promise<boolean | string> {
   const accessToken = (await cookies()).get("access_token")?.value;
-  if (accessToken) {
-    const userInfo = jwt.decode(accessToken) as UserAccessTokenJwtPayload;
-    console.log(userInfo?.is_verified);
+  if (!accessToken) {
+    console.error("Erro ao verificar autenticação");
+    return "Error in authentication";
   }
+  const userInfo = jwt.decode(accessToken) as UserAccessTokenJwtPayload;
+  if (!userInfo) {
+    console.error("Erro na extração de dados do usuário");
+    return "Error in retrive user info";
+  }
+  return userInfo.is_verified;
 }
 
-export async function handleVerifyToken(token: string): Promise<void> {
-  const accessToken = (await cookies()).get("acces_token")?.value;
+export async function handleVerifyToken(token: string): Promise<void | string> {
+  const accessToken = (await cookies()).get("access_token")?.value;
   const refreshToken = (await cookies()).get("refresh_token")?.value;
 
   if (!accessToken || !refreshToken) {
-    return;
+    console.error("Erro na checagem de tokens")
+    return "Erro na checagem de tokens";
   }
+  console.log(token)
 
-  const res = await fetchWrapper("verify", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      Refresh: `Bearer ${refreshToken}`,
-    },
-    body: JSON.stringify({token: token})
-  });
+  try {
+    const res = await fetchWrapper("verify-account", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+      body: JSON.stringify({ token: token }),
+    });
 
-  if (!res) {
-    console.log("Error verifying the token!")
-    return
+    if (!res) {
+      throw new Error();
+    }
+  } catch (error) {
+    console.log(error);
+    return "Erro na verificação de conta"
+  } finally {
+    redirect("/dashboard");
   }
-
-  redirect("/dashboard")
 }

@@ -13,8 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { handleIsVerified } from "@/actions/auth-actions";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 type LoginFormProps = {
   type: "Login" | "Sign Up";
@@ -27,7 +26,9 @@ type LoginFormProps = {
     last_name: string;
     email: string;
     password: string;
-    }) => Promise<string | undefined>
+  }) => Promise<string | boolean>
+
+  setMustShowVerify?: Dispatch<SetStateAction<boolean>>
 };
 
 const formSchema = z.object({
@@ -42,8 +43,7 @@ const loginFormSchema = z.object({
   password: z.string().min(8).max(20),
 });
 
-export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit }: LoginFormProps) {
-  const [isVerified, setIsVerified] = useState(false)
+export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit, setMustShowVerify }: LoginFormProps) {
 
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -60,11 +60,21 @@ export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit 
     },
   });
 
-  const onSubmitSign = (values: z.infer<typeof formSchema>) => {
-    if (handleSignUpSubmit) {
-      handleSignUpSubmit(values);
-      handleIsVerified()
+  const onSubmitSign = async (values: z.infer<typeof formSchema>) => {
+    if (!handleSignUpSubmit) {
+      return;
     }
+    const response = await handleSignUpSubmit(values);
+
+    if (typeof response === "string") {
+      console.log(response)
+      return
+    }
+
+    if (response === false && setMustShowVerify) {
+      setMustShowVerify(true)
+    }
+
   };
 
   const onSubmitLogin = async (values: z.infer<typeof loginFormSchema>) => {

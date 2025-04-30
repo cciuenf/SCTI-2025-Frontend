@@ -13,8 +13,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { handleVerifyToken } from "@/actions/auth-actions";
+import { Dispatch, SetStateAction } from "react";
 
-type Props = {};
+type Props = {
+    setMustShowVerify: Dispatch<SetStateAction<boolean>>
+};
 
 const verifyFormSchema = z.object({
   digit_1: z.string().max(1).min(1),
@@ -25,7 +28,7 @@ const verifyFormSchema = z.object({
   digit_6: z.string().max(1).min(1),
 });
 
-const VerifyForm = (props: Props) => {
+const VerifyForm = ({setMustShowVerify}: Props) => {
   const verifyForm = useForm<z.infer<typeof verifyFormSchema>>({
     resolver: zodResolver(verifyFormSchema),
     defaultValues: {
@@ -38,7 +41,7 @@ const VerifyForm = (props: Props) => {
     },
   });
 
-  const onSubmit = ({
+  const onSubmit = async ({
     digit_1,
     digit_2,
     digit_3,
@@ -47,7 +50,12 @@ const VerifyForm = (props: Props) => {
     digit_6,
   }: z.infer<typeof verifyFormSchema>) => {
     const token = digit_1.concat(digit_2, digit_3, digit_4, digit_5, digit_6);
-    console.log(token)
+    const res = await handleVerifyToken(token)
+
+    if (typeof res === "string") {
+      return;
+    }
+
   };
   return (
     <div className="flex flex-col justify-around items-center gap-3 max-w-md w-1/2 h-78 border-bg-zinc-100 border-1 p-3 rounded-md">
@@ -70,7 +78,7 @@ const VerifyForm = (props: Props) => {
                   <FormControl>
                     <Input
                       {...field}
-                      type={"number"}
+                      maxLength={1}
                       className={
                         "text-center border-1 border-primary rounded-md py-2"
                       }
@@ -88,7 +96,7 @@ const VerifyForm = (props: Props) => {
                   <FormControl>
                     <Input
                       {...field}
-                      type={"number"}
+                      maxLength={1}
                       className={
                         "text-center border-1 border-primary rounded-md py-2"
                       }
@@ -106,7 +114,7 @@ const VerifyForm = (props: Props) => {
                   <FormControl>
                     <Input
                       {...field}
-                      type={"number"}
+                      maxLength={1}
                       className={
                         "text-center border-1 border-primary rounded-md py-2"
                       }
@@ -124,7 +132,7 @@ const VerifyForm = (props: Props) => {
                   <FormControl>
                     <Input
                       {...field}
-                      type={"number"}
+                      maxLength={1}
                       className={
                         "text-center border-1 border-primary rounded-md py-2"
                       }
@@ -142,7 +150,7 @@ const VerifyForm = (props: Props) => {
                   <FormControl>
                     <Input
                       {...field}
-                      type={"number"}
+                      maxLength={1}
                       className={
                         "text-center border-1 border-primary rounded-md py-2"
                       }
@@ -160,7 +168,7 @@ const VerifyForm = (props: Props) => {
                   <FormControl>
                     <Input
                       {...field}
-                      type={"number"}
+                      maxLength={1}
                       className={
                         "text-center border-1 border-primary rounded-md py-2"
                       }
