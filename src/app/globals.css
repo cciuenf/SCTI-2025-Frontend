@@ -47,6 +47,15 @@
   --color-gradient: var(--gradient);
 }
 
+/* Removendo setas do input type number */
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+/* Configuação base para estilizar o botão com o gradiente */
 @layer components {
   .gradient {
     transition-duration: 0.3s;

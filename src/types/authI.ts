@@ -17,5 +17,6 @@ export interface UserAccessTokenJwtPayload {
   last_name: string;
   email: string;
   admin_type: string;
+  is_verified: boolean
   // event:
 }

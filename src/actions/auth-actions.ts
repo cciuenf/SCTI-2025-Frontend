@@ -5,6 +5,8 @@ import { fetchWrapper } from "@/lib/fetch";
 import { cookies } from "next/headers";
 import { FetchError } from "@/types/utility-classes";
 import { redirect } from "next/navigation";
+import jwt from "jsonwebtoken";
+import { UserAccessTokenJwtPayload } from "@/types/authI";
 
 export async function handleLoginSubmit(
   _previousState: string,
@@ -68,24 +70,28 @@ export async function handleSignUp({
   last_name: string;
   email: string;
   password: string;
-  }) {
-    try {
-      const res = await fetchWrapper<AuthCredentialsI>("register", {
-        method: "POST",
-        body: JSON.stringify({ name: name, last_name: last_name, email: email, password: password }),
-      });
+}) {
+  try {
+    const res = await fetchWrapper<AuthCredentialsI>("register", {
+      method: "POST",
+      body: JSON.stringify({
+        name: name,
+        last_name: last_name,
+        email: email,
+        password: password,
+      }),
+    });
 
-      await saveTokens(res.data.data.access_token, res.data.data.refresh_token);
-    } catch (err: unknown) {
-      if (err instanceof FetchError) {
-        console.error("Erro ao realizar o login: ", err.message);
-        return err.message; // Tratar esse e os outros similares depois em um toast ou algo similar.
-      } else {
-        console.error("Erro ao realizar o login: ", err);
-        return "Erro desconhecido ao realizar o login";
-      }
+    await saveTokens(res.data.data.access_token, res.data.data.refresh_token);
+  } catch (err: unknown) {
+    if (err instanceof FetchError) {
+      console.error("Erro ao realizar o login: ", err.message);
+      return err.message; // Tratar esse e os outros similares depois em um toast ou algo similar.
+    } else {
+      console.error("Erro ao realizar o login: ", err);
+      return "Erro desconhecido ao realizar o login";
     }
-    redirect("/dashboard");
+  }
 }
 
 export async function handleGetRefreshTokens(): Promise<{
@@ -202,4 +208,37 @@ export async function saveTokens(
       maxAge: 60 * 60 * 24 * 1.98, // 2 Dias com uma margem de erro
     });
   }
+}
+
+export async function handleIsVerified(): Promise<void> {
+  const accessToken = (await cookies()).get("access_token")?.value;
+  if (accessToken) {
+    const userInfo = jwt.decode(accessToken) as UserAccessTokenJwtPayload;
+    console.log(userInfo?.is_verified);
+  }
+}
+
+export async function handleVerifyToken(token: string): Promise<void> {
+  const accessToken = (await cookies()).get("acces_token")?.value;
+  const refreshToken = (await cookies()).get("refresh_token")?.value;
+
+  if (!accessToken || !refreshToken) {
+    return;
+  }
+
+  const res = await fetchWrapper("verify", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Refresh: `Bearer ${refreshToken}`,
+    },
+    body: JSON.stringify({token: token})
+  });
+
+  if (!res) {
+    console.log("Error verifying the token!")
+    return
+  }
+
+  redirect("/dashboard")
 }

@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Form,
   FormControl,
@@ -8,16 +7,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-
-enum FormType {
-  Login = 0,
-  SignUp = 1
-}
+import { handleIsVerified } from "@/actions/auth-actions";
+import { useState } from "react";
 
 type LoginFormProps = {
   type: "Login" | "Sign Up";
@@ -30,7 +27,7 @@ type LoginFormProps = {
     last_name: string;
     email: string;
     password: string;
-    }) => Promise<string>
+    }) => Promise<string | undefined>
 };
 
 const formSchema = z.object({
@@ -46,6 +43,7 @@ const loginFormSchema = z.object({
 });
 
 export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit }: LoginFormProps) {
+  const [isVerified, setIsVerified] = useState(false)
 
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -65,6 +63,7 @@ export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit 
   const onSubmitSign = (values: z.infer<typeof formSchema>) => {
     if (handleSignUpSubmit) {
       handleSignUpSubmit(values);
+      handleIsVerified()
     }
   };
 

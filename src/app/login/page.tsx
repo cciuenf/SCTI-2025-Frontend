@@ -1,18 +1,11 @@
 "use client";
-import { handleLoginSubmitNew, handleSignUp } from "@/actions/auth-actions";
-import { useActionState, useState } from "react";
+import {handleLoginSubmitNew } from "@/actions/auth-actions";
 import LoginForm from "@/components/LoginForm";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Login() {
     //const [isLoading, setIsLoading] = useState(false)
-    const [currentType, setCurrentType] = useState<"Login" | "Sign Up">("Login")
-
-
-  const switchType = () => {
-    currentType == "Login" ? setCurrentType("Sign Up") : setCurrentType("Login")
-    console.log(currentType)
-  }
  // const [state, formAction, isLoading] = useActionState(handleLoginSubmit, "");
   return (
     // <form
@@ -60,9 +53,9 @@ export default function Login() {
     // </form>
     <div className="h-screen flex flex-col justify-center items-center gap-3">
 
-      <LoginForm type={currentType} handleSignUpSubmit={handleSignUp} />
-      <Button variant={"outline"} onClick={(e) => switchType()}>
-        {currentType == "Login" ? <p>Sign Up</p> : <p>Login</p>}
+      <LoginForm type={"Login"} handleLoginSubmit={handleLoginSubmitNew} />
+      <Button variant={"outline"} asChild>
+      <Link href={"/sign-up"}>Sign Up</Link>
       </Button>
     </div>
 
