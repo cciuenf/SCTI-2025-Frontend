@@ -6,14 +6,17 @@ import { FetchError } from "@/types/utility-classes";
 import { redirect } from "next/navigation";
 import { getAuthTokens, setAuthTokens } from "@/lib/cookies";
 
-export async function handleLoginSubmit(_previousState: string, formData: FormData) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
+export async function handleLoginSubmit({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
   try {
     const res = await fetchWrapper<AuthCredentialsI>("login", {
       method: "POST",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email: email, password: password }),
     });
 
     await setAuthTokens(res.result.data.access_token, res.result.data.refresh_token);
@@ -28,6 +31,36 @@ export async function handleLoginSubmit(_previousState: string, formData: FormDa
     }
   }
   redirect("/dashboard");
+}
+
+export async function handleSignUp({
+  name,
+  last_name,
+  email,
+  password,
+}: {
+  name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  }) {
+    try {
+      const res = await fetchWrapper<AuthCredentialsI>("register", {
+        method: "POST",
+        body: JSON.stringify({ name: name, last_name: last_name, email: email, password: password }),
+      });
+
+      await setAuthTokens(res.result.data.access_token, res.result.data.refresh_token);
+    } catch (err: unknown) {
+      if (err instanceof FetchError) {
+        console.error("Erro ao realizar o login: ", err.message);
+        return err.message;
+      } else {
+        console.error("Erro ao realizar o login: ", err);
+        return "Erro desconhecido ao realizar o login";
+      }
+    }
+    redirect("/dashboard");
 }
 
 export async function handleGetRefreshTokens() {
