@@ -48,7 +48,16 @@
   --color-gradient: var(--gradient);
 }
 
-@layer components {
+/* Removendo setas do input type number */
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+/* Configuação base para estilizar o botão com o gradiente */
+/* @layer components {
   .gradient {
     transition-duration: 0.3s;
     position: relative;
@@ -85,24 +94,24 @@
     }
   }
 
-}
+} */
 
 :root {
   /* ShadCN Styles */
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.26 0.0696 247.5);
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.35 0.1053 263.7);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.58 0.165 250.89);
+  --primary: oklch(0.85 0 0);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.97 0 0);
+  --secondary: oklch(0.22 0.1097 262.75);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
+  --accent: oklch(0.83 0.1684 99.11);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);

@@ -7,16 +7,18 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "w-40 border-1 cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[35px] text-sm font-light transition-all disabled:pointer-events-none disabled:opacity-90 disabled:border-zinc-300 disabled:text-zinc-300 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "w-40 border-1 cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[35px] text-sm font-normal transition-all disabled:pointer-events-none disabled:opacity-90 disabled:border-zinc-300 disabled:text-zinc-300 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
         default:
-          "gradient text-primary hover:text-primary-foreground duration-300",
+          "text-secondary border-secondary hover:text-accent hover:bg-secondary duration-300",
+        yellow:
+          "text-accent border-accent hover:text-secondary hover:bg-accent duration-300",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "text-primary/70 border bg-background shadow-xs hover:text-primary dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost:

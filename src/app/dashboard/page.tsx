@@ -9,7 +9,7 @@ export default async function Dashboard() {
   const user_info = jwt.decode(access_token as string) as UserAccessTokenJwtPayload | null
   const refresh_token = (await cookieStore).get("refresh_token")?.value;
   return (
-    <div className="h-screen flex flex-col items-center font-mono p-4">
+    <div className="h-screen flex flex-col items-center font-spartan p-4">
       <h1 className="font-black text-lg mb-3.5">Nome: {user_info?.name} {user_info?.last_name}</h1>
       <h1 className="font-black text-lg mb-3.5">Email: {user_info?.email}</h1>
       <h1 className="font-black text-lg mb-3.5">Usuário Verificado: {user_info?.is_verified ? "Sim" : "Não"}</h1>

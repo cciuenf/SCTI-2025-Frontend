@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Form,
   FormControl,
@@ -8,16 +7,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-
-enum FormType {
-  Login = 0,
-  SignUp = 1
-}
+import { Dispatch, SetStateAction, useState } from "react";
 
 type LoginFormProps = {
   type: "Login" | "Sign Up";
@@ -30,7 +26,10 @@ type LoginFormProps = {
     last_name: string;
     email: string;
     password: string;
-    }) => Promise<string>
+  }) => Promise<string | boolean>
+
+  setMustShowVerify?: Dispatch<SetStateAction<boolean>>
+  setIsLoading: Dispatch<SetStateAction<boolean>>
 };
 
 const formSchema = z.object({
@@ -45,7 +44,7 @@ const loginFormSchema = z.object({
   password: z.string().min(8).max(20),
 });
 
-export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit }: LoginFormProps) {
+export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit, setMustShowVerify, setIsLoading }: LoginFormProps) {
 
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -62,15 +61,31 @@ export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit 
     },
   });
 
-  const onSubmitSign = (values: z.infer<typeof formSchema>) => {
-    if (handleSignUpSubmit) {
-      handleSignUpSubmit(values);
+  const onSubmitSign = async (values: z.infer<typeof formSchema>) => {
+    if (!handleSignUpSubmit) {
+      return;
     }
+
+    setIsLoading(true)
+    const response = await handleSignUpSubmit(values);
+    setIsLoading(false)
+
+    if (typeof response === "string") {
+      console.error(response)
+      return
+    }
+
+    if (response === false && setMustShowVerify) {
+      setMustShowVerify(true)
+    }
+
   };
 
   const onSubmitLogin = async (values: z.infer<typeof loginFormSchema>) => {
     if (handleLoginSubmit) {
-     handleLoginSubmit(values)
+      setIsLoading(true)
+      handleLoginSubmit(values)
+      setIsLoading(false)
    }
   };
 
