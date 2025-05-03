@@ -29,6 +29,7 @@ type LoginFormProps = {
   }) => Promise<string | boolean>
 
   setMustShowVerify?: Dispatch<SetStateAction<boolean>>
+  setIsLoading: Dispatch<SetStateAction<boolean>>
 };
 
 const formSchema = z.object({
@@ -43,7 +44,7 @@ const loginFormSchema = z.object({
   password: z.string().min(8).max(20),
 });
 
-export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit, setMustShowVerify }: LoginFormProps) {
+export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit, setMustShowVerify, setIsLoading }: LoginFormProps) {
 
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -64,10 +65,13 @@ export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit,
     if (!handleSignUpSubmit) {
       return;
     }
+
+    setIsLoading(true)
     const response = await handleSignUpSubmit(values);
+    setIsLoading(false)
 
     if (typeof response === "string") {
-      console.log(response)
+      console.error(response)
       return
     }
 
@@ -79,7 +83,9 @@ export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit,
 
   const onSubmitLogin = async (values: z.infer<typeof loginFormSchema>) => {
     if (handleLoginSubmit) {
-     handleLoginSubmit(values)
+      setIsLoading(true)
+      handleLoginSubmit(values)
+      setIsLoading(false)
    }
   };
 
