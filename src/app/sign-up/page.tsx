@@ -17,7 +17,7 @@ export default function SignUp() {
       {isLoading ? (
         <Loader2 className="animate-spin w-10 h-10 text-yellow-300" />
       ) : mustShowVerify ? (
-        <VerifyForm setMustShowVerify={setMustShowVerify} />
+        <VerifyForm setMustShowVerify={setMustShowVerify} setIsLoading={setIsLoading}/>
       ) : (
         <>
           <LoginForm

@@ -17,6 +17,7 @@ import { Dispatch, SetStateAction } from "react";
 
 type Props = {
   setMustShowVerify: Dispatch<SetStateAction<boolean>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>
 };
 
 const verifyFormSchema = z.object({
@@ -28,7 +29,7 @@ const verifyFormSchema = z.object({
   digit_6: z.string().max(1).min(1),
 });
 
-const VerifyForm = ({ setMustShowVerify }: Props) => {
+const VerifyForm = ({ setMustShowVerify, setIsLoading }: Props) => {
   const verifyForm = useForm<z.infer<typeof verifyFormSchema>>({
     resolver: zodResolver(verifyFormSchema),
     defaultValues: {
@@ -50,7 +51,9 @@ const VerifyForm = ({ setMustShowVerify }: Props) => {
     digit_6,
   }: z.infer<typeof verifyFormSchema>) => {
     const token = digit_1.concat(digit_2, digit_3, digit_4, digit_5, digit_6);
+    setIsLoading(true)
     const res = await handleVerifyToken(token);
+    setIsLoading(false)
 
     if (typeof res === "string") {
       return;
