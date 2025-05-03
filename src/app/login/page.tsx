@@ -1,5 +1,5 @@
 "use client";
-import {handleLoginSubmitNew } from "@/actions/auth-actions";
+import {handleLoginSubmit } from "@/actions/auth-actions";
 import LoginForm from "@/components/LoginForm";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -53,7 +53,7 @@ export default function Login() {
     // </form>
     <div className="h-screen flex flex-col justify-center items-center gap-3">
 
-      <LoginForm type={"Login"} handleLoginSubmit={handleLoginSubmitNew} />
+      <LoginForm type={"Login"} handleLoginSubmit={handleLoginSubmit} />
       <Button variant={"outline"} asChild>
       <Link href={"/sign-up"}>Sign Up</Link>
       </Button>
