@@ -9,7 +9,7 @@ import VerifyForm from "@/components/VerifyForm";
 import { Loader2 } from "lucide-react";
 
 export default function SignUp() {
-  const [mustShowVerify, setMustShowVerify] = useState(false);
+  const [mustShowVerify, setMustShowVerify] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (

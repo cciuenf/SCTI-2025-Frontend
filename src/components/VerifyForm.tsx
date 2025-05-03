@@ -16,7 +16,7 @@ import { handleVerifyToken } from "@/actions/auth-actions";
 import { Dispatch, SetStateAction } from "react";
 
 type Props = {
-    setMustShowVerify: Dispatch<SetStateAction<boolean>>
+  setMustShowVerify: Dispatch<SetStateAction<boolean>>;
 };
 
 const verifyFormSchema = z.object({
@@ -28,7 +28,7 @@ const verifyFormSchema = z.object({
   digit_6: z.string().max(1).min(1),
 });
 
-const VerifyForm = ({setMustShowVerify}: Props) => {
+const VerifyForm = ({ setMustShowVerify }: Props) => {
   const verifyForm = useForm<z.infer<typeof verifyFormSchema>>({
     resolver: zodResolver(verifyFormSchema),
     defaultValues: {
@@ -50,12 +50,11 @@ const VerifyForm = ({setMustShowVerify}: Props) => {
     digit_6,
   }: z.infer<typeof verifyFormSchema>) => {
     const token = digit_1.concat(digit_2, digit_3, digit_4, digit_5, digit_6);
-    const res = await handleVerifyToken(token)
+    const res = await handleVerifyToken(token);
 
     if (typeof res === "string") {
       return;
     }
-
   };
   return (
     <div className="flex flex-col justify-around items-center gap-3 max-w-md w-1/2 h-78 border-bg-zinc-100 border-1 p-3 rounded-md">
@@ -64,10 +63,13 @@ const VerifyForm = ({setMustShowVerify}: Props) => {
           className="w-full max-w-[340px] h-full flex flex-col justify-between items-center gap-3"
           onSubmit={verifyForm.handleSubmit(onSubmit)}
         >
-          <h2 className="primary uppercase text-2xl">Verification Form</h2>
-          <h3>
-            We send to you an e-mail with the verification code. Please, check
-            your email and enter the code to access your dashboard!
+          <h2 className="text-foreground uppercase text-2xl">
+            Formulário de Verificação
+          </h2>
+          <h3 className="text-foreground">
+            Nós te enviamos um e-mail com o seu <span className="text-secondary">código de verificação</span>. Pedimos
+            que visite sua caixa de mensagens e digite o código no campo a
+            seguir:
           </h3>
           <div className="flex justify-around items-center gap-3">
             <FormField
@@ -77,10 +79,11 @@ const VerifyForm = ({setMustShowVerify}: Props) => {
                 <FormItem>
                   <FormControl>
                     <Input
+                      required={true}
                       {...field}
                       maxLength={1}
                       className={
-                        "text-center border-1 border-primary rounded-md py-2"
+                        "text-center border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-2"
                       }
                     />
                   </FormControl>
@@ -95,10 +98,11 @@ const VerifyForm = ({setMustShowVerify}: Props) => {
                 <FormItem>
                   <FormControl>
                     <Input
+                      required={true}
                       {...field}
                       maxLength={1}
                       className={
-                        "text-center border-1 border-primary rounded-md py-2"
+                        "text-center border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-2"
                       }
                     />
                   </FormControl>
@@ -113,10 +117,11 @@ const VerifyForm = ({setMustShowVerify}: Props) => {
                 <FormItem>
                   <FormControl>
                     <Input
+                      required={true}
                       {...field}
                       maxLength={1}
                       className={
-                        "text-center border-1 border-primary rounded-md py-2"
+                        "text-center border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-2"
                       }
                     />
                   </FormControl>
@@ -131,10 +136,11 @@ const VerifyForm = ({setMustShowVerify}: Props) => {
                 <FormItem>
                   <FormControl>
                     <Input
+                      required={true}
                       {...field}
                       maxLength={1}
                       className={
-                        "text-center border-1 border-primary rounded-md py-2"
+                        "text-center border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-2"
                       }
                     />
                   </FormControl>
@@ -149,10 +155,11 @@ const VerifyForm = ({setMustShowVerify}: Props) => {
                 <FormItem>
                   <FormControl>
                     <Input
+                      required={true}
                       {...field}
                       maxLength={1}
                       className={
-                        "text-center border-1 border-primary rounded-md py-2"
+                        "text-center border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-2"
                       }
                     />
                   </FormControl>
@@ -167,10 +174,11 @@ const VerifyForm = ({setMustShowVerify}: Props) => {
                 <FormItem>
                   <FormControl>
                     <Input
+                      required={true}
                       {...field}
                       maxLength={1}
                       className={
-                        "text-center border-1 border-primary rounded-md py-2"
+                        "text-center border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-2"
                       }
                     />
                   </FormControl>
