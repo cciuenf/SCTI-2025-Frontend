@@ -61,7 +61,8 @@ export async function handleSignUp({
         return "Erro desconhecido ao realizar o login";
       }
     }
-    redirect("/dashboard");
+
+  return await handleIsVerified()
 }
 
 export async function handleGetRefreshTokens() {
@@ -137,12 +138,12 @@ export async function handleIsVerified(): Promise<boolean | string> {
     console.error("Erro ao verificar autenticação");
     return "Error in authentication";
   }
-  const userInfo = jwt.decode(accessToken) as UserAccessTokenJwtPayload;
+  const userInfo = jwt.decode(accessToken as string) as UserAccessTokenJwtPayload | null
   if (!userInfo) {
     console.error("Erro na extração de dados do usuário");
     return "Error in retrive user info";
   }
-  return userInfo.res.is_verified;
+  return userInfo.is_verified;
 }
 
 export async function handleVerifyToken(token: string): Promise<void | string> {

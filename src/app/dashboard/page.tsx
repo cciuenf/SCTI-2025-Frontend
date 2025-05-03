@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import { handleGetRefreshTokens, handleIsVerified } from "@/actions/auth-actions";
-=======
->>>>>>> main
 import RefreshTokenList from "@/components/RefreshTokensList";
 import { cookies } from "next/headers";
 import jwt from 'jsonwebtoken';
@@ -12,14 +8,8 @@ export default async function Dashboard() {
   const access_token = (await cookieStore).get("access_token")?.value;
   const user_info = jwt.decode(access_token as string) as UserAccessTokenJwtPayload | null
   const refresh_token = (await cookieStore).get("refresh_token")?.value;
-<<<<<<< HEAD
-  const is_verified =  (await handleIsVerified()).toString()
-
-  const refreshTokens = await handleGetRefreshTokens();
-=======
->>>>>>> main
   return (
-    <div className="h-screen flex flex-col items-center font-mono p-4">
+    <div className="h-screen flex flex-col items-center font-spartan p-4">
       <h1 className="font-black text-lg mb-3.5">Nome: {user_info?.name} {user_info?.last_name}</h1>
       <h1 className="font-black text-lg mb-3.5">Email: {user_info?.email}</h1>
       <h1 className="font-black text-lg mb-3.5">Usuário Verificado: {user_info?.is_verified ? "Sim" : "Não"}</h1>
@@ -32,9 +22,6 @@ export default async function Dashboard() {
       </p>
       <p className="max-w-lvw p-2 break-words">
         Refresh Token: {refresh_token ?? ""}
-      </p>
-      <p className="max-w-lvw p-2 break-words">
-        Is Verified? {is_verified ?? ""}
       </p>
       <h1 className="font-black text-lg mt-3.5 mb-3.5">Refresh Tokens:</h1>
       <RefreshTokenList />

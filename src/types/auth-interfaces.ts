@@ -11,14 +11,12 @@ export interface RefreshTokenI {
 }
 
 export interface UserAccessTokenJwtPayload {
-  res: {
-    name: string;
-    last_name: string;
-    email: string;
-    exp: string;
-    is_verified: boolean;
-    is_master: boolean;
-    is_super: boolean;
-    // admin_status: {}
-  };
+  name: string;
+  last_name: string;
+  email: string;
+  exp: string;
+  is_verified: boolean;
+  is_master: boolean;
+  is_super: boolean;
+  // admin_status: {}
 }
