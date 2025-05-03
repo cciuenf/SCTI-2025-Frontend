@@ -1,11 +1,13 @@
-export class FetchError extends Error {
-  status: number;
-  headers: Headers;
+import { ErrorResponseI } from "./utility-interfaces";
 
-  constructor(message: string, status: number, headers: Headers) {
+export class FetchError extends Error {
+  errorR: ErrorResponseI | null
+  status: number;
+
+  constructor(message: string, status: number, errorR: ErrorResponseI | null) {
     super(message);
     this.name = "FetchError";
     this.status = status;
-    this.headers = headers;
+    this.errorR = errorR;
   }
 }

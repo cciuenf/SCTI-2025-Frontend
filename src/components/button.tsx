@@ -10,7 +10,7 @@ interface CustomButtonProps {
 export default function CustomButton( { token, onRemove }: CustomButtonProps) {
   const handleClick = async () => {
     const res = await handleRevokeToken(token);
-    if(res.items) onRemove(token);
+    if(res.success) onRemove(token);
   }
   return (
     <button

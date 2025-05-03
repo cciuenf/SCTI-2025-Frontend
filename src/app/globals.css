@@ -7,6 +7,7 @@
   /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-spartan: var(--font-league-spartan);
 
   /* ShadCN Styles */
   --color-background: var(--background);
