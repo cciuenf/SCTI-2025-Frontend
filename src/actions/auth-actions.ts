@@ -146,7 +146,7 @@ export async function handleIsVerified(): Promise<boolean | string> {
   return userInfo.is_verified;
 }
 
-export async function handleVerifyToken(token: string): Promise<void | string> {
+export async function handleVerifyToken(token: string) {
   const {accessToken, refreshToken} = await getAuthTokens()
 
   if (!accessToken || !refreshToken) {
@@ -165,13 +165,16 @@ export async function handleVerifyToken(token: string): Promise<void | string> {
       body: JSON.stringify({ token: token }),
     });
 
-    if (!res) {
-      throw new Error();
-    }
-  } catch (error) {
-    console.log(error);
-    return "Erro na verificação de conta"
-  } finally {
     redirect("/dashboard");
+
+
+  } catch (error: unknown) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao verificar autenticação: ", error.message);
+      return { status: error.status, message: error.message };
+    } else {
+      console.error("Erro ao verificar autenticação: ", error);
+      return { status: 500, message: "Erro desconhecido ao verificar autenticação" };
+    }
   }
 }
