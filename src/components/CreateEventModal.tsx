@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 
 import {
@@ -16,13 +17,12 @@ const CreateEventModal = (props: Props) => {
   return (
     <div className="mt-10">
       <Dialog>
-        <DialogTrigger className="bg-secondary text-accent rounded-md px-2 py-1 cursor-pointer">Open</DialogTrigger>
+        <DialogTrigger className="border-1 border-accent text-accent rounded-3xl px-2 py-1 cursor-pointer">Open</DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
+            <DialogTitle>Crie seu evento</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
+              Preencha todos os campos abaixo para que consiga criar o evento desejado!
             </DialogDescription>
           </DialogHeader>
           <CreateEventForm/>
