@@ -15,7 +15,7 @@ export default function Home() {
         Por hora, aproveite para criar a sua conta ou realizar login!
       </h2>
       <div className="flex w-full justify-around items-center">
-        <Button>
+        <Button asChild>
           <Link href={"login"}>Login</Link>
         </Button>
         <Button asChild variant={"yellow"}>
