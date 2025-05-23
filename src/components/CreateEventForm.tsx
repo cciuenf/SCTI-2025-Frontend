@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { DateTimePicker } from "./DateTimePicker";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -48,7 +49,7 @@ const CreateEventForm = (props: Props) => {
   return (
     <div>
       <Form {...form}>
-        <form className="flex flex-col gap-5 items-center">
+        <form className="flex flex-col w-11/12 gap-4 items-center overflow-y-hidden">
           <FormField
             control={form.control}
             name="name"
@@ -159,7 +160,35 @@ const CreateEventForm = (props: Props) => {
               </FormItem>
             )}
           />
-          <Button variant={"yellow"}>Criar</Button>
+          <FormField
+            control={form.control}
+            name="start_date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Dia de início do evento</FormLabel>
+                <FormControl>
+                  <DateTimePicker />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="end_date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Dia de fim do evento</FormLabel>
+                <FormControl>
+                  <DateTimePicker />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button variant={"yellow"}>
+            Criar
+          </Button>
         </form>
       </Form>
     </div>

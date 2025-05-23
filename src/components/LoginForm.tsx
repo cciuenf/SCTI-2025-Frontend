@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, useState } from "react";
+import { handleGetEvents } from "@/actions/event-actions";
 
 type LoginFormProps = {
   type: "Login" | "Sign Up";
@@ -85,6 +86,7 @@ export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit,
     if (handleLoginSubmit) {
       setIsLoading(true)
       handleLoginSubmit(values)
+      handleGetEvents()
       setIsLoading(false)
    }
   };
