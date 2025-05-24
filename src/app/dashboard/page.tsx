@@ -2,6 +2,7 @@ import RefreshTokenList from "@/components/RefreshTokensList";
 import { cookies } from "next/headers";
 import jwt from 'jsonwebtoken';
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
+import ProductModalForm from "@/components/ProductModalForm";
 
 export default async function Dashboard() {
   const cookieStore = cookies();
@@ -25,6 +26,7 @@ export default async function Dashboard() {
       </p>
       <h1 className="font-black text-lg mt-3.5 mb-3.5">Refresh Tokens:</h1>
       <RefreshTokenList />
+      <ProductModalForm />
     </div>
   );
 }
