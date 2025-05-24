@@ -1,4 +1,5 @@
 export interface ProductCredentialsI {
+  // Produto só vai ter is_event e target_id
   // access_targets: AccessTargets[];
   description: string;
   // event_id: string;
@@ -18,9 +19,6 @@ export interface ProductCredentialsI {
   // token_quantity: number
 }
 
-export interface ProductCredentialsWithSlugI extends ProductCredentialsI {
-  slug_to_query: string;
-}
 
 export interface ProductResponseI {
   access_targets: AccessTargets[];
@@ -31,3 +29,7 @@ interface AccessTargets {
   product_id: string;
   target_id: string;
 }
+
+// O form será por slug, preciso criar uma página para os slugs/events
+// /events/slug pega todos os eventoss
+// /events/slug/activities - pega todas as atividades do do evento

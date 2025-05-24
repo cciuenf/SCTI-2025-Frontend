@@ -2,14 +2,14 @@
 
 import { getAuthTokens } from "@/lib/cookies";
 import { fetchWrapper } from "@/lib/fetch";
-import { ProductCredentialsWithSlugI, ProductResponseI } from "@/types/product-interfaces";
+import { ProductCredentialsI, ProductResponseI } from "@/types/product-interfaces";
 import { FetchError } from "@/types/utility-classes";
 
 
-export async function handleCreateProduct(data: ProductCredentialsWithSlugI) {
+export async function handleCreateProduct(data: ProductCredentialsI, slug: string) {
     const { accessToken, refreshToken } = await getAuthTokens();
     try {
-      const res = await fetchWrapper<ProductResponseI>(`/events/${data.slug_to_query}/product`, {
+      const res = await fetchWrapper<ProductResponseI>(`/events/${slug}/product`, {
         method: "POST",
         body: JSON.stringify(data),
         headers: {

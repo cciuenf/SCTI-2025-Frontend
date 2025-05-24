@@ -12,13 +12,12 @@ import { Button } from "@/components/ui/button";
 import { useForm, DefaultValues } from "react-hook-form";
 import { ZodSchema } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "../input";
-import { Switch } from "../switch";
+import { FormInputRenderMap } from "./utils/FormInputsMap";
 
 export interface FieldConfig<T> {
   name: keyof T;
   label: string;
-  type?: "text" | "number" | "switch" | "price";
+  type?: "text" | "number" | "switch" | "price" | "multiple_dropdown";
   placeholder?: string;
 }
 
@@ -65,43 +64,12 @@ function CustomGenericForm<T extends Record<string, any>>({
               <FormItem>
                 <FormLabel>{f.label}</FormLabel>
                 <FormControl>
-                  {
-                  f.type === 'switch' ?
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  : f.type === "number" ?
-                    <Input
-                      type="number"
-                      min={0}
-                      placeholder={f.placeholder}
-                      value={isNaN(field.value) ? '' : field.value}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                    />
-                  : f.type === "price" ? 
-                    <Input
-                      type="text"
-                      value={
-                        typeof field.value === "number"
-                          ? (field.value / 100).toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            })
-                          : ""
-                      }
-                      onChange={(e) => {
-                        const raw = e.target.value.replace(/[^\d]/g, "")
-                        field.onChange(parseInt(raw || "0", 10))
-                      }}
-                      placeholder={f.placeholder}
-                    />
-                  : 
-                    <Input
-                      placeholder={f.placeholder}
-                      {...field}
-                    />
-                  }
+                  {FormInputRenderMap[f.type || "text"]({
+                    field,
+                    disabled: false,
+                    // disabled: formDisabled || f.disabled,
+                    placeholder: f.placeholder
+                  })}
                 </FormControl>
                 <FormMessage />
               </FormItem>
