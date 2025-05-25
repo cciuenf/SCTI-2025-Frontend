@@ -1,22 +1,16 @@
 export interface ProductCredentialsI {
-  // Produto só vai ter is_event e target_id
-  // access_targets: AccessTargets[];
-  description: string;
-  // event_id: string;
-  has_unlimited_quantity: boolean,
-  // is_activity_access: boolean,
-  // is_activity_token: boolean,
-  // is_blocked: boolean,
-  // is_event_access: boolean,
-  // is_hidden: boolean,
-  // is_physical_item: boolean,
-  // is_public: boolean,
-  // is_ticket_type: boolean,
-  // max_ownable_quantity: number,
   name: string,
+  description: string;
   price_int: number,
+  has_unlimited_quantity: boolean,
   quantity: number,
-  // token_quantity: number
+  max_ownable_quantity: number,
+  is_physical_item: boolean,
+  is_public: boolean,
+  is_blocked: boolean,
+  is_hidden: boolean,
+  is_ticket_type: boolean,
+  access_targets: {is_event: boolean, target_id: string}[]
 }
 
 
@@ -29,7 +23,3 @@ interface AccessTargets {
   product_id: string;
   target_id: string;
 }
-
-// O form será por slug, preciso criar uma página para os slugs/events
-// /events/slug pega todos os eventoss
-// /events/slug/activities - pega todas as atividades do do evento

@@ -21,7 +21,7 @@ export default async function Dashboard() {
       <h1 className="font-black text-lg mb-3.5">Email: {user_info?.email}</h1>
       <h1 className="font-black text-lg mb-3.5">Usuário Verificado: {user_info?.is_verified ? "Sim" : "Não"}</h1>
       <h1 className="font-black text-lg mb-3.5">
-        Tipo de Admin: {user_info?.is_master ? "Master" : user_info?.is_super ? "Super" : "Não é admin"}
+        Tipo de Admin: {user_info?.is_super ? "Super" : user_info?.is_event_creator ? "Criador de Evento"  : "Não é admin"}
       </h1>
 
       <div className="w-full max-w-4xl mt-6">

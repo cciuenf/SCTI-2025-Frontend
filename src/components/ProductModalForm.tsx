@@ -5,6 +5,17 @@ import CustomGenericForm, {FieldConfig} from "./ui/Generic/CustomGenericForm";
 import { z } from "zod";
 import { ProductCredentialsI } from "@/types/product-interfaces";
 
+// Mock data for events and activities
+const mockEvents = [
+  { id: "event1", name: "SCTI 2025" },
+];
+
+const mockActivities = [
+  { id: "activity1", name: "Palestra de IA", eventId: "event1" },
+  { id: "activity2", name: "Workshop de React", eventId: "event1" },
+  { id: "activity3", name: "Hackathon", eventId: "event2" },
+];
+
 const productSchema = z.object({
   name: z.string().min(2, "Nome precisa de pelo menos 2 caracteres"),
   description: z.string().min(10, "Descrição precisa de pelo menos 10 caracteres"),
@@ -17,37 +28,81 @@ const productSchema = z.object({
     invalid_type_error: "Você precisa inserir um número",
     required_error: "Campo obrigatório",
   }).int().min(0, "Quantidade inválida"),
-  // access_targets: z.array(z.object({is_event: z.boolean(), product_id: z.string(), target_id: z.string()})),
-  // start_date: z.date(),
-  // end_date: z.date(),
+  max_ownable_quantity: z.number({
+    invalid_type_error: "Você precisa inserir um número",
+    required_error: "Campo obrigatório",
+  }).int().min(0, "Quantidade inválida"),
+  is_physical_item: z.boolean(),
+  is_public: z.boolean(),
+  is_blocked: z.boolean(),
+  is_hidden: z.boolean(),
+  is_ticket_type: z.boolean(),
+  access_targets: z.array(z.string())
+    .transform((arr) => arr.map(item => JSON.parse(item)))
+    .refine(
+      (arr) => arr.every(item => 
+        typeof item === 'object' && 
+        'is_event' in item && 
+        'target_id' in item &&
+        typeof item.is_event === 'boolean' &&
+        typeof item.target_id === 'string'
+      ),
+      {
+        message: "Cada alvo de acesso deve ter is_event (boolean) e target_id (string)"
+      }
+    )
 
-  // event_id: string;
-  // is_activity_access: boolean,
-  // is_activity_token: boolean,
-  // is_blocked: boolean,
-  // is_event_access: boolean,
-  // is_hidden: boolean,
-  // is_physical_item: boolean,
-  // is_public: boolean,
-  // is_ticket_type: boolean,
-  // max_ownable_quantity: number,
-  // token_quantity: number
 });
 
-type ProductData = z.infer<typeof productSchema>;
+type ProductDataI = z.infer<typeof productSchema>;
 
 const ProductModalForm: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const fields: FieldConfig<ProductCredentialsI>[] = [
+
+  // Transform mock data into select options
+  const eventOptions = mockEvents.map(event => ({
+    label: event.name,
+    unique: true,
+    value: JSON.stringify({ is_event: true, target_id: event.id })
+  }));
+
+  const activityOptions = mockActivities.map(activity => ({
+    label: activity.name,
+    unique: false,
+    value: JSON.stringify({ is_event: false, target_id: activity.id })
+  }));
+
+  const fields: FieldConfig<ProductDataI>[] = [
     { name: "name", label: "Nome", placeholder: "Nome do Produto" },
     { name: "description", label: "Descrição", placeholder: "Coloque a descrição do produto" },
     { name: "price_int", label: "Preço do Produto", type: "price" as const, placeholder: "R$ 0,00" },
     { name: "has_unlimited_quantity", label: "É infinito?", type: "switch" as const },
-    { name: "quantity", label: "Quantidade", type: "number" as const, placeholder: "0" },
-    // { name: "access_targets", label: "Libera Acesso a:", type: "multiple_dropdown" as const},
+    { 
+      name: "quantity", 
+      label: "Quantidade", 
+      type: "number" as const, 
+      placeholder: "0",
+      disabledWhen: {
+        field: "has_unlimited_quantity",
+        value: true
+      }
+    },
+    { name: "max_ownable_quantity", label: "Quantidade máxima que pode ser adquirida", type: "number" as const, placeholder: "0" },
+    { name: "is_physical_item", label: "É um item físico?", type: "switch" as const },
+    { name: "is_public", label: "Público?", type: "switch" as const },
+    { name: "is_blocked", label: "Está bloqueado?", type: "switch" as const },
+    { name: "is_hidden", label: "Está oculto?", type: "switch" as const },
+    { name: "is_ticket_type", label: "É um ticket?", type: "switch" as const },
+    { 
+      name: "access_targets", 
+      label: "Libera Acesso a:", 
+      type: "multiple_select" as const,
+      options: [...eventOptions, ...activityOptions],
+      placeholder: "Selecione o alvo do acesso"
+    },
   ];
 
-  const handleSubmit = async (data: ProductData) => {
+  const handleSubmit = async (data: ProductDataI) => {
     console.log("Dados enviados:", data);
     setOpen(false);
   };
@@ -59,10 +114,23 @@ const ProductModalForm: React.FC = () => {
       open={open}
       onOpenChange={setOpen}
     >
-      <CustomGenericForm<ProductData> 
+      <CustomGenericForm<ProductDataI> 
         schema={productSchema} 
         fields={fields} 
-        defaultValues={{name: "", description: "", has_unlimited_quantity: false, price_int: 0, quantity: 0}}
+        defaultValues={{
+          name: "", 
+          description: "", 
+          price_int: 0, 
+          has_unlimited_quantity: false, 
+          quantity: 0,
+          max_ownable_quantity: 1,
+          is_physical_item: false,
+          is_public: false,
+          is_blocked: false,
+          is_hidden: false,
+          is_ticket_type: false,
+          access_targets: []
+        }}
         onSubmit={handleSubmit}
         onCancel={() => setOpen(false)}
       />

@@ -1,10 +1,12 @@
 import { Input } from "../../input"
+import { MultiSelect } from "../../multi-select"
 import { Switch } from "../../switch"
 
 export const FormInputRenderMap: Record<string, (props: {
   field: any
   disabled: boolean
   placeholder?: string
+  options?: { label: string; value: string }[]
 }) => React.ReactNode> = {
   text: ({ field, disabled, placeholder }) => (
     <Input {...field} placeholder={placeholder} disabled={disabled} />
@@ -44,6 +46,16 @@ export const FormInputRenderMap: Record<string, (props: {
       }}
       maxLength={23}
       placeholder={placeholder}
+      disabled={disabled}
+    />
+  ),
+  multiple_select: ({ field, disabled, placeholder, options = [] }) => (
+    <MultiSelect
+      options={options}
+      onValueChange={field.onChange}    
+      defaultValue={field.value || []}
+      placeholder={placeholder} 
+      onChange={field.onChange}
       disabled={disabled}
     />
   ),

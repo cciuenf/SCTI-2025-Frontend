@@ -17,8 +17,13 @@ import { FormInputRenderMap } from "./utils/FormInputsMap";
 export interface FieldConfig<T> {
   name: keyof T;
   label: string;
-  type?: "text" | "number" | "switch" | "price" | "multiple_dropdown";
   placeholder?: string;
+  type?: "text" | "number" | "price" | "switch" | "select" | "multiple_select";
+  options?: { label: string; value: string }[];
+  disabledWhen?: {
+    field: keyof T;
+    value: boolean;
+  };
 }
 
 interface GenericFormProps<T extends Record<string, any>> {
@@ -52,6 +57,13 @@ function CustomGenericForm<T extends Record<string, any>>({
     }
   };
 
+  const isFieldDisabled = (field: FieldConfig<T>) => {
+    if (!field.disabledWhen) return false;
+    const { field: dependentField, value } = field.disabledWhen;
+    const watchedValue = form.watch(dependentField as any);
+    return watchedValue === value;
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handle)} className="flex flex-col gap-4 items-center">
@@ -66,9 +78,9 @@ function CustomGenericForm<T extends Record<string, any>>({
                 <FormControl>
                   {FormInputRenderMap[f.type || "text"]({
                     field,
-                    disabled: false,
-                    // disabled: formDisabled || f.disabled,
-                    placeholder: f.placeholder
+                    disabled: isFieldDisabled(f),
+                    placeholder: f.placeholder,
+                    options: f.options
                   })}
                 </FormControl>
                 <FormMessage />
