@@ -16,19 +16,25 @@ import { DateTimePicker } from "./DateTimePicker";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { handleCreateEvent } from "@/actions/event-actions";
 type Props = {};
 
 const formSchema = z.object({
   name: z.string(),
-  start_date: z.date(),
-  end_date: z.date(),
+  start_date: z.date().or(z.string()),
+  end_date: z.date().or(z.string()),
   slug: z.string(),
   description: z.string(),
   location: z.string(),
   is_blocked: z.boolean(),
   is_hidden: z.boolean(),
-  max_tokens_per_user: z.number().int(),
-});
+  max_tokens_per_user: z.string(),
+}).refine(data => data.start_date < data.end_date, {
+  message: 'A data de início precisa ser anterior a data de fim.',
+  path: ['end_date']
+})
+
+  ;
 
 const CreateEventForm = (props: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -37,19 +43,30 @@ const CreateEventForm = (props: Props) => {
       name: "",
       description: "",
       slug: "",
-      start_date: new Date(),
-      end_date: new Date(),
+      start_date: "",
+      end_date: "",
       location: "",
       is_blocked: false,
       is_hidden: false,
-      max_tokens_per_user: 0,
+      max_tokens_per_user: "",
     },
   });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const convertedValues = {
+      ...values,
+      max_tokens_per_user: parseInt(values.max_tokens_per_user),
+    };
+    handleCreateEvent(convertedValues);
+  };
 
   return (
     <div>
       <Form {...form}>
-        <form className="flex flex-col w-11/12 gap-4 items-center overflow-y-hidden">
+        <form
+          className="flex flex-col w-11/12 gap-4 items-center overflow-y-hidden font-spartan"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
           <FormField
             control={form.control}
             name="name"
@@ -100,10 +117,10 @@ const CreateEventForm = (props: Props) => {
             name="slug"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Curso</FormLabel>
+                <FormLabel>Sigla</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Coloque o curso que o evento pertence"
+                    placeholder="Coloque a sigla referente ao evento"
                     {...field}
                   />
                 </FormControl>
@@ -119,6 +136,7 @@ const CreateEventForm = (props: Props) => {
                 <FormLabel>Max Tokens Por User</FormLabel>
                 <FormControl>
                   <Input
+                    type="number"
                     placeholder="Coloque o total de tokens por usuário"
                     {...field}
                   />
@@ -151,7 +169,6 @@ const CreateEventForm = (props: Props) => {
                 <FormLabel>O evento será ocultado?</FormLabel>
                 <FormControl>
                   <Switch
-                    required={true}
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
@@ -160,35 +177,17 @@ const CreateEventForm = (props: Props) => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="start_date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Dia de início do evento</FormLabel>
-                <FormControl>
-                  <DateTimePicker />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          <DateTimePicker
+            inputName={"start_date"}
+            form={form}
+            label={"Coloque a data de início"}
           />
-          <FormField
-            control={form.control}
-            name="end_date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Dia de fim do evento</FormLabel>
-                <FormControl>
-                  <DateTimePicker />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          <DateTimePicker
+            inputName={"end_date"}
+            form={form}
+            label={"Coloque a data de fim"}
           />
-          <Button variant={"yellow"}>
-            Criar
-          </Button>
+          <Button variant={"yellow"}>Criar</Button>
         </form>
       </Form>
     </div>

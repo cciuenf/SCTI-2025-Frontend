@@ -2,7 +2,7 @@ import RefreshTokenList from "@/components/RefreshTokensList";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
-import CreateEventModal from "@/components/CreateEventModal";
+import { handleGetEvents } from "@/actions/event-actions";
 
 export default async function Dashboard() {
   const cookieStore = cookies();
@@ -11,6 +11,7 @@ export default async function Dashboard() {
     access_token as string
   ) as UserAccessTokenJwtPayload | null;
   const refresh_token = (await cookieStore).get("refresh_token")?.value;
+  const events = await handleGetEvents()
   return (
     <div className="h-screen flex flex-col items-center font-spartan p-4">
       <h1 className="font-black text-lg mb-3.5">
@@ -37,7 +38,6 @@ export default async function Dashboard() {
       </p>
       <h1 className="font-black text-lg mt-3.5 mb-3.5">Refresh Tokens:</h1>
       <RefreshTokenList />
-      <CreateEventModal />
     </div>
   );
 }

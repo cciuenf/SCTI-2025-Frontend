@@ -42,7 +42,7 @@ const formSchema = z.object({
 
 const loginFormSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8).max(20),
+  password: z.string().min(6).max(20),
 });
 
 export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit, setMustShowVerify, setIsLoading }: LoginFormProps) {
