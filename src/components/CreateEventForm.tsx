@@ -19,22 +19,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { handleCreateEvent } from "@/actions/event-actions";
 type Props = {};
 
-const formSchema = z.object({
-  name: z.string(),
-  start_date: z.date().or(z.string()),
-  end_date: z.date().or(z.string()),
-  slug: z.string(),
-  description: z.string(),
-  location: z.string(),
-  is_blocked: z.boolean(),
-  is_hidden: z.boolean(),
-  max_tokens_per_user: z.string(),
-}).refine(data => data.start_date < data.end_date, {
-  message: 'A data de início precisa ser anterior a data de fim.',
-  path: ['end_date']
-})
-
-  ;
+const formSchema = z
+  .object({
+    name: z.string(),
+    start_date: z.date().or(z.string()),
+    end_date: z.date().or(z.string()),
+    slug: z.string(),
+    description: z.string(),
+    location: z.string(),
+    is_blocked: z.boolean(),
+    is_hidden: z.boolean(),
+    max_tokens_per_user: z.string(),
+  })
+  .refine((data) => data.start_date < data.end_date, {
+    message: "A data de início precisa ser anterior a data de fim.",
+    path: ["end_date"],
+  });
 
 const CreateEventForm = (props: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -57,7 +57,19 @@ const CreateEventForm = (props: Props) => {
       ...values,
       max_tokens_per_user: parseInt(values.max_tokens_per_user),
     };
-    handleCreateEvent(convertedValues);
+    try {
+      const result = await handleCreateEvent(convertedValues);
+      if (result.success) {
+        // Handle success - maybe reset form or show success message
+        form.reset();
+        console.log("Event created successfully:", result.createdEventName);
+      } else {
+        // Handle error - show error message to user
+        console.error("Failed to create event:", result);
+      }
+    } catch (error) {
+      console.error("Error creating event:", error);
+    }
   };
 
   return (

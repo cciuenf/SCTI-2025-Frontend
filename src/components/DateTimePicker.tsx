@@ -31,7 +31,6 @@ export function DateTimePicker({ inputName, form, label }: Props) {
     if (date) {
       form.setValue(inputName, date);
     }
-    console.log(form.getValues(inputName))
   }
 
   function handleTimeChange(type: "hour" | "minute" | "ampm", value: string) {
@@ -53,8 +52,6 @@ export function DateTimePicker({ inputName, form, label }: Props) {
     }
 
     form.setValue(inputName, newDate);
-    console.log(form.getValues(inputName))
-
   }
 
   return (

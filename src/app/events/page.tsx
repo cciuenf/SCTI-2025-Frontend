@@ -14,9 +14,15 @@ type Props = {};
 const Event = async (props: Props) => {
   const events = await handleGetPublicCreatedEvents();
   const userEvents = await handleGetUserCreatedEvents();
+  if (!events?.success) {
+    console.error("Failed to fetch public events");
+  }
+
+  if (!userEvents?.success) {
+    console.error("Failed to fetch user events");
+  }
   return (
     <div className="flex flex-col w-4/5 mx-auto items-center justify-center gap-10 mt-10">
-      {/* <CreateEventModal /> */}
       <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
         <div className="p-8">
           <h1>Crie os seus eventos!</h1>
@@ -42,7 +48,7 @@ const Event = async (props: Props) => {
           </div>
         </div>
       ) : (
-        <p className="mb-10">Voce ainda nao tem eventos disponiveis</p>
+        <p className="mb-10">Nenhum evento publico disponivel</p>
       )}
       <h1 className="text-accent text-3xl">Eventos do usuario especifico</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -58,7 +64,7 @@ const Event = async (props: Props) => {
             </Link>
           ))
         ) : (
-          <p className="mb-10">Voce ainda nao tem eventos disponiveis</p>
+          <p className="mb-10">Voce ainda não criou nenhum evento</p>
         )}
       </div>
     </div>

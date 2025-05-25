@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default async function Home() {
+export default function Home() {
   return (
     <div className="h-screen flex flex-col gap-4 justify-center items-center font-spartan w-1/2 mx-auto">
       <Image src={"/SCT.svg"} alt="Logo SCT" width={250} height={250} />

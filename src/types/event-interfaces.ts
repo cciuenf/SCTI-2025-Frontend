@@ -16,10 +16,10 @@ export interface EventResponseI {
   Slug: string;
   description: string;
   location: string;
-  is_blocked: true;
-  is_hidden: true;
-  is_public: true;
-  max_tokens_per_user: 0;
+  is_blocked: boolean;
+  is_hidden: boolean;
+  is_public: boolean;
+  max_tokens_per_user: number;
   start_date: Date;
   end_date: string;
   created_by: string;
@@ -27,9 +27,9 @@ export interface EventResponseI {
   updated_at: Date;
   deleted_at: {
     time: string;
-    valid: true;
+    valid: boolean;
   };
   activities: string[];
   attendees: string[];
-  products: string[]
+  products: string[];
 }
