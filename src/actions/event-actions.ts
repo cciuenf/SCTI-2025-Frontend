@@ -86,16 +86,16 @@ export async function handleGetPublicCreatedEvents() {
   }
 }
 
-export async function handleGetSlugCreatedEvents(slug: string) {
+export async function handleGetSlugCreatedEvent(slug: string) {
   try {
-    const res = await fetchWrapper<EventResponseI[]>(`/events/${slug}`, {
+    const res = await fetchWrapper<EventResponseI>(`/events/${slug}`, {
       method: "GET",
     });
     return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
       console.error("Erro ao obter os eventos por slug", error.message);
-      return { success: false };
+      redirect("/events")
     }
   }
 }

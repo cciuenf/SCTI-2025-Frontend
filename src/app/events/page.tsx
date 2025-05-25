@@ -3,15 +3,21 @@ import {
   handleGetPublicCreatedEvents,
   handleGetUserCreatedEvents,
 } from "@/actions/event-actions";
-
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
 import Link from "next/link";
-import CreateEventModal from "@/components/CreateEventModal";
 import CreateEventForm from "@/components/CreateEventForm";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 type Props = {};
 
 const Event = async (props: Props) => {
+  const cookieStore = cookies();
+  const access_token = (await cookieStore).get("access_token")?.value;
+  const user_info = jwt.decode(
+    access_token as string
+  ) as UserAccessTokenJwtPayload | null;
   const events = await handleGetPublicCreatedEvents();
   const userEvents = await handleGetUserCreatedEvents();
   if (!events?.success) {
@@ -21,15 +27,13 @@ const Event = async (props: Props) => {
   if (!userEvents?.success) {
     console.error("Failed to fetch user events");
   }
+
+  if (!user_info) {
+    console.error("Error on retrieving user infos");
+  }
+
   return (
     <div className="flex flex-col w-4/5 mx-auto items-center justify-center gap-10 mt-10">
-      <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
-        <div className="p-8">
-          <h1 className="text-2xl">Crie os seus eventos!</h1>
-          <CreateEventForm />
-        </div>
-        <ScrollBar orientation="vertical" />
-      </ScrollArea>
       <h1 className="text-accent text-3xl">Eventos gerais</h1>
       {events?.data && events?.data.length != 0 ? (
         <div className="w-full max-w-4xl mt-6">
@@ -67,6 +71,15 @@ const Event = async (props: Props) => {
           <p className="mb-10">Voce ainda não criou nenhum evento</p>
         )}
       </div>
+      {user_info?.is_super && (
+        <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
+          <div className="p-8">
+            <h1 className="text-2xl">Crie os seus eventos!</h1>
+            <CreateEventForm />
+          </div>
+          <ScrollBar orientation="vertical" />
+        </ScrollArea>
+      )}
     </div>
   );
 };
