@@ -9,29 +9,36 @@ type Props = {
 };
 
 const EventCard = async ({ slug, user_info }: Props) => {
-  // const currentEvent = await handleGetSlugCreatedEvent(slug);
-
-  //  {currentEvent ? (
-  //   <h1 className="font-black text-2xl mb-6">Evento: {currentEvent?.data.Name}</h1>
-
-  //   ) : (<></>)}
+  const currentEvent = await handleGetSlugCreatedEvent(slug);
 
   return (
     <div className="w-4/5 max-w-4xl">
-      <div className="bg-white rounded-lg shadow-lg p-6 flex justify-between items-center">
-        <div className="flex flex-col">
-          <h1 className="font-black text-2xl mb-6">Evento: {slug}</h1>
-          <h2 className="text-xl font-bold mb-4">Informações do Evento</h2>
-          <p className="mb-4">Slug: {slug}</p>
-
-          <p className="mb-4">
-            Usuário: {user_info?.name} {user_info?.last_name}
+      <div className="bg-white rounded-lg shadow-lg p-6 flex-col justify-between items-center relative">
+          <h1 className="text-xl font-black mb-4">Informações do Evento</h1>
+          {currentEvent ? (
+            <div className="flex flex-col gap-4">
+              <h2 className="font-bold text-2xl">
+                Nome do Evento: {currentEvent?.data.Name}
+              </h2>
+              <h2>
+                Descrição do Evento: {currentEvent?.data.description}
+              </h2>
+              <h2>
+                Local do Evento: {currentEvent?.data.location}
+              </h2>
+            </div>
+          ) : (
+            <></>
+          )}
+          <p className="my-4">Slug: {slug}</p>
+          <p>
+            Usuário Criador: {user_info?.name} {user_info?.last_name}
           </p>
-        </div>
         {user_info?.is_super && (
           <DeleteTrashButton
             deleteFunction={handleDeleteSlugCreatedEvents}
             uniqueParam={slug}
+            position="top-3 right-3"
           />
         )}
       </div>
