@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { fontClass } from "@/lib/fonts";
 import "./globals.css";
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "SCTI - 2025",
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fontClass} antialiased min-h-screen bg-background`}>
+        <Header/>
         {children}
       </body>
     </html>

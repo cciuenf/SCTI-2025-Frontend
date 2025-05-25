@@ -25,8 +25,7 @@ export default async function EventPage({ params }: EventPageProps) {
   return (
     <div className="h-screen flex flex-col items-center font-spartan p-4">
      { (slug && user_info) && <EventCard slug={slug} user_info={user_info} />}
-      <div className="w-7/10 shadow-xs my-10">
-      </div>
+
     </div>
   );
 }

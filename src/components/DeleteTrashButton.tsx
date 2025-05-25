@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 
 type Props = {
   uniqueParam: string
+  //É pressuposto que o componente será usado com componente pai relative
   position: string
   deleteFunction: (uniqueParam: string) => any
 }
