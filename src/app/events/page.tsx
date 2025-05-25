@@ -25,7 +25,7 @@ const Event = async (props: Props) => {
     <div className="flex flex-col w-4/5 mx-auto items-center justify-center gap-10 mt-10">
       <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
         <div className="p-8">
-          <h1>Crie os seus eventos!</h1>
+          <h1 className="text-2xl">Crie os seus eventos!</h1>
           <CreateEventForm />
         </div>
         <ScrollBar orientation="vertical" />

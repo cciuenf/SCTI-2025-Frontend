@@ -68,7 +68,7 @@ export function DateTimePicker({ inputName, form, label }: Props) {
                   variant={"outline"}
                   className={cn(
                     "w-full pl-3 text-left font-normal",
-                    !field.value && "text-muted-foreground"
+                    !field.value && "text-primary"
                   )}
                 >
                   {field.value ? (
@@ -76,7 +76,7 @@ export function DateTimePicker({ inputName, form, label }: Props) {
                   ) : (
                     <span>MM/DD/YYYY hh:mm aa</span>
                   )}
-                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  <CalendarIcon className="ml-auto h-4 w-4  text-secondary/70" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
@@ -100,7 +100,7 @@ export function DateTimePicker({ inputName, form, label }: Props) {
                             variant={
                               field.value &&
                               field.value.getHours() % 12 === hour % 12
-                                ? "default"
+                                ? "hour"
                                 : "ghost"
                             }
                             className="sm:w-full shrink-0 aspect-square"
@@ -123,7 +123,7 @@ export function DateTimePicker({ inputName, form, label }: Props) {
                             size="icon"
                             variant={
                               field.value && field.value.getMinutes() === minute
-                                ? "default"
+                                ? "hour"
                                 : "ghost"
                             }
                             className="sm:w-full shrink-0 aspect-square"
@@ -148,7 +148,7 @@ export function DateTimePicker({ inputName, form, label }: Props) {
                             field.value &&
                             ((ampm === "AM" && field.value.getHours() < 12) ||
                               (ampm === "PM" && field.value.getHours() >= 12))
-                              ? "default"
+                              ? "hour"
                               : "ghost"
                           }
                           className="sm:w-full shrink-0 aspect-square"

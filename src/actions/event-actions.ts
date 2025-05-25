@@ -111,14 +111,13 @@ export async function handleDeleteSlugCreatedEvents(slug: string) {
       },
     });
 
-    redirect("/events");
-    return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
       console.error("Erro ao deletar o evento", error.message);
       return { success: false };
     }
   }
+  redirect("/events");
 }
 export async function handleUpdateSlugCreatedEvents(slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
