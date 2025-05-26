@@ -46,7 +46,6 @@ const Event = async (props: Props) => {
                 className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
               >
                 <h3 className="font-bold text-lg">{event.Name}</h3>
-                <p className="text-gray-600">Slug: {event.Slug}</p>
               </Link>
             ))}
           </div>
@@ -64,21 +63,24 @@ const Event = async (props: Props) => {
               className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
             >
               <h3 className="font-bold text-lg">{e.Name}</h3>
-              <p className="text-gray-600">Slug: {e.Slug}</p>
             </Link>
           ))
         ) : (
           <p className="mb-10">Voce ainda não criou nenhum evento</p>
         )}
       </div>
+      <h1 className="text-accent text-3xl">Área de Super Usuário</h1>
+
       {user_info?.is_super && (
-        <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
-          <div className="p-8">
-            <h1 className="text-2xl">Crie os seus eventos!</h1>
-            <CreateEventForm />
-          </div>
-          <ScrollBar orientation="vertical" />
-        </ScrollArea>
+        <div className="w-full flex flex-col gap-5 mb-10 items-center">
+          <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
+            <div className="p-8">
+              <h1 className="text-2xl">Crie os seus eventos!</h1>
+              <CreateEventForm />
+            </div>
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
+        </div>
       )}
     </div>
   );

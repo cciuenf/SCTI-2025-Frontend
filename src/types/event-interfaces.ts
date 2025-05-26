@@ -33,3 +33,9 @@ export interface EventResponseI {
   attendees: string[];
   products: string[];
 }
+
+export interface EventSubscriptionResponseI {
+  data: string;
+  message: string;
+  success: boolean
+}

@@ -1,6 +1,10 @@
 "use server";
 
-import { EventCredentialsI, EventResponseI } from "@/types/event-interfaces";
+import {
+  EventCredentialsI,
+  EventResponseI,
+  EventSubscriptionResponseI,
+} from "@/types/event-interfaces";
 import { fetchWrapper } from "@/lib/fetch";
 import { getAuthTokens } from "@/lib/cookies";
 import { FetchError } from "@/types/utility-classes";
@@ -95,7 +99,7 @@ export async function handleGetSlugCreatedEvent(slug: string) {
   } catch (error) {
     if (error instanceof FetchError) {
       console.error("Erro ao obter os eventos por slug", error.message);
-      redirect("/events")
+      redirect("/events");
     }
   }
 }
@@ -110,7 +114,6 @@ export async function handleDeleteSlugCreatedEvents(slug: string) {
         Refresh: `Bearer ${refreshToken}`,
       },
     });
-
   } catch (error) {
     if (error instanceof FetchError) {
       console.error("Erro ao deletar o evento", error.message);
@@ -131,6 +134,133 @@ export async function handleUpdateSlugCreatedEvents(slug: string) {
       },
     });
     return { success: true, data: res.result.data };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao atualizar o evento", error.message);
+      return { success: false };
+    } else {
+      console.error("Erro desconhecido ao deletar evento", error);
+      return { success: false };
+    }
+  }
+}
+
+export async function handleResgiterToEvent(slug: string) {
+  const { accessToken, refreshToken } = await getAuthTokens();
+
+  try {
+    const res = await fetchWrapper<EventSubscriptionResponseI>(
+      `/events/${slug}/register`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Refresh: `Bearer ${refreshToken}`,
+        },
+      }
+    );
+
+    console.log(
+      `Registrou`
+    );
+
+    return {
+      success: true,
+      data: res.result.data,
+      message: res.result.message,
+    };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao atualizar o evento", error.message);
+      return { success: false };
+    } else {
+      console.error("Erro desconhecido ao deletar evento", error);
+      return { success: false };
+    }
+  }
+}
+
+export async function handleUnresgiterToEvent(slug: string) {
+  const { accessToken, refreshToken } = await getAuthTokens();
+
+  try {
+    const res = await fetchWrapper<EventSubscriptionResponseI>(
+      `/events/${slug}/unregister`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Refresh: `Bearer ${refreshToken}`,
+        },
+      }
+    );
+
+    console.log(
+      `Desresfistisgistrou`
+    );
+    return {
+      success: true,
+      message: res.result.message,
+    };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao atualizar o evento", error.message);
+      return { success: false };
+    } else {
+      console.error("Erro desconhecido ao deletar evento", error);
+      return { success: false };
+    }
+  }
+}
+export async function handlePromoteUserInEvent(slug: string, email: string) {
+  const { accessToken, refreshToken } = await getAuthTokens();
+
+  try {
+    const res = await fetchWrapper<EventSubscriptionResponseI>(
+      `/events/${slug}/promote`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Refresh: `Bearer ${refreshToken}`,
+        },
+        body: JSON.stringify({ email: email }),
+      }
+    );
+    return {
+      success: true,
+      message: res.result.message,
+    };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao atualizar o evento", error.message);
+      return { success: false };
+    } else {
+      console.error("Erro desconhecido ao deletar evento", error);
+      return { success: false };
+    }
+  }
+}
+export async function handleDemoteUserInEvent(slug: string, email: string) {
+  const { accessToken, refreshToken } = await getAuthTokens();
+
+  try {
+    const res = await fetchWrapper<EventSubscriptionResponseI>(
+      `/events/${slug}/demote`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Refresh: `Bearer ${refreshToken}`,
+        },
+        body: JSON.stringify({ email: email }),
+      }
+    );
+    return {
+      success: true,
+      data: res.result.data,
+      message: res.result.message,
+    };
   } catch (error) {
     if (error instanceof FetchError) {
       console.error("Erro ao atualizar o evento", error.message);

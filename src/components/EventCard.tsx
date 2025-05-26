@@ -38,7 +38,7 @@ const EventCard = async ({ slug, user_info }: Props) => {
           <DeleteTrashButton
             deleteFunction={handleDeleteSlugCreatedEvents}
             uniqueParam={slug}
-            position="top-3 right-3"
+            position="bottom-3 right-3"
           />
         )}
       </div>
