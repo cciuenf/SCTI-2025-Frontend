@@ -145,7 +145,7 @@ export async function handleUpdateSlugCreatedEvents(slug: string) {
   }
 }
 
-export async function handleResgiterToEvent(slug: string) {
+export async function handleResgiterFromEvent(slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
 
   try {
@@ -160,9 +160,7 @@ export async function handleResgiterToEvent(slug: string) {
       }
     );
 
-    console.log(
-      `Registrou`
-    );
+    console.log(`Registrou`);
 
     return {
       success: true,
@@ -171,16 +169,16 @@ export async function handleResgiterToEvent(slug: string) {
     };
   } catch (error) {
     if (error instanceof FetchError) {
-      console.error("Erro ao atualizar o evento", error.message);
+      console.error("Erro ao registrar usuário no evento", error.message);
       return { success: false };
     } else {
-      console.error("Erro desconhecido ao deletar evento", error);
+      console.error("Erro desconhecido ao registrar usuário no evento", error);
       return { success: false };
     }
   }
 }
 
-export async function handleUnresgiterToEvent(slug: string) {
+export async function handleUnresgiterFromEvent(slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
 
   try {
@@ -195,19 +193,20 @@ export async function handleUnresgiterToEvent(slug: string) {
       }
     );
 
-    console.log(
-      `Desresfistisgistrou`
-    );
+    console.log(`Desresgistrou`);
     return {
       success: true,
       message: res.result.message,
     };
   } catch (error) {
     if (error instanceof FetchError) {
-      console.error("Erro ao atualizar o evento", error.message);
+      console.error("Erro ao desregistrar usuário no evento", error.message);
       return { success: false };
     } else {
-      console.error("Erro desconhecido ao deletar evento", error);
+      console.error(
+        "Erro desconhecido ao ao desregistrar usuário no evento",
+        error
+      );
       return { success: false };
     }
   }
@@ -221,6 +220,7 @@ export async function handlePromoteUserInEvent(slug: string, email: string) {
       {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
           Refresh: `Bearer ${refreshToken}`,
         },
@@ -233,10 +233,10 @@ export async function handlePromoteUserInEvent(slug: string, email: string) {
     };
   } catch (error) {
     if (error instanceof FetchError) {
-      console.error("Erro ao atualizar o evento", error.message);
+      console.error("Erro ao promover usuári no evento", error.message);
       return { success: false };
     } else {
-      console.error("Erro desconhecido ao deletar evento", error);
+      console.error("Erro desconhecido ao promover usuário", error);
       return { success: false };
     }
   }
@@ -250,6 +250,7 @@ export async function handleDemoteUserInEvent(slug: string, email: string) {
       {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
           Refresh: `Bearer ${refreshToken}`,
         },
@@ -263,10 +264,10 @@ export async function handleDemoteUserInEvent(slug: string, email: string) {
     };
   } catch (error) {
     if (error instanceof FetchError) {
-      console.error("Erro ao atualizar o evento", error.message);
+      console.error("Erro ao rebaixar usuário no evento", error.message);
       return { success: false };
     } else {
-      console.error("Erro desconhecido ao deletar evento", error);
+      console.error("Erro desconhecido ao rebaixar usuário", error);
       return { success: false };
     }
   }

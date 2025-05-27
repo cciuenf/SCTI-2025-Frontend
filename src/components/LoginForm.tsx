@@ -21,7 +21,7 @@ type LoginFormProps = {
   handleLoginSubmit?: (values: {
     email: string;
     password: string;
-  }) => Promise<String>;
+  }) => Promise<string>;
 
   handleSignUpSubmit?: (values: {
     name: string;
@@ -92,9 +92,8 @@ export default function LoginForm({
       setIsLoading(true);
       try {
         await handleLoginSubmit(values);
-        await handleGetEvents();
       } catch (error) {
-        console.error("Login or event fetching failed:", error);
+        console.error("Login failed:", error);
       } finally {
         setIsLoading(false);
       }

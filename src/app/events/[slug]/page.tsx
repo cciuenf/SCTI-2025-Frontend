@@ -5,8 +5,8 @@ import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
 import EventCard from "@/components/EventCard";
 import { Button } from "@/components/ui/button";
 import {
-  handleResgiterToEvent,
-  handleUnresgiterToEvent,
+  handleResgiterFromEvent,
+  handleUnresgiterFromEvent,
   handlePromoteUserInEvent,
   handleDemoteUserInEvent,
 } from "@/actions/event-actions";
@@ -34,12 +34,12 @@ export default async function EventPage({ params }: EventPageProps) {
           <EventCard slug={slug} user_info={user_info} />
           <div className="w-1/2 flex justify-around">
             <TestsButton
-              onClick={handleResgiterToEvent}
+              onClick={handleResgiterFromEvent}
               text="Register"
               param={slug}
             />
             <TestsButton
-              onClick={handleUnresgiterToEvent}
+              onClick={handleUnresgiterFromEvent}
               text="Unregister"
               param={slug}
             />
