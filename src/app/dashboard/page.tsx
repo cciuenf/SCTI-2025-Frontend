@@ -2,6 +2,7 @@ import RefreshTokenList from "@/components/RefreshTokensList";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
+import { redirect } from "next/navigation";
 
 export default async function Dashboard() {
   const cookieStore = cookies();
@@ -10,6 +11,10 @@ export default async function Dashboard() {
     access_token as string
   ) as UserAccessTokenJwtPayload | null;
   const refresh_token = (await cookieStore).get("refresh_token")?.value;
+  if (!access_token || !refresh_token) {
+  redirect("/login")
+}
+
   return (
     <div className="h-screen flex flex-col items-center font-spartan p-4">
       <h1 className="font-black text-lg mb-3.5">

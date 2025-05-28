@@ -14,10 +14,29 @@ import { Switch } from "@/components/ui/switch";
 import { DateTimePicker } from "./DateTimePicker";
 
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { handleCreateEvent } from "@/actions/event-actions";
-type Props = {};
+import { EventCredentialsI } from "@/types/event-interfaces";
+import { useRouter } from "next/navigation";
+
+type Props = {
+  event?: {
+    name: string;
+    description: string;
+    slug: string;
+    start_date: string | Date;
+    end_date: string | Date;
+    location: string;
+    is_blocked: boolean;
+    is_hidden: boolean;
+    max_tokens_per_user: number;
+  } | null;
+  handleUpdate?: (data: Partial<EventCredentialsI>, slug: string) => any;
+  handleCreate?: (data: EventCredentialsI) => any;
+  type: "Create" | "Update";
+  slug?: string;
+};
 
 const formSchema = z
   .object({
@@ -36,7 +55,13 @@ const formSchema = z
     path: ["end_date"],
   });
 
-const CreateEventForm = (props: Props) => {
+const CreateEventForm = ({
+  event,
+  handleCreate,
+  handleUpdate,
+  type,
+  slug,
+}: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,23 +77,56 @@ const CreateEventForm = (props: Props) => {
     },
   });
 
+  const router = useRouter()
+
+  useEffect(() => {
+    if (event) {
+      form.reset({
+        name: event.name,
+        start_date: new Date(event.start_date),
+        end_date: new Date(event.end_date),
+        slug: event.slug,
+        description: event.description,
+        location: event.location,
+        is_blocked: event.is_blocked,
+        is_hidden: event.is_hidden,
+        max_tokens_per_user: event.max_tokens_per_user.toString(),
+      });
+    }
+  }, []);
+
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const convertedValues = {
       ...values,
       max_tokens_per_user: parseInt(values.max_tokens_per_user),
     };
-    try {
-      const result = await handleCreateEvent(convertedValues);
-      if (result.success) {
-        // Handle success - maybe reset form or show success message
-        form.reset();
-        console.log("Event created successfully:", result.createdEventName);
-      } else {
-        // Handle error - show error message to user
-        console.error("Failed to create event:", result);
+
+    if (type === "Update" && slug && handleUpdate) {
+      try {
+        const result = await handleUpdate(convertedValues, slug);
+        if (result.success) {
+          console.log("Evento atualizado com sucesso:", result.data.Name);
+          router.push(`${result.data.Slug}`)
+        } else {
+          console.error("Falha na atualização do evento:", result.data.Name);
+        }
+      } catch (error) {
+        console.error("Error updating event:", error);
       }
-    } catch (error) {
-      console.error("Error creating event:", error);
+    }
+    if (handleCreate && type === "Create") {
+      try {
+        const result = await handleCreate(convertedValues);
+        if (result.success) {
+          form.reset();
+          console.log("Evento criado com sucesso:", result.data.Name);
+        } else {
+          console.error("Falha na criação do evento:", result.data.Name);
+        }
+      } catch (error) {
+        console.error("Error creating event:", error);
+      }
     }
   };
 
@@ -199,7 +257,7 @@ const CreateEventForm = (props: Props) => {
             form={form}
             label={"Coloque a data de fim"}
           />
-          <Button variant={"yellow"}>Criar</Button>
+          <Button type="submit" variant={"yellow"}> {type == "Create" ? "Criar" : "Editar"}  </Button>
         </form>
       </Form>
     </div>

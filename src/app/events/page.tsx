@@ -2,6 +2,7 @@ import React from "react";
 import {
   handleGetPublicCreatedEvents,
   handleGetUserCreatedEvents,
+  handleCreateEvent
 } from "@/actions/event-actions";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
@@ -66,7 +67,7 @@ const Event = async (props: Props) => {
             </Link>
           ))
         ) : (
-          <p className="mb-10">Voce ainda não criou nenhum evento</p>
+          <p className="mb-c10">Voce ainda não criou nenhum evento</p>
         )}
       </div>
       <h1 className="text-accent text-3xl">Área de Super Usuário</h1>
@@ -76,7 +77,10 @@ const Event = async (props: Props) => {
           <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
             <div className="p-8">
               <h1 className="text-2xl">Crie os seus eventos!</h1>
-              <CreateEventForm />
+              <CreateEventForm
+                handleCreate={handleCreateEvent}
+                type="Create"
+              />
             </div>
             <ScrollBar orientation="vertical" />
           </ScrollArea>

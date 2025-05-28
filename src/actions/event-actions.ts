@@ -122,24 +122,30 @@ export async function handleDeleteSlugCreatedEvents(slug: string) {
   }
   redirect("/events");
 }
-export async function handleUpdateSlugCreatedEvents(slug: string) {
+export async function handleUpdateSlugCreatedEvents(
+  data: Partial<EventCredentialsI>,
+  slug: string
+) {
   const { accessToken, refreshToken } = await getAuthTokens();
 
   try {
     const res = await fetchWrapper<EventResponseI>(`/events/${slug}`, {
       method: "PATCH",
+      body: JSON.stringify(data),
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
         Refresh: `Bearer ${refreshToken}`,
       },
     });
+
     return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
       console.error("Erro ao atualizar o evento", error.message);
       return { success: false };
     } else {
-      console.error("Erro desconhecido ao deletar evento", error);
+      console.error("Erro desconhecido ao atualizar o evento", error);
       return { success: false };
     }
   }

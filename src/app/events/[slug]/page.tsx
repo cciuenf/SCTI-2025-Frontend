@@ -1,16 +1,19 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
-//import CreateEventForm from "@/components/CreateEventForm";
+import CreateEventForm from "@/components/CreateEventForm";
 import EventCard from "@/components/EventCard";
-import { Button } from "@/components/ui/button";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   handleResgiterFromEvent,
   handleUnresgiterFromEvent,
   handlePromoteUserInEvent,
   handleDemoteUserInEvent,
+  handleGetSlugCreatedEvent,
+  handleUpdateSlugCreatedEvents,
 } from "@/actions/event-actions";
 import TestsButton from "@/components/TestsButton";
+import { EventResponseI } from "@/types/event-interfaces";
 
 interface EventPageProps {
   params: {
@@ -26,6 +29,24 @@ export default async function EventPage({ params }: EventPageProps) {
   ) as UserAccessTokenJwtPayload | null;
 
   const { slug } = await params;
+  const transformEventData = (data: EventResponseI) => {
+    return {
+      name: data.Name,
+      slug: data.Slug,
+      description: data.description,
+      location: data.location,
+      start_date: data.start_date,
+      end_date: data.end_date,
+      is_blocked: data.is_blocked,
+      is_hidden: data.is_hidden,
+      max_tokens_per_user: data.max_tokens_per_user,
+    };
+  };
+
+  const currentEvent = await handleGetSlugCreatedEvent(slug);
+  const toUpdateEvent = currentEvent
+    ? transformEventData(currentEvent.data)
+    : null;
 
   return (
     <div className="h-screen flex flex-col items-center font-spartan p-4">
@@ -44,6 +65,22 @@ export default async function EventPage({ params }: EventPageProps) {
               param={slug}
             />
           </div>
+        </div>
+      )}
+      {user_info && typeof user_info === "object" && user_info.is_super && (
+        <div className="w-full flex flex-col gap-5 my-10 items-center">
+          <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
+            <div className="p-8">
+              <h1 className="text-2xl">Atualize os seus eventos!</h1>
+              <CreateEventForm
+                slug={slug}
+                event={toUpdateEvent}
+                handleUpdate={handleUpdateSlugCreatedEvents}
+                type="Update"
+              />
+            </div>
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
         </div>
       )}
     </div>
