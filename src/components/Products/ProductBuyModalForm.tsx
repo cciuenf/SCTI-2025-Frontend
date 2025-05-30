@@ -5,6 +5,9 @@ import CustomGenericForm, {FieldConfig} from "../ui/Generic/CustomGenericForm";
 import { z } from "zod";
 import { ProductResponseI } from "@/types/product-interfaces";
 import { handleBuyProduct } from "@/actions/product-actions";
+import { convertNumberToBRL } from "@/lib/utils";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const productSchema = z.discriminatedUnion("is_gift", [
   z.object({
@@ -29,6 +32,17 @@ type ProductDataI = z.infer<typeof productSchema>;
 
 const ProductBuyModalForm: React.FC<{ slug: string, product: ProductResponseI }> = ({ slug, product }) => {
   const [open, setOpen] = useState(false);
+  const form = useForm<ProductDataI>({
+    resolver: zodResolver(productSchema),
+    defaultValues: {
+      is_gift: false,
+      gifted_to_email: "",
+      quantity: 1,
+    }
+  });
+
+  const quantity = form.watch("quantity");
+  const totalPrice = isNaN(quantity) ? 0 : product.price_int * quantity;
 
   const fields: FieldConfig<ProductDataI>[] = [
     { name: "is_gift", label: "É um presente?", type: "switch" as const },
@@ -61,17 +75,19 @@ const ProductBuyModalForm: React.FC<{ slug: string, product: ProductResponseI }>
       open={open}
       onOpenChange={setOpen}
     >
-      <CustomGenericForm<ProductDataI> 
-        schema={productSchema} 
-        fields={fields} 
-        defaultValues={{
-          is_gift: false,
-          gifted_to_email: "",
-          quantity: 1,
-        }}
-        onSubmit={handleSubmit}
-        onCancel={() => setOpen(false)}
-      />
+      <div className="flex flex-col gap-4">
+        <div className="text-lg font-semibold text-gray-700">
+          Preço Total: {convertNumberToBRL(totalPrice)}
+        </div>
+        <CustomGenericForm<ProductDataI> 
+          schema={productSchema} 
+          fields={fields} 
+          defaultValues={form.getValues()}
+          onSubmit={handleSubmit}
+          onCancel={() => setOpen(false)}
+          form={form}
+        />
+      </div>
     </CustomGenericModal>
   );
 };

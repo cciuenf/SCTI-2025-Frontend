@@ -34,6 +34,7 @@ interface GenericFormProps<T extends Record<string, any>> {
   submitLabel?: string;
   cancelLabel?: string;
   defaultValues?: DefaultValues<T>;
+  form?: ReturnType<typeof useForm<T>>;
 }
 
 function CustomGenericForm<T extends Record<string, any>>({
@@ -44,9 +45,11 @@ function CustomGenericForm<T extends Record<string, any>>({
   submitLabel = "Enviar",
   cancelLabel = "Cancelar",
   defaultValues,
+  form: externalForm,
 }: GenericFormProps<T>) {
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<T>({resolver: zodResolver(schema), ...(defaultValues ? { defaultValues } : {})});
+  const internalForm = useForm<T>({resolver: zodResolver(schema), ...(defaultValues ? { defaultValues } : {})});
+  const form = externalForm || internalForm;
 
   const handle = async (data: T) => {
     setIsLoading(true);
