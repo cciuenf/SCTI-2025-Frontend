@@ -30,7 +30,7 @@ export async function handleCreateEvent(data: EventCredentialsI) {
       console.error("Erro na criação do evento", error.message);
       return { status: error.status, success: false };
     } else {
-      console.error("Erro na criação do event", error);
+      console.error("Erro na criação do evento", error);
       return { message: "Erro desconhecido", success: false };
     }
   }
@@ -44,10 +44,10 @@ export async function handleGetEvents() {
     return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
-      console.error("Erro ao obter os eventos", error.message);
+      console.error("Erro ao obter todos os eventos", error.message);
       return { success: false };
     } else {
-      console.error("Erro desconhecido ao obter eventos", error);
+      console.error("Erro desconhecido ao obter todos os eventos", error);
       return { success: false };
     }
   }
@@ -67,10 +67,34 @@ export async function handleGetUserCreatedEvents() {
     return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
-      console.error("Erro ao obter os eventos", error.message);
+      console.error("Erro ao obter os eventos criados pelo usuário", error.message);
       return { success: false };
     } else {
-      console.error("Erro desconhecido ao obter eventos do usuário", error);
+      console.error("Erro desconhecido ao obter eventos criados pelo usuário", error);
+      return { success: false };
+    }
+  }
+}
+
+export async function handleGetUserSubscribedEvents() {
+  const { accessToken, refreshToken } = await getAuthTokens();
+
+  try {
+    const res = await fetchWrapper<EventResponseI[]>("/user-events", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+    });
+    console.log(res.result.data)
+    return { success: true, data: res.result.data };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao obter os eventos onde o usuário está inscrito", error.message);
+      return { success: false };
+    } else {
+      console.error("Erro desconhecido ao obter eventos onde o usuário está inscrito", error);
       return { success: false };
     }
   }
@@ -84,7 +108,7 @@ export async function handleGetPublicCreatedEvents() {
     return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
-      console.error("Erro ao obter os eventos", error.message);
+      console.error("Erro ao obter os eventos públicos", error.message);
       return { success: false };
     }
   }
@@ -98,7 +122,7 @@ export async function handleGetSlugCreatedEvent(slug: string) {
     return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
-      console.error("Erro ao obter os eventos por slug", error.message);
+      console.error(`Erro ao obter o evento com slug: ${slug}`, error.message);
       redirect("/events");
     }
   }
@@ -116,7 +140,7 @@ export async function handleDeleteSlugCreatedEvents(slug: string) {
     });
   } catch (error) {
     if (error instanceof FetchError) {
-      console.error("Erro ao deletar o evento", error.message);
+      console.error(`Erro ao deletar o evento com slug: ${slug}`, error.message);
       return { success: false };
     }
   }
@@ -166,8 +190,6 @@ export async function handleResgiterFromEvent(slug: string) {
       }
     );
 
-    console.log(`Registrou`);
-
     return {
       success: true,
       data: res.result.data,
@@ -198,8 +220,6 @@ export async function handleUnresgiterFromEvent(slug: string) {
         },
       }
     );
-
-    console.log(`Desresgistrou`);
     return {
       success: true,
       message: res.result.message,

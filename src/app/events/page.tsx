@@ -2,7 +2,8 @@ import React from "react";
 import {
   handleGetPublicCreatedEvents,
   handleGetUserCreatedEvents,
-  handleCreateEvent
+  handleCreateEvent,
+  handleGetUserSubscribedEvents
 } from "@/actions/event-actions";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
@@ -20,12 +21,13 @@ const Event = async (props: Props) => {
     access_token as string
   ) as UserAccessTokenJwtPayload | null;
   const events = await handleGetPublicCreatedEvents();
-  const userEvents = await handleGetUserCreatedEvents();
+  const userCreatedEvents = await handleGetUserCreatedEvents();
+  const userSubscribedEvents = await handleGetUserSubscribedEvents()
   if (!events?.success) {
     console.error("Failed to fetch public events");
   }
 
-  if (!userEvents?.success) {
+  if (!userCreatedEvents?.success) {
     console.error("Failed to fetch user events");
   }
 
@@ -38,7 +40,6 @@ const Event = async (props: Props) => {
       <h1 className="text-accent text-3xl">Eventos gerais</h1>
       {events?.data && events?.data.length != 0 ? (
         <div className="w-full max-w-4xl mt-6">
-          <h2 className="font-black text-xl mb-4">Eventos Disponíveis</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {events?.data.map((e) => (
               <Link
@@ -54,10 +55,10 @@ const Event = async (props: Props) => {
       ) : (
         <p className="mb-10">Nenhum evento publico disponivel</p>
       )}
-      <h1 className="text-accent text-3xl">Eventos do usuario especifico</h1>
+      <h1 className="text-accent text-3xl">Eventos criados pelo usuário</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {userEvents?.data && userEvents?.data.length != 0 ? (
-          userEvents.data.map((e) => (
+        {userCreatedEvents?.data && userCreatedEvents?.data.length != 0 ? (
+          userCreatedEvents.data.map((e) => (
             <Link
               href={`/events/${e.Slug}`}
               key={e.Slug}
@@ -68,6 +69,23 @@ const Event = async (props: Props) => {
           ))
         ) : (
           <p className="mb-c10">Voce ainda não criou nenhum evento</p>
+        )}
+      </div>
+
+      <h1 className="text-accent text-3xl">Eventos do usuário</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {userSubscribedEvents?.data && userSubscribedEvents?.data.length != 0 ? (
+          userSubscribedEvents.data.map((e) => (
+            <Link
+              href={`/events/${e.Slug}`}
+              key={e.Slug}
+              className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
+            >
+              <h3 className="font-bold text-lg">{e.Name}</h3>
+            </Link>
+          ))
+        ) : (
+          <p className="mb-c10">Voce ainda não se inscreveu em nenhum evento</p>
         )}
       </div>
       <h1 className="text-accent text-3xl">Área de Super Usuário</h1>
