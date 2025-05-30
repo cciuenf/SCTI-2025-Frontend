@@ -233,13 +233,17 @@ export async function handlePromoteUserInEvent(slug: string, email: string) {
         body: JSON.stringify({ email: email }),
       }
     );
+    console.log({
+      success: true,
+      message: res.result.message,
+    });
     return {
       success: true,
       message: res.result.message,
     };
   } catch (error) {
     if (error instanceof FetchError) {
-      console.error("Erro ao promover usuári no evento", error.message);
+      console.error("Erro ao promover usuário no evento", error.message);
       return { success: false };
     } else {
       console.error("Erro desconhecido ao promover usuário", error);
@@ -263,6 +267,10 @@ export async function handleDemoteUserInEvent(slug: string, email: string) {
         body: JSON.stringify({ email: email }),
       }
     );
+    console.log({
+      success: true,
+      message: res.result.message,
+    });
     return {
       success: true,
       data: res.result.data,

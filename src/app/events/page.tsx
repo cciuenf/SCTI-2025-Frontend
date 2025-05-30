@@ -40,13 +40,13 @@ const Event = async (props: Props) => {
         <div className="w-full max-w-4xl mt-6">
           <h2 className="font-black text-xl mb-4">Eventos Disponíveis</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {events?.data.map((event) => (
+            {events?.data.map((e) => (
               <Link
-                href={`/events/${event.Slug}`}
-                key={event.Slug}
+                href={`/events/${e.Slug}`}
+                key={e.Slug}
                 className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
               >
-                <h3 className="font-bold text-lg">{event.Name}</h3>
+                <h3 className="font-bold text-lg">{e.Name}</h3>
               </Link>
             ))}
           </div>

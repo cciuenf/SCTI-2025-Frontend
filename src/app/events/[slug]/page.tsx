@@ -7,13 +7,12 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   handleResgiterFromEvent,
   handleUnresgiterFromEvent,
-  handlePromoteUserInEvent,
-  handleDemoteUserInEvent,
   handleGetSlugCreatedEvent,
   handleUpdateSlugCreatedEvents,
 } from "@/actions/event-actions";
 import TestsButton from "@/components/TestsButton";
 import { EventResponseI } from "@/types/event-interfaces";
+import PromoteDemoteForm from "@/components/PromoteDemoteForm";
 
 interface EventPageProps {
   params: {
@@ -69,9 +68,10 @@ export default async function EventPage({ params }: EventPageProps) {
       )}
       {user_info && typeof user_info === "object" && user_info.is_super && (
         <div className="w-full flex flex-col gap-5 my-10 items-center">
+          <h1 className="text-accent text-3xl">Área de Super User</h1>
           <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
             <div className="p-8">
-              <h1 className="text-2xl">Atualize os seus eventos!</h1>
+              <h1 className="text-2xl">Atualize o seu evento!</h1>
               <CreateEventForm
                 slug={slug}
                 event={toUpdateEvent}
@@ -81,6 +81,9 @@ export default async function EventPage({ params }: EventPageProps) {
             </div>
             <ScrollBar orientation="vertical" />
           </ScrollArea>
+          <PromoteDemoteForm
+          slug={slug}
+          />
         </div>
       )}
     </div>
