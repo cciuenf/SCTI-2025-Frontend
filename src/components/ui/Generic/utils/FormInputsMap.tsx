@@ -1,3 +1,4 @@
+import { convertNumberToBRL } from "@/lib/utils"
 import { Input } from "../../input"
 import { MultiSelect } from "../../multi-select"
 import { Switch } from "../../switch"
@@ -31,14 +32,7 @@ export const FormInputRenderMap: Record<string, (props: {
   price: ({ field, disabled, placeholder }) => (
     <Input
       type="text"
-      value={
-        typeof field.value === "number"
-          ? (field.value / 100).toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })
-          : ""
-      }
+      value={ typeof field.value === "number" ? convertNumberToBRL(field.value) : "" }
       onChange={(e) => {
         if (disabled) return;
         const raw = e.target.value.replace(/[^\d]/g, "")

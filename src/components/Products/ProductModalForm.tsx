@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import CustomGenericModal from "./ui/Generic/CustomGenericModal";
-import CustomGenericForm, {FieldConfig} from "./ui/Generic/CustomGenericForm";
+import CustomGenericModal from "../ui/Generic/CustomGenericModal";
+import CustomGenericForm, {FieldConfig} from "../ui/Generic/CustomGenericForm";
 import { z } from "zod";
-import { ProductCredentialsI } from "@/types/product-interfaces";
+import { handleCreateProduct, handleUpdateProduct } from "@/actions/product-actions";
+import { ProductResponseI } from "@/types/product-interfaces";
 
 // Mock data for events and activities
 const mockEvents = [
@@ -51,12 +52,15 @@ const productSchema = z.object({
         message: "Cada alvo de acesso deve ter is_event (boolean) e target_id (string)"
       }
     )
-
 });
 
 type ProductDataI = z.infer<typeof productSchema>;
 
-const ProductModalForm: React.FC = () => {
+const ProductModalForm: React.FC<{ 
+  slug: string, 
+  isCreating: boolean,
+  product?: ProductResponseI
+}> = ({ slug, isCreating, product }) => {
   const [open, setOpen] = useState(false);
 
   // Transform mock data into select options
@@ -103,21 +107,30 @@ const ProductModalForm: React.FC = () => {
   ];
 
   const handleSubmit = async (data: ProductDataI) => {
-    console.log("Dados enviados:", data);
-    setOpen(false);
+    try {
+      if(isCreating) {
+        const result = await handleCreateProduct(data, slug);
+        if (result?.success) setOpen(false);
+      } else if(product) {
+        const result = await handleUpdateProduct(data, slug, product.ID);
+        if (result?.success) setOpen(false);
+      } else throw new Error("Produto Inválido")
+    } catch (error) {
+      console.error("Erro ao criar produto:", error);
+    }
   };
 
   return (
     <CustomGenericModal
-      title="Crie seu Produto"
-      description="Preencha todos os campos abaixo para que consiga criar o produto desejado!"
+      title={isCreating ? "Crie seu Produto" : "Altere seu Produto"}
+      description={`Preencha os campos abaixo para que consiga ${isCreating ? "criar" : "alterar"} o produto desejado!`}
       open={open}
       onOpenChange={setOpen}
     >
       <CustomGenericForm<ProductDataI> 
         schema={productSchema} 
         fields={fields} 
-        defaultValues={{
+        defaultValues={product || {
           name: "", 
           description: "", 
           price_int: 0, 

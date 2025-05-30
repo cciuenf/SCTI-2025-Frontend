@@ -10,16 +10,31 @@ export interface ProductCredentialsI {
   is_blocked: boolean,
   is_hidden: boolean,
   is_ticket_type: boolean,
-  access_targets: {is_event: boolean, target_id: string}[]
+  access_targets: AccessTargetsI[]
 }
 
+export interface ProductBuyCredentialsI {
+  is_gift: boolean,
+  gifted_to_email: string,
+  product_id: string,
+  quantity: number
+}
 
 export interface ProductResponseI {
-  access_targets: AccessTargets[];
+  ID: string,
+  name: string,
+  price_int: number,
+  quantity: number,
+  is_physical_item: boolean,
+  is_public: boolean,
+  is_blocked: boolean,
+  is_hidden: boolean,
+  is_ticket_type: boolean,
+  access_targets: AccessTargetsI[],
 }
 
-interface AccessTargets {
-  is_event: boolean;
-  product_id: string;
-  target_id: string;
+interface AccessTargetsI {
+  id: string,
+  is_event: boolean,
+  target_id: string,
 }
