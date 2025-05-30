@@ -14,7 +14,7 @@ export default function SignUp() {
 
   return (
     <div className="h-screen flex flex-col justify-center items-center gap-3">
-      {isLoading ? (
+       {isLoading ? (
         <Loader2 className="animate-spin w-10 h-10 text-yellow-300" />
       ) : mustShowVerify ? (
         <VerifyForm setMustShowVerify={setMustShowVerify} setIsLoading={setIsLoading}/>
