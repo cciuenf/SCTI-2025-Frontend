@@ -59,8 +59,10 @@ type ProductDataI = z.infer<typeof productSchema>;
 const ProductModalForm: React.FC<{ 
   slug: string, 
   isCreating: boolean,
-  product?: ProductResponseI
-}> = ({ slug, isCreating, product }) => {
+  product?: ProductResponseI,
+  onProductUpdate?: (updatedProduct: ProductResponseI) => Promise<void>,
+  onProductCreate?: (newProduct: ProductResponseI) => Promise<void>
+}> = ({ slug, isCreating, product, onProductUpdate, onProductCreate }) => {
   const [open, setOpen] = useState(false);
 
   // Transform mock data into select options
@@ -110,10 +112,16 @@ const ProductModalForm: React.FC<{
     try {
       if(isCreating) {
         const result = await handleCreateProduct(data, slug);
-        if (result?.success) setOpen(false);
+        if (result?.success && result.data && onProductCreate) {
+          setOpen(false);
+          await onProductCreate(result.data);
+        }
       } else if(product) {
         const result = await handleUpdateProduct(data, slug, product.ID);
-        if (result?.success) setOpen(false);
+        if (result?.success && result.data && onProductUpdate) {
+          setOpen(false);
+          await onProductUpdate(result.data);
+        }
       } else throw new Error("Produto Inválido")
     } catch (error) {
       console.error("Erro ao criar produto:", error);

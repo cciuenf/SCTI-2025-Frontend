@@ -4,7 +4,6 @@ import { getAuthTokens } from "@/lib/cookies";
 import { fetchWrapper } from "@/lib/fetch";
 import { ProductBuyCredentialsI, ProductCredentialsI, ProductResponseI } from "@/types/product-interfaces";
 import { FetchError } from "@/types/utility-classes";
-import { revalidatePath } from "next/cache";
 
 
 export async function handleCreateProduct(data: ProductCredentialsI, slug: string) {
@@ -19,7 +18,6 @@ export async function handleCreateProduct(data: ProductCredentialsI, slug: strin
         Refresh: `Bearer ${refreshToken}`,
       },
     });
-    revalidatePath(`/events/${slug}`);
     return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
@@ -45,7 +43,6 @@ export async function handleUpdateProduct(data: Partial<ProductCredentialsI>, sl
         Refresh: `Bearer ${refreshToken}`,
       },
     });
-    revalidatePath(`/events/${slug}`);
     return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
@@ -70,7 +67,6 @@ export async function handleDeleteProduct(data: { product_id: string }, slug: st
         Refresh: `Bearer ${refreshToken}`,
       },
     });
-    revalidatePath(`/events/${slug}`);
     return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {

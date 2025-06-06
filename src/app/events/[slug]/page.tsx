@@ -1,8 +1,7 @@
 import { cookies } from "next/headers";
 import jwt from 'jsonwebtoken';
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
-import ProductModalForm from "@/components/Products/ProductModalForm";
-import ProductsList from "@/components/Products/ProductsList";
+import ProductListSection from "@/components/Products/ProductListSection";
 
 interface EventPageProps { params: { slug: string; } }
 
@@ -21,11 +20,7 @@ export default async function EventPage({ params }: EventPageProps) {
           <p className="mb-4">Slug atual: {paramsW.slug}</p>
           <p className="mb-4">Usuário: {user_info?.name} {user_info?.last_name}</p>
         </div>
-        <ProductModalForm slug={paramsW.slug} isCreating={true}/>
-      </div>
-      <h1 className="font-black text-2xl mb-6 mt-2">Produtos:</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-7xl">
-        <ProductsList slug={paramsW.slug} />
+        <ProductListSection slug={paramsW.slug} />
       </div>
     </div>
   );
