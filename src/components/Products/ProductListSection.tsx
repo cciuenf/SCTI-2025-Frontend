@@ -4,16 +4,24 @@ import { useState, useEffect } from "react";
 import ProductModalForm from "./ProductModalForm";
 import ProductsList from "./ProductsList";
 import { ProductResponseI } from "@/types/product-interfaces";
+import { ActivityResponseI } from "@/types/activity-interface";
 import { handleGetAllEventProducts } from "@/actions/product-actions";
+import { handleGetAllEventActivities } from "@/actions/activities-actions";
 
 interface ProductListSectionProps { slug: string; }
 
 export default function ProductListSection({ slug }: ProductListSectionProps) {
   const [products, setProducts] = useState<ProductResponseI[]>([]);
+  const [activities, setActivities] = useState<ActivityResponseI[]>([]);
 
   const refreshProducts = async () => {
     const response = await handleGetAllEventProducts(slug);
     if (response.success) setProducts(response.data);
+  };
+
+  const refreshActivities = async () => {
+    const response = await handleGetAllEventActivities(slug);
+    if (response.success) setActivities(response.data);
   };
 
   const handleProductCreate = async (newProduct: ProductResponseI) => {
@@ -36,20 +44,25 @@ export default function ProductListSection({ slug }: ProductListSectionProps) {
     setProducts(prevProducts => prevProducts.filter(p => p.ID !== productId));
   };
 
-  useEffect(() => { refreshProducts(); }, []);
+  useEffect(() => { 
+    refreshProducts();
+    refreshActivities();
+  }, []);
 
   return (
     <>
       <ProductModalForm 
         slug={slug} 
         isCreating={true} 
+        activities={activities}
         onProductCreate={handleProductCreate}
       />
       <h1 className="font-black text-2xl mb-6 mt-2">Produtos:</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-7xl">
+      <div className="flex justify-center flex-wrap gap-4 w-full">
         <ProductsList 
           products={products}
           slug={slug} 
+          activities={activities}
           onProductUpdate={handleProductUpdate}
           onProductDelete={handleProductDelete}
         />

@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Button } from "../button";
 
 interface GenericModalProps {
   trigger?: React.ReactNode;
@@ -25,11 +26,7 @@ const CustomGenericModal: React.FC<GenericModalProps> = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>          
-        {trigger || (
-          <button className="border-1 border-accent text-accent rounded-3xl px-2 py-1 cursor-pointer">
-            {title}
-          </button>
-        )}
+        { trigger || ( <Button variant={"yellow"}>{title}</Button> )}
       </DialogTrigger>
       <DialogContent className="max-h-[80vh] overflow-y-auto">
         <DialogHeader>

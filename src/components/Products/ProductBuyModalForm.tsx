@@ -2,38 +2,17 @@
 import React, { useState } from "react";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import CustomGenericForm, {FieldConfig} from "../ui/Generic/CustomGenericForm";
-import { z } from "zod";
 import { ProductResponseI } from "@/types/product-interfaces";
 import { handleBuyProduct } from "@/actions/product-actions";
 import { convertNumberToBRL } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const productSchema = z.discriminatedUnion("is_gift", [
-  z.object({
-    is_gift: z.literal(true),
-    gifted_to_email: z.string().email({ message: "E-mail inválido" }),
-    quantity: z.number({
-      invalid_type_error: "Você precisa inserir um número",
-      required_error: "Campo obrigatório",
-    }).int().min(1, "Quantidade inválida"),
-  }),
-  z.object({
-    is_gift: z.literal(false),
-    gifted_to_email: z.string(),
-    quantity: z.number({
-      invalid_type_error: "Você precisa inserir um número",
-      required_error: "Campo obrigatório",
-    }).int().min(1, "Quantidade inválida"),
-  })
-]);
-
-type ProductDataI = z.infer<typeof productSchema>;
+import { ProductBuyDataI, productBuySchema } from "@/schemas/product-schema";
 
 const ProductBuyModalForm: React.FC<{ slug: string, product: ProductResponseI }> = ({ slug, product }) => {
   const [open, setOpen] = useState(false);
-  const form = useForm<ProductDataI>({
-    resolver: zodResolver(productSchema),
+  const form = useForm<ProductBuyDataI>({
+    resolver: zodResolver(productBuySchema),
     defaultValues: {
       is_gift: false,
       gifted_to_email: "",
@@ -44,7 +23,7 @@ const ProductBuyModalForm: React.FC<{ slug: string, product: ProductResponseI }>
   const quantity = form.watch("quantity");
   const totalPrice = isNaN(quantity) ? 0 : product.price_int * quantity;
 
-  const fields: FieldConfig<ProductDataI>[] = [
+  const fields: FieldConfig<ProductBuyDataI>[] = [
     { name: "is_gift", label: "É um presente?", type: "switch" as const },
     { 
       name: "gifted_to_email", 
@@ -59,7 +38,7 @@ const ProductBuyModalForm: React.FC<{ slug: string, product: ProductResponseI }>
     { name: "quantity", label: "Quantidade", type: "number" as const, placeholder: "0" },
   ];
 
-  const handleSubmit = async (data: ProductDataI) => {
+  const handleSubmit = async (data: ProductBuyDataI) => {
     try {
       const result = await handleBuyProduct({...data, product_id: product.ID}, slug);
       if (result?.success) setOpen(false);
@@ -79,8 +58,8 @@ const ProductBuyModalForm: React.FC<{ slug: string, product: ProductResponseI }>
         <div className="text-lg font-semibold text-gray-700">
           Preço Total: {convertNumberToBRL(totalPrice)}
         </div>
-        <CustomGenericForm<ProductDataI> 
-          schema={productSchema} 
+        <CustomGenericForm<ProductBuyDataI> 
+          schema={productBuySchema} 
           fields={fields} 
           defaultValues={form.getValues()}
           onSubmit={handleSubmit}
