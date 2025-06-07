@@ -25,21 +25,23 @@ const Event = async (props: Props) => {
 
   return (
     <div className="flex flex-col w-4/5 mx-auto items-center justify-center gap-10 mt-10">
-      <h1 className="text-accent text-3xl">Eventos gerais</h1>
-      <EventListSection fetchFunction={handleGetPublicCreatedEvents} />
-
       <h1 className="text-accent text-3xl">Eventos do usuário</h1>
       <EventListSection
         fetchFunction={handleGetUserSubscribedEvents}
         eventFilter="inscrito"
       />
+      <h1 className="text-accent text-3xl">Eventos gerais</h1>
+      <EventListSection fetchFunction={handleGetPublicCreatedEvents} />
 
       <h1 className="text-accent text-3xl">Área de Super Usuário</h1>
 
       {user_info && typeof user_info === "object" && user_info.is_super && (
         <div className="w-full flex flex-col gap-5 mb-10 items-center">
           <h1 className="text-accent text-3xl">Eventos criados pelo usuário</h1>
-          <EventListSection fetchFunction={handleGetUserCreatedEvents} eventFilter="criados"/>
+          <EventListSection
+            fetchFunction={handleGetUserCreatedEvents}
+            eventFilter="criados"
+          />
           <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
             <div className="p-8">
               <h1 className="text-2xl">Crie os seus eventos!</h1>
