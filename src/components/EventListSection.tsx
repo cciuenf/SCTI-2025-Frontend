@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useState } from "react";
 
 import EventCard from "./EventCard";
 import {
-  handleResgiterFromEvent,
+  handleRegisterFromEvent,
   handleUnresgiterFromEvent,
 } from "@/actions/event-actions";
 import { EventResponseI } from "@/types/event-interfaces";
@@ -37,7 +37,7 @@ const EventListSection = ({ fetchFunction, eventFilter }: Props) => {
   const handleOnClick = (action: "inscreveu-se" | "desinscreveu-se", slug: string) => {
     setSwitchedRegister(!switchedRegister)
     if (action == "inscreveu-se") {
-      handleResgiterFromEvent(slug)
+      handleRegisterFromEvent(slug)
       return
     }
     handleUnresgiterFromEvent(slug)

@@ -178,7 +178,7 @@ export async function handleUpdateSlugCreatedEvents(
   }
 }
 
-export async function handleResgiterFromEvent(slug: string) {
+export async function handleRegisterFromEvent(slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
 
   try {

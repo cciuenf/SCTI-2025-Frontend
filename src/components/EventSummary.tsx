@@ -5,7 +5,7 @@ import {
   handleDeleteSlugCreatedEvents,
   handleGetSlugCreatedEvent,
   handleUnresgiterFromEvent,
-  handleResgiterFromEvent,
+  handleRegisterFromEvent,
 } from "@/actions/event-actions";
 
 import { Button } from "./ui/button";
@@ -52,7 +52,7 @@ const EventSummary = ({ slug, user_info }: Props) => {
             Desinscrever-se
           </Button>
 
-          <Button onClick={() => handleResgiterFromEvent(slug)}>
+          <Button onClick={() => handleRegisterFromEvent(slug)}>
             Inscrever-se
           </Button>
         </div>

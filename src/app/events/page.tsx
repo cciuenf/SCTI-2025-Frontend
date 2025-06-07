@@ -3,8 +3,6 @@ import {
   handleGetUserCreatedEvents,
   handleCreateEvent,
   handleGetUserSubscribedEvents,
-  handleResgiterFromEvent,
-  handleUnresgiterFromEvent,
 } from "@/actions/event-actions";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
