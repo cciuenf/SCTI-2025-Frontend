@@ -26,12 +26,17 @@ const Event = async (props: Props) => {
   const events = await handleGetPublicCreatedEvents();
   const userCreatedEvents = await handleGetUserCreatedEvents();
   const userSubscribedEvents = await handleGetUserSubscribedEvents();
+
   if (!events?.success) {
     console.error("Failed to fetch public events");
   }
 
   if (!userCreatedEvents?.success) {
     console.error("Failed to fetch user events");
+  }
+
+  if (!userSubscribedEvents?.success) {
+    console.error("Failed to fetch user subscribed events");
   }
 
   if (!user_info) {
@@ -106,7 +111,7 @@ const Event = async (props: Props) => {
                 local={e.location}
                 start_date={e.start_date}
                 end_date={e.end_date}
-                actionButton={<></>}
+                actionButton={undefined}
               />
             ))}
           </div>

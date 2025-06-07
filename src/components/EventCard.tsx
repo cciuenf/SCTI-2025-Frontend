@@ -28,6 +28,7 @@ const EventCard = ({
           href={`/events/${slug}`}
           key={slug}
           className="hover:opacity-70 duration-300 w-3/5 lg:pr-5 sm:pr-0 sm:w-1/2"
+          aria-label={`Ver detalhes do evento ${name}`}
         >
           <h2 className="font-bold text-lg">{name}</h2>
         </Link>
@@ -37,11 +38,11 @@ const EventCard = ({
         <div className="flex flex-col items-center justify-around w-2/5 gap-2 pl-2 text-center sm:pl-0 sm:w-1/2">
           <h3 className="opacity-90 text-sm">{`de ${format(
             start_date,
-            "MM/dd/yyyy"
+            "dd/MM/yyyy"
           )}`}</h3>
           <h3 className="opacity-90 text-sm">{`até ${format(
             end_date,
-            "MM/dd/yyyy"
+            "dd/MM/yyyy"
           )}`}</h3>
           <h3 className="opacity-90 text-sm">{local}</h3>
         </div>

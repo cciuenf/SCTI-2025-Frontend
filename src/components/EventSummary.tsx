@@ -14,23 +14,15 @@ const EventSummary = async ({ slug, user_info }: Props) => {
   return (
     <div className="w-4/5 max-w-4xl">
       <div className="bg-white rounded-lg shadow-lg p-6 flex-col justify-between items-center relative">
-        {currentEvent ? (
-          <>
-            <h1 className="text-xl font-black mb-4">Informações do Evento</h1>
-            <div className="flex flex-col gap-4">
-              <h2 className="font-bold text-2xl">
-                Nome do Evento: {currentEvent?.data.Name}
-              </h2>
-              <h2>Descrição do Evento: {currentEvent?.data.description}</h2>
-              <h2>Local do Evento: {currentEvent?.data.location}</h2>
-            </div>
-          </>
-        ) : (
-            <>
-            <h1 className="text-xl font-black mb-4">Evento não encontrado</h1>
+        <h1 className="text-xl font-black mb-4">Informações do Evento</h1>
+        <div className="flex flex-col gap-4">
+          <h2 className="font-bold text-2xl">
+            Nome do Evento: {currentEvent?.data.Name}
+          </h2>
+          <h2>Descrição do Evento: {currentEvent?.data.description}</h2>
+          <h2>Local do Evento: {currentEvent?.data.location}</h2>
+        </div>
 
-            </>
-        )}
         <p className="my-4">Slug: {slug}</p>
         <p>
           Usuário Criador: {user_info?.name} {user_info?.last_name}
