@@ -1,15 +1,35 @@
+"use client";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
-import React from "react";
-import { handleDeleteSlugCreatedEvents } from "@/actions/event-actions";
-import { handleGetSlugCreatedEvent } from "@/actions/event-actions";
+import {useEffect, useState} from "react";
+import {
+  handleDeleteSlugCreatedEvents,
+  handleGetSlugCreatedEvent,
+  handleUnresgiterFromEvent,
+  handleResgiterFromEvent,
+} from "@/actions/event-actions";
+
+import { Button } from "./ui/button";
 import DeleteTrashButton from "./DeleteTrashButton";
+import { EventResponseI } from "@/types/event-interfaces";
+
 type Props = {
   slug: string;
   user_info: UserAccessTokenJwtPayload;
 };
 
-const EventSummary = async ({ slug, user_info }: Props) => {
-  const currentEvent = await handleGetSlugCreatedEvent(slug);
+const EventSummary = ({ slug, user_info }: Props) => {
+  const [currentEvent, setCurrentEvent] = useState<EventResponseI>()
+
+  const fetchEvent = async () => {
+    const event = await handleGetSlugCreatedEvent(slug)
+    if (event?.success) {
+      setCurrentEvent(event.data)
+    }
+  }
+
+  useEffect(() => {
+    fetchEvent()
+  }, [])
 
   return (
     <div className="w-4/5 max-w-4xl">
@@ -17,16 +37,25 @@ const EventSummary = async ({ slug, user_info }: Props) => {
         <h1 className="text-xl font-black mb-4">Informações do Evento</h1>
         <div className="flex flex-col gap-4">
           <h2 className="font-bold text-2xl">
-            Nome do Evento: {currentEvent?.data.Name}
+            Nome do Evento: {currentEvent?.Name}
           </h2>
-          <h2>Descrição do Evento: {currentEvent?.data.description}</h2>
-          <h2>Local do Evento: {currentEvent?.data.location}</h2>
+          <h2>Descrição do Evento: {currentEvent?.description}</h2>
+          <h2>Local do Evento: {currentEvent?.location}</h2>
         </div>
 
         <p className="my-4">Slug: {slug}</p>
-        <p>
+        <p className="my-4">
           Usuário Criador: {user_info?.name} {user_info?.last_name}
         </p>
+        <div className="flex justify-around w-3/5 mx-auto">
+          <Button onClick={() => handleUnresgiterFromEvent(slug)}>
+            Desinscrever-se
+          </Button>
+
+          <Button onClick={() => handleResgiterFromEvent(slug)}>
+            Inscrever-se
+          </Button>
+        </div>
         {user_info?.is_super && (
           <DeleteTrashButton
             deleteFunction={handleDeleteSlugCreatedEvents}

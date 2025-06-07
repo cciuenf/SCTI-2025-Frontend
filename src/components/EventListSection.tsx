@@ -2,12 +2,12 @@
 import { ReactNode, useEffect, useState } from "react";
 
 import EventCard from "./EventCard";
-import TestsButton from "./TestsButton";
 import {
   handleResgiterFromEvent,
   handleUnresgiterFromEvent,
 } from "@/actions/event-actions";
 import { EventResponseI } from "@/types/event-interfaces";
+import { Button } from "./ui/button";
 
 type Props = {
   fetchFunction: () => Promise<
@@ -40,20 +40,12 @@ const EventListSection = ({ fetchFunction, eventFilter }: Props) => {
 
       case "inscrito":
         return (
-          <TestsButton
-            onClick={handleUnresgiterFromEvent}
-            text="Unregister"
-            param={slug}
-          />
+          <Button onClick={()=> handleUnresgiterFromEvent(slug)}>Desinscrever-se</Button>
         );
 
       default:
         return (
-          <TestsButton
-            onClick={handleResgiterFromEvent}
-            text="Register"
-            param={slug}
-          />
+          <Button onClick={()=> handleResgiterFromEvent(slug)}>Inscrever-se</Button>
         );
     }
   };

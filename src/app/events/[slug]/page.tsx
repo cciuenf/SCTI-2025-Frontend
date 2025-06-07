@@ -5,12 +5,10 @@ import CreateEventForm from "@/components/CreateEventForm";
 import EventSummary from "@/components/EventSummary";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
-  handleResgiterFromEvent,
-  handleUnresgiterFromEvent,
   handleGetSlugCreatedEvent,
   handleUpdateSlugCreatedEvents,
 } from "@/actions/event-actions";
-import TestsButton from "@/components/TestsButton";
+import { Button } from "@/components/ui/button";
 import { EventResponseI } from "@/types/event-interfaces";
 import PromoteDemoteForm from "@/components/PromoteDemoteForm";
 
@@ -53,16 +51,6 @@ export default async function EventPage({ params }: EventPageProps) {
         <div className="w-full flex flex-col gap-5 items-center">
           <EventSummary slug={slug} user_info={user_info} />
           <div className="w-1/2 flex justify-around">
-            <TestsButton
-              onClick={handleResgiterFromEvent}
-              text="Register"
-              param={slug}
-            />
-            <TestsButton
-              onClick={handleUnresgiterFromEvent}
-              text="Unregister"
-              param={slug}
-            />
           </div>
         </div>
       )}
