@@ -60,6 +60,12 @@ const ProductModalForm: React.FC<{
     { name: "is_blocked", label: "Está bloqueado?", type: "switch" as const },
     { name: "is_hidden", label: "Está oculto?", type: "switch" as const },
     { name: "is_ticket_type", label: "É um ticket?", type: "switch" as const },
+    { 
+      name: "expires_at", 
+      label: "Data de Expiração", 
+      type: "datetime" as const,
+      placeholder: "Selecione a data de expiração"
+    },
     {
       name: "access_targets", 
       label: "Libera Acesso a:", 
@@ -116,7 +122,8 @@ const ProductModalForm: React.FC<{
           is_blocked: false,
           is_hidden: false,
           is_ticket_type: false,
-          access_targets: []
+          access_targets: [],
+          expires_at: "",
         }}
         onSubmit={handleSubmit}
         onCancel={() => setOpen(false)}

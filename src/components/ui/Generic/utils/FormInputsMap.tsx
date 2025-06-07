@@ -2,6 +2,7 @@ import { convertNumberToBRL } from "@/lib/utils"
 import { Input } from "../../input"
 import { MultiSelect } from "../../multi-select"
 import { Switch } from "../../switch"
+import { SimpleDateTimePicker } from "./SimpleDateTimePicker"
 
 export const FormInputRenderMap: Record<string, (props: {
   field: any
@@ -51,6 +52,14 @@ export const FormInputRenderMap: Record<string, (props: {
       placeholder={placeholder} 
       onChange={field.onChange}
       disabled={disabled}
+    />
+  ),
+  datetime: ({ field, disabled, placeholder }) => (
+    <SimpleDateTimePicker
+      value={field.value}
+      onChange={field.onChange}
+      disabled={disabled}
+      placeholder={placeholder}
     />
   ),
 }

@@ -21,7 +21,8 @@ export const productCreationSchema = z.object({
   is_blocked: z.boolean(),
   is_hidden: z.boolean(),
   is_ticket_type: z.boolean(),
-  access_targets: z.array(z.string())
+  access_targets: z.array(z.string()),
+  expires_at: z.date().or(z.string()),
 });
 
 export type ProductCreationDataI = z.infer<typeof productCreationSchema>;

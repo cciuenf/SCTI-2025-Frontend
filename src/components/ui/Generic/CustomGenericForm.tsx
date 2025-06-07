@@ -18,7 +18,7 @@ export interface FieldConfig<T> {
   name: keyof T;
   label: string;
   placeholder?: string;
-  type?: "text" | "number" | "price" | "switch" | "select" | "multiple_select";
+  type?: "text" | "number" | "price" | "switch" | "select" | "multiple_select" | "datetime";
   options?: { label: string; value: string }[];
   disabledWhen?: {
     field: keyof T;
