@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
 import CreateEventForm from "@/components/CreateEventForm";
-import EventCard from "@/components/EventCard";
+import EventSummary from "@/components/EventSummary";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   handleResgiterFromEvent,
@@ -51,7 +51,7 @@ export default async function EventPage({ params }: EventPageProps) {
     <div className="h-screen flex flex-col items-center font-spartan p-4">
       {slug && user_info && (
         <div className="w-full flex flex-col gap-5 items-center">
-          <EventCard slug={slug} user_info={user_info} />
+          <EventSummary slug={slug} user_info={user_info} />
           <div className="w-1/2 flex justify-around">
             <TestsButton
               onClick={handleResgiterFromEvent}

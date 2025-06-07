@@ -1,14 +1,17 @@
-import React from "react";
 import {
   handleGetPublicCreatedEvents,
   handleGetUserCreatedEvents,
   handleCreateEvent,
-  handleGetUserSubscribedEvents
+  handleGetUserSubscribedEvents,
+  handleResgiterFromEvent,
+  handleUnresgiterFromEvent,
 } from "@/actions/event-actions";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
-import Link from "next/link";
+
+import EventCard from "@/components/EventCard";
+import TestsButton from "@/components/TestsButton";
 import CreateEventForm from "@/components/CreateEventForm";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
@@ -22,7 +25,7 @@ const Event = async (props: Props) => {
   ) as UserAccessTokenJwtPayload | null;
   const events = await handleGetPublicCreatedEvents();
   const userCreatedEvents = await handleGetUserCreatedEvents();
-  const userSubscribedEvents = await handleGetUserSubscribedEvents()
+  const userSubscribedEvents = await handleGetUserSubscribedEvents();
   if (!events?.success) {
     console.error("Failed to fetch public events");
   }
@@ -40,65 +43,85 @@ const Event = async (props: Props) => {
       <h1 className="text-accent text-3xl">Eventos gerais</h1>
       {events?.data && events?.data.length != 0 ? (
         <div className="w-full max-w-4xl mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-4">
             {events?.data.map((e) => (
-              <Link
-                href={`/events/${e.Slug}`}
+              <EventCard
                 key={e.Slug}
-                className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
-              >
-                <h3 className="font-bold text-lg">{e.Name}</h3>
-              </Link>
+                slug={e.Slug}
+                name={e.Name}
+                local={e.location}
+                actionButton={
+                  <TestsButton
+                    onClick={handleResgiterFromEvent}
+                    text="Register"
+                    param={e.Slug}
+                  />
+                }
+                start_date={e.start_date}
+                end_date={e.end_date}
+              />
             ))}
           </div>
         </div>
       ) : (
         <p className="mb-10">Nenhum evento publico disponivel</p>
       )}
-      <h1 className="text-accent text-3xl">Eventos criados pelo usuário</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {userCreatedEvents?.data && userCreatedEvents?.data.length != 0 ? (
-          userCreatedEvents.data.map((e) => (
-            <Link
-              href={`/events/${e.Slug}`}
-              key={e.Slug}
-              className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
-            >
-              <h3 className="font-bold text-lg">{e.Name}</h3>
-            </Link>
-          ))
-        ) : (
-          <p className="mb-c10">Voce ainda não criou nenhum evento</p>
-        )}
-      </div>
 
       <h1 className="text-accent text-3xl">Eventos do usuário</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {userSubscribedEvents?.data && userSubscribedEvents?.data.length != 0 ? (
-          userSubscribedEvents.data.map((e) => (
-            <Link
-              href={`/events/${e.Slug}`}
-              key={e.Slug}
-              className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
-            >
-              <h3 className="font-bold text-lg">{e.Name}</h3>
-            </Link>
-          ))
-        ) : (
-          <p className="mb-c10">Voce ainda não se inscreveu em nenhum evento</p>
-        )}
-      </div>
+      {userSubscribedEvents?.data && userSubscribedEvents?.data.length != 0 ? (
+        <div className="w-full max-w-4xl mt-6">
+          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-4">
+            {userSubscribedEvents.data.map((e) => (
+              <EventCard
+                key={e.Slug}
+                slug={e.Slug}
+                name={e.Name}
+                local={e.location}
+                actionButton={
+                  <TestsButton
+                    onClick={handleUnresgiterFromEvent}
+                    text="Unregister"
+                    param={e.Slug}
+                  />
+                }
+                start_date={e.start_date}
+                end_date={e.end_date}
+              />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <p className="mb-10">Voce ainda não se inscreveu em nenhum evento</p>
+      )}
+
+      <h1 className="text-accent text-3xl">Eventos criados pelo usuário</h1>
+      {userCreatedEvents?.data && userCreatedEvents?.data.length != 0 ? (
+        <div className="w-full max-w-4xl mt-6">
+          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-4">
+            {userCreatedEvents.data.map((e) => (
+              <EventCard
+                key={e.Slug}
+                slug={e.Slug}
+                name={e.Name}
+                local={e.location}
+                start_date={e.start_date}
+                end_date={e.end_date}
+                actionButton={<></>}
+              />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <p className="mb-10">Voce ainda não criou nenhum evento</p>
+      )}
       <h1 className="text-accent text-3xl">Área de Super Usuário</h1>
 
-      {user_info && typeof user_info === 'object' && user_info.is_super && (
+      {user_info && typeof user_info === "object" && user_info.is_super && (
         <div className="w-full flex flex-col gap-5 mb-10 items-center">
           <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
             <div className="p-8">
               <h1 className="text-2xl">Crie os seus eventos!</h1>
-              <CreateEventForm
-                handleCreate={handleCreateEvent}
-                type="Create"
-              />
+              <CreateEventForm handleCreate={handleCreateEvent} type="Create" />
             </div>
             <ScrollBar orientation="vertical" />
           </ScrollArea>

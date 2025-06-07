@@ -21,7 +21,7 @@ export interface EventResponseI {
   is_public: boolean;
   max_tokens_per_user: number;
   start_date: Date;
-  end_date: string;
+  end_date: Date;
   created_by: string;
   created_at: string;
   updated_at: Date;
