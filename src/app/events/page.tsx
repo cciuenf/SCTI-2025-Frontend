@@ -22,25 +22,6 @@ const Event = async (props: Props) => {
   const user_info = jwt.decode(
     access_token as string
   ) as UserAccessTokenJwtPayload | null;
-  const events = await handleGetPublicCreatedEvents();
-  const userCreatedEvents = await handleGetUserCreatedEvents();
-  const userSubscribedEvents = await handleGetUserSubscribedEvents();
-
-  if (!events?.success) {
-    console.error("Failed to fetch public events");
-  }
-
-  if (!userCreatedEvents?.success) {
-    console.error("Failed to fetch user events");
-  }
-
-  if (!userSubscribedEvents?.success) {
-    console.error("Failed to fetch user subscribed events");
-  }
-
-  if (!user_info) {
-    console.error("Error on retrieving user infos");
-  }
 
   return (
     <div className="flex flex-col w-4/5 mx-auto items-center justify-center gap-10 mt-10">

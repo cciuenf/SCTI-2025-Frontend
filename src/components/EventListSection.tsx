@@ -21,6 +21,7 @@ const EventListSection = ({ fetchFunction, eventFilter }: Props) => {
   const [currentData, setCurrentData] = useState<EventResponseI[] | undefined>(
     []
   );
+  const [switchedRegister, setSwitchedRegister] = useState<boolean>(false)
 
   const handleFetch = async () => {
     const data = await fetchFunction();
@@ -29,9 +30,18 @@ const EventListSection = ({ fetchFunction, eventFilter }: Props) => {
     }
   };
 
-  useEffect(() => {
-    handleFetch();
-  }, []);
+    useEffect(() => {
+      handleFetch();
+    }, [switchedRegister]);
+
+  const handleOnClick = (action: "inscreveu-se" | "desinscreveu-se", slug: string) => {
+    setSwitchedRegister(!switchedRegister)
+    if (action == "inscreveu-se") {
+      handleResgiterFromEvent(slug)
+      return
+    }
+    handleUnresgiterFromEvent(slug)
+  }
 
   const getActionButton = (slug: string): ReactNode | undefined => {
     switch (eventFilter) {
@@ -40,12 +50,12 @@ const EventListSection = ({ fetchFunction, eventFilter }: Props) => {
 
       case "inscrito":
         return (
-          <Button onClick={()=> handleUnresgiterFromEvent(slug)}>Desinscrever-se</Button>
+          <Button onClick={()=> handleOnClick("desinscreveu-se", slug)}>Desinscrever-se</Button>
         );
 
       default:
         return (
-          <Button onClick={()=> handleResgiterFromEvent(slug)}>Inscrever-se</Button>
+          <Button onClick={()=> handleOnClick("inscreveu-se", slug)}>Inscrever-se</Button>
         );
     }
   };
@@ -69,7 +79,7 @@ const EventListSection = ({ fetchFunction, eventFilter }: Props) => {
           </div>
         </div>
       ) : (
-        <p className="mb-10">Nenhum evento publico disponivel</p>
+        <p className="mb-10">Sem eventos disponíveis nessa seção</p>
       )}
     </>
   );
