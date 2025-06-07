@@ -110,6 +110,9 @@ export async function handleGetPublicCreatedEvents() {
     if (error instanceof FetchError) {
       console.error("Erro ao obter os eventos públicos", error.message);
       return { success: false };
+    } else {
+      console.error("Erro desconhecido ao obter os eventos públicos", error);
+      return { success: false };
     }
   }
 }
