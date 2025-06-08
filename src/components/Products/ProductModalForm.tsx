@@ -54,12 +54,14 @@ const ProductModalForm: React.FC<{
         value: true
       }
     },
+    { name: "token_quantity", label: "Quantidade de Tokens", type: "number" as const, placeholder: "0" },
     { name: "max_ownable_quantity", label: "Quantidade máxima que pode ser adquirida", type: "number" as const, placeholder: "0" },
     { name: "is_physical_item", label: "É um item físico?", type: "switch" as const },
     { name: "is_public", label: "Público?", type: "switch" as const },
     { name: "is_blocked", label: "Está bloqueado?", type: "switch" as const },
     { name: "is_hidden", label: "Está oculto?", type: "switch" as const },
     { name: "is_ticket_type", label: "É um ticket?", type: "switch" as const },
+    { name: "is_event_access", label: "Permite Acesso ao Evento?", type: "switch" as const },
     { 
       name: "expires_at", 
       label: "Data de Expiração", 

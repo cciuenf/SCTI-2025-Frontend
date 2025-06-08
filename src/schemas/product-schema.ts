@@ -20,9 +20,14 @@ export const productCreationSchema = z.object({
   is_public: z.boolean(),
   is_blocked: z.boolean(),
   is_hidden: z.boolean(),
+  is_event_access: z.boolean(),
   is_ticket_type: z.boolean(),
   access_targets: z.array(z.string()),
   expires_at: z.date().or(z.string()),
+  token_quantity: z.number({
+    invalid_type_error: "Você precisa inserir um número",
+    required_error: "Campo obrigatório",
+  }).int().min(0, "Quantidade inválida"),
 });
 
 export type ProductCreationDataI = z.infer<typeof productCreationSchema>;

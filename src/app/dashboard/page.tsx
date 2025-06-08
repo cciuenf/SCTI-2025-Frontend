@@ -5,6 +5,7 @@ import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
 import Link from "next/link";
 import UserPurchases from "@/components/UserPurchases";
 import UserProducts from "@/components/UserProducts";
+import UserTokens from "@/components/UserTokens";
 
 export default async function Dashboard() {
   const cookieStore = cookies();
@@ -44,6 +45,7 @@ export default async function Dashboard() {
 
       <UserProducts />
       <UserPurchases />
+      <UserTokens />
 
       <h1 className="font-black text-lg mt-6 mb-3.5">Meus Tokens:</h1>
       <p className="max-w-lvw p-2 break-words">

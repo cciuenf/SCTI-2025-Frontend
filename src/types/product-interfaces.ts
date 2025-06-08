@@ -9,8 +9,11 @@ export interface ProductCredentialsI {
   is_public: boolean,
   is_blocked: boolean,
   is_hidden: boolean,
+  is_event_access: boolean,
   is_ticket_type: boolean,
   access_targets: AccessTargetsI[]
+  token_quantity: number,
+  expires_at: string | Date
 }
 
 export interface ProductBuyCredentialsI {
@@ -30,6 +33,7 @@ export interface ProductResponseI {
   is_public: boolean,
   is_blocked: boolean,
   is_hidden: boolean,
+  has_unlimited_quantity: boolean,
   is_ticket_type: boolean,
   access_targets: AccessTargetsI[],
 }
