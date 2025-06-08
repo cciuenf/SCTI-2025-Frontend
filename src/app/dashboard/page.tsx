@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import jwt from 'jsonwebtoken';
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
 import Link from "next/link";
+import UserPurchases from "@/components/UserPurchases";
+import UserProducts from "@/components/UserProducts";
 
 export default async function Dashboard() {
   const cookieStore = cookies();
@@ -39,6 +41,9 @@ export default async function Dashboard() {
           ))}
         </div>
       </div>
+
+      <UserProducts />
+      <UserPurchases />
 
       <h1 className="font-black text-lg mt-6 mb-3.5">Meus Tokens:</h1>
       <p className="max-w-lvw p-2 break-words">
