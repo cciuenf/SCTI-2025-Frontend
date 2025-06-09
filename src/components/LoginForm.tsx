@@ -14,22 +14,24 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, useState } from "react";
+import { handleGetEvents } from "@/actions/event-actions";
 
 type LoginFormProps = {
   type: "Login" | "Sign Up";
-  handleLoginSubmit?: (
-    values: { email: string; password: string }
-  ) => Promise<String>;
+  handleLoginSubmit?: (values: {
+    email: string;
+    password: string;
+  }) => Promise<string>;
 
   handleSignUpSubmit?: (values: {
     name: string;
     last_name: string;
     email: string;
     password: string;
-  }) => Promise<string | boolean>
+  }) => Promise<string | boolean>;
 
-  setMustShowVerify?: Dispatch<SetStateAction<boolean>>
-  setIsLoading: Dispatch<SetStateAction<boolean>>
+  setMustShowVerify?: Dispatch<SetStateAction<boolean>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
 const formSchema = z.object({
@@ -44,8 +46,13 @@ const loginFormSchema = z.object({
   password: z.string().min(8).max(20),
 });
 
-export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit, setMustShowVerify, setIsLoading }: LoginFormProps) {
-
+export default function LoginForm({
+  type,
+  handleLoginSubmit,
+  handleSignUpSubmit,
+  setMustShowVerify,
+  setIsLoading,
+}: LoginFormProps) {
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: { email: "", password: "" },
@@ -66,27 +73,31 @@ export default function LoginForm({ type, handleLoginSubmit, handleSignUpSubmit,
       return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     const response = await handleSignUpSubmit(values);
-    setIsLoading(false)
+    setIsLoading(false);
 
     if (typeof response === "string") {
-      console.error(response)
-      return
+      console.error(response);
+      return;
     }
 
     if (response === false && setMustShowVerify) {
-      setMustShowVerify(true)
+      setMustShowVerify(true);
     }
-
   };
 
   const onSubmitLogin = async (values: z.infer<typeof loginFormSchema>) => {
     if (handleLoginSubmit) {
-      setIsLoading(true)
-      handleLoginSubmit(values)
-      setIsLoading(false)
-   }
+      setIsLoading(true);
+      try {
+        await handleLoginSubmit(values);
+      } catch (error) {
+        console.error("Login failed:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
   };
 
   return (

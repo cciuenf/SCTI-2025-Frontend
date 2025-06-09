@@ -9,13 +9,13 @@ export default function Home() {
       <h2 className="text-foreground">
         Bem vindo ao site da SCT.{" "}
         <span className="text-secondary">
-           Ainda estamos finalizando todos os detalhes para te trazer a melhor
-          experiência. {" "}
+          Ainda estamos finalizando todos os detalhes para te trazer a melhor
+          experiência.{" "}
         </span>
         Por hora, aproveite para criar a sua conta ou realizar login!
       </h2>
       <div className="flex w-full justify-around items-center">
-        <Button>
+        <Button asChild>
           <Link href={"login"}>Login</Link>
         </Button>
         <Button asChild variant={"yellow"}>
