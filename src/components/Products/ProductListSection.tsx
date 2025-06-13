@@ -8,19 +8,21 @@ import { ActivityResponseI } from "@/types/activity-interface";
 import { handleGetAllEventProducts } from "@/actions/product-actions";
 import { handleGetAllEventActivities } from "@/actions/activities-actions";
 
-interface ProductListSectionProps { slug: string; }
+interface ProductListSectionProps { 
+  currentEvent: { id: string; slug: string }
+}
 
-export default function ProductListSection({ slug }: ProductListSectionProps) {
+export default function ProductListSection({ currentEvent }: ProductListSectionProps) {
   const [products, setProducts] = useState<ProductResponseI[]>([]);
   const [activities, setActivities] = useState<ActivityResponseI[]>([]);
 
   const refreshProducts = async () => {
-    const response = await handleGetAllEventProducts(slug);
+    const response = await handleGetAllEventProducts(currentEvent.slug);
     if (response.success) setProducts(response.data);
   };
 
   const refreshActivities = async () => {
-    const response = await handleGetAllEventActivities(slug);
+    const response = await handleGetAllEventActivities(currentEvent.slug);
     if (response.success) setActivities(response.data);
   };
 
@@ -52,7 +54,7 @@ export default function ProductListSection({ slug }: ProductListSectionProps) {
   return (
     <>
       <ProductModalForm 
-        slug={slug} 
+        currentEvent={currentEvent} 
         isCreating={true} 
         activities={activities}
         onProductCreate={handleProductCreate}
@@ -61,7 +63,7 @@ export default function ProductListSection({ slug }: ProductListSectionProps) {
       <div className="flex justify-center flex-wrap gap-4 w-full">
         <ProductsList 
           products={products}
-          slug={slug} 
+          currentEvent={currentEvent}
           activities={activities}
           onProductUpdate={handleProductUpdate}
           onProductDelete={handleProductDelete}

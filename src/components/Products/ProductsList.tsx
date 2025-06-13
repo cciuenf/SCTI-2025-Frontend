@@ -6,13 +6,13 @@ import { convertNumberToBRL } from "@/lib/utils";
 
 interface ProductsListI {
   products: ProductResponseI[];
-  slug: string;
+  currentEvent: { id: string; slug: string }
   activities: ActivityResponseI[];
   onProductUpdate: (updatedProduct: ProductResponseI) => Promise<void>;
   onProductDelete: (productId: string) => Promise<void>;
 }
 
-export default function ProductsList({ products, slug, activities, onProductUpdate, onProductDelete }: ProductsListI) {
+export default function ProductsList({ products, currentEvent, activities, onProductUpdate, onProductDelete }: ProductsListI) {
   return (
     <>
       {products.map((product) => (
@@ -41,7 +41,7 @@ export default function ProductsList({ products, slug, activities, onProductUpda
           </div>
           <ProductHandle 
             product={product} 
-            slug={slug} 
+            currentEvent={currentEvent}
             activities={activities}
             onProductDelete={onProductDelete}
             onProductUpdate={onProductUpdate}

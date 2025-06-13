@@ -8,13 +8,13 @@ import { ActivityResponseI } from "@/types/activity-interface";
 import { ProductCreationDataI, productCreationSchema } from "@/schemas/product-schema";
 
 const ProductModalForm: React.FC<{ 
-  slug: string, 
+  currentEvent: { id: string; slug: string }
   isCreating: boolean,
   product?: ProductResponseI,
   activities: ActivityResponseI[],
   onProductUpdate?: (updatedProduct: ProductResponseI) => Promise<void>,
   onProductCreate?: (newProduct: ProductResponseI) => Promise<void>
-}> = ({ slug, isCreating, product, activities, onProductUpdate, onProductCreate }) => {
+}> = ({ isCreating, currentEvent, product, activities, onProductUpdate, onProductCreate }) => {
   const [open, setOpen] = useState(false);
 
   const options = activities.map(activity => ({
@@ -23,14 +23,11 @@ const ProductModalForm: React.FC<{
     value: JSON.stringify({ is_event: false, target_id: activity.ID })
   }));
 
-  // TODO: Change to use the event call by the slug name
-  if(activities.length > 0) {
-    options.unshift({
-      label: slug, 
-      unique: true, 
-      value: JSON.stringify({ is_event: true, target_id: activities[0].event_id })
-    })
-  }
+  options.unshift({
+    label: currentEvent.slug, 
+    unique: true, 
+    value: JSON.stringify({ is_event: true, target_id: currentEvent.id })
+  });
 
   const transformedProduct = product ? {
     ...product,
@@ -85,13 +82,13 @@ const ProductModalForm: React.FC<{
       };
 
       if(isCreating) {
-        const result = await handleCreateProduct(transformedData, slug);
+        const result = await handleCreateProduct(transformedData, currentEvent.slug);
         if (result?.success && result.data && onProductCreate) {
           setOpen(false);
           await onProductCreate(result.data);
         }
       } else if(product) {
-        const result = await handleUpdateProduct(transformedData, slug, product.ID);
+        const result = await handleUpdateProduct(transformedData, currentEvent.slug, product.ID);
         if (result?.success && result.data && onProductUpdate) {
           setOpen(false);
           await onProductUpdate(result.data);
@@ -119,13 +116,15 @@ const ProductModalForm: React.FC<{
           has_unlimited_quantity: false, 
           quantity: 0,
           max_ownable_quantity: 1,
+          token_quantity: 0,
           is_physical_item: false,
           is_public: false,
           is_blocked: false,
           is_hidden: false,
           is_ticket_type: false,
+          is_event_access: false,
           access_targets: [],
-          expires_at: "",
+          expires_at: new Date(),
         }}
         onSubmit={handleSubmit}
         onCancel={() => setOpen(false)}

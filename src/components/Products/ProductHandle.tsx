@@ -9,29 +9,29 @@ import { Button } from "../ui/button";
 
 interface ProductProps {
   product: ProductResponseI;
-  slug: string;
+  currentEvent: { id: string; slug: string }
   activities: ActivityResponseI[];
   onProductDelete: (productId: string) => Promise<void>;
   onProductUpdate: (updatedProduct: ProductResponseI) => Promise<void>;
 }
 
-export default function ProductHandle({ product, slug, activities, onProductDelete, onProductUpdate }: ProductProps) {
-  const submitDelete = async (id: string) => {
-    const result = await handleDeleteProduct({product_id: product.ID}, slug);
+export default function ProductHandle({ product, currentEvent, activities, onProductDelete, onProductUpdate }: ProductProps) {
+  const submitDelete = async () => {
+    const result = await handleDeleteProduct({product_id: product.ID}, currentEvent.slug);
     if (result?.success) await onProductDelete(product.ID);
   }
   
   return (
   <div className="mt-4 flex gap-2">
     <ProductModalForm 
-      slug={slug} 
+      currentEvent={currentEvent}
       isCreating={false} 
       product={product} 
       activities={activities}
       onProductUpdate={onProductUpdate}
     />
-    <ProductBuyModalForm slug={slug} product={product}/>
-    <Button variant={"yellow"} onClick={async () => await submitDelete(product.ID)}>
+    <ProductBuyModalForm slug={currentEvent.slug} product={product}/>
+    <Button variant={"yellow"} onClick={async () => await submitDelete()}>
       Deletar
     </Button>
   </div>
