@@ -1,6 +1,7 @@
 "use client";
 
 import { handleRevokeToken } from "@/actions/auth-actions";
+import { Button } from "./ui/button";
 
 interface CustomButtonProps {
   token: string;
@@ -13,11 +14,6 @@ export default function CustomButton( { token, onRemove }: CustomButtonProps) {
     if(res.success) onRemove(token);
   }
   return (
-    <button
-      className="cursor-pointer bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold"
-      onClick={handleClick}
-    >
-      Invalidar Token
-    </button>
+    <Button onClick={handleClick}>Invalidar Token</Button>
   );
 }

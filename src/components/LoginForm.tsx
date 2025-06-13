@@ -1,4 +1,3 @@
-"use client";
 import {
   Form,
   FormControl,
@@ -13,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { handleGetEvents } from "@/actions/event-actions";
 
 type LoginFormProps = {
@@ -69,9 +68,7 @@ export default function LoginForm({
   });
 
   const onSubmitSign = async (values: z.infer<typeof formSchema>) => {
-    if (!handleSignUpSubmit) {
-      return;
-    }
+    if (!handleSignUpSubmit) return;
 
     setIsLoading(true);
     const response = await handleSignUpSubmit(values);
@@ -82,9 +79,7 @@ export default function LoginForm({
       return;
     }
 
-    if (response === false && setMustShowVerify) {
-      setMustShowVerify(true);
-    }
+    if (response === false && setMustShowVerify) setMustShowVerify(true)
   };
 
   const onSubmitLogin = async (values: z.infer<typeof loginFormSchema>) => {

@@ -1,6 +1,9 @@
 import { cookies } from "next/headers";
+
+interface EventPageProps { params: { slug: string; } }
 import jwt from "jsonwebtoken";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
+import ProductListSection from "@/components/Products/ProductListSection";
 import CreateEventForm from "@/components/CreateEventForm";
 import EventSummary from "@/components/EventSummary";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -8,7 +11,6 @@ import {
   handleGetSlugCreatedEvent,
   handleUpdateSlugCreatedEvents,
 } from "@/actions/event-actions";
-import { Button } from "@/components/ui/button";
 import { EventResponseI } from "@/types/event-interfaces";
 import PromoteDemoteForm from "@/components/PromoteDemoteForm";
 
@@ -24,10 +26,11 @@ export default async function EventPage({ params }: EventPageProps) {
   const user_info = jwt.decode(
     access_token as string
   ) as UserAccessTokenJwtPayload | null;
-
   const { slug } = await params;
+
   const transformEventData = (data: EventResponseI) => {
     return {
+      id: data.ID,
       name: data.Name,
       slug: data.Slug,
       description: data.description,
@@ -72,6 +75,7 @@ export default async function EventPage({ params }: EventPageProps) {
           <PromoteDemoteForm
           slug={slug}
           />
+          {toUpdateEvent && (<ProductListSection currentEvent={toUpdateEvent}/>)}
         </div>
       )}
     </div>

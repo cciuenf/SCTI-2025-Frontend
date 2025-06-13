@@ -13,3 +13,7 @@ export function isAccessTokenExpired(token: string | null) {
   const expiresAt = new Date(user_info?.exp ?? "");
   if(isNaN(expiresAt.getTime()) || expiresAt.getTime() <= new Date().getTime()) return true;
 }
+
+export function convertNumberToBRL(value: number) {
+  return (value / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+}
