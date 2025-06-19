@@ -6,7 +6,7 @@ import ProductsList from "./ProductsList";
 import { ProductResponseI } from "@/types/product-interfaces";
 import { ActivityResponseI } from "@/types/activity-interface";
 import { handleGetAllEventProducts } from "@/actions/product-actions";
-import { handleGetAllEventActivities } from "@/actions/activities-actions";
+import { handleGetAllEventActivities } from "@/actions/activity-actions";
 
 interface ProductListSectionProps { 
   currentEvent: { id: string; slug: string }

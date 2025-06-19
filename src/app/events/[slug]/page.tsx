@@ -13,6 +13,7 @@ import {
 } from "@/actions/event-actions";
 import { EventResponseI } from "@/types/event-interfaces";
 import PromoteDemoteForm from "@/components/PromoteDemoteForm";
+import ActivityListSection from "@/components/Activities/ActivityListSection";
 
 interface EventPageProps {
   params: {
@@ -75,7 +76,12 @@ export default async function EventPage({ params }: EventPageProps) {
           <PromoteDemoteForm
           slug={slug}
           />
-          {toUpdateEvent && (<ProductListSection currentEvent={toUpdateEvent}/>)}
+          {toUpdateEvent && (
+            <>
+              <ProductListSection currentEvent={toUpdateEvent}/>
+              <ActivityListSection currentEvent={toUpdateEvent}/>
+            </>
+          )}
         </div>
       )}
     </div>

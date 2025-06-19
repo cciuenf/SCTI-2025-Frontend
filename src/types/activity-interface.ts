@@ -8,4 +8,11 @@ export interface ActivityResponseI {
   event_id: string,
   has_unlimited_capacity: boolean,
   max_capacity: number,
+  is_blocked: boolean,
+  is_hidden: boolean,
+  is_mandatory: boolean,
+  is_standalone: boolean,
+  standalone_slug: string,
+  start_time: string,
+  end_time: string,
 }

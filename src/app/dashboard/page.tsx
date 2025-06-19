@@ -2,7 +2,6 @@ import RefreshTokenList from "@/components/RefreshTokensList";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
-import Link from "next/link";
 import UserPurchases from "@/components/UserPurchases";
 import UserProducts from "@/components/UserProducts";
 import UserTokens from "@/components/UserTokens";
