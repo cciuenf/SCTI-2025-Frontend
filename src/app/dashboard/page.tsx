@@ -2,7 +2,10 @@ import RefreshTokenList from "@/components/RefreshTokensList";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
-import { redirect } from "next/navigation";
+import Link from "next/link";
+import UserPurchases from "@/components/UserPurchases";
+import UserProducts from "@/components/UserProducts";
+import UserTokens from "@/components/UserTokens";
 
 export default async function Dashboard() {
   const cookieStore = cookies();
@@ -11,9 +14,6 @@ export default async function Dashboard() {
     access_token as string
   ) as UserAccessTokenJwtPayload | null;
   const refresh_token = (await cookieStore).get("refresh_token")?.value;
-  if (!access_token || !refresh_token) {
-  redirect("/login")
-}
 
   return (
     <div className="h-screen flex flex-col items-center font-spartan p-4">
@@ -26,13 +26,18 @@ export default async function Dashboard() {
       </h1>
       <h1 className="font-black text-lg mb-3.5">
         Tipo de Admin:{" "}
-        {user_info?.is_master
-          ? "Master"
-          : user_info?.is_super
+        {user_info?.is_super
           ? "Super"
+          : user_info?.is_event_creator
+          ? "Criador de Evento" 
           : "Não é admin"}
       </h1>
-      <h1 className="font-black text-lg mb-3.5">Meus Tokens:</h1>
+
+      <UserProducts />
+      <UserPurchases />
+      <UserTokens />
+
+      <h1 className="font-black text-lg mt-6 mb-3.5">Meus Tokens:</h1>
       <p className="max-w-lvw p-2 break-words">
         Access Token: {access_token ?? ""}
       </p>
