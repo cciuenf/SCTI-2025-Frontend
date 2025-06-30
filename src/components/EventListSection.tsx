@@ -1,5 +1,6 @@
 "use client";
 import { ReactNode, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import EventCard from "./EventCard";
 import {
@@ -38,9 +39,11 @@ const EventListSection = ({ fetchFunction, eventFilter }: Props) => {
     setSwitchedRegister(!switchedRegister)
     if (action == "inscreveu-se") {
       handleRegisterFromEvent(slug)
+      toast("Inscrição realizada com sucesso!")
       return
     }
     handleUnresgiterFromEvent(slug)
+      toast("Desinscrição realizada com sucesso!")
   }
 
   const getActionButton = (slug: string): ReactNode | undefined => {

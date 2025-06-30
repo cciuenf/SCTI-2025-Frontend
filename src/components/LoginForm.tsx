@@ -14,6 +14,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction } from "react";
 import { handleGetEvents } from "@/actions/event-actions";
+import { toast } from "sonner";
 
 type LoginFormProps = {
   type: "Login" | "Sign Up";
@@ -75,20 +76,21 @@ export default function LoginForm({
     setIsLoading(false);
 
     if (typeof response === "string") {
-      console.error(response);
+      toast.error(`Erro ao realizar a criação da conta`);
       return;
     }
 
-    if (response === false && setMustShowVerify) setMustShowVerify(true)
+    if (response === false && setMustShowVerify) setMustShowVerify(true);
   };
 
   const onSubmitLogin = async (values: z.infer<typeof loginFormSchema>) => {
     if (handleLoginSubmit) {
       setIsLoading(true);
       try {
-        await handleLoginSubmit(values);
+        const res = await handleLoginSubmit(values);
       } catch (error) {
-        console.error("Login failed:", error);
+        console.log(error)
+        toast.error("Erro ao realizar login");
       } finally {
         setIsLoading(false);
       }

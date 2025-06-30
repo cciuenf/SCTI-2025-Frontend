@@ -31,8 +31,8 @@ export async function handleLoginSubmit({
 
   } catch (err: unknown) {
     if (err instanceof FetchError) {
-      console.error("Erro ao realizar o login: ", err.message);
-      return err.message;
+
+      return err.message, err.status
     } else {
       console.error("Erro ao realizar o login: ", err);
       return "Erro desconhecido ao realizar o login";
