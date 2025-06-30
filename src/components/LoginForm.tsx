@@ -1,3 +1,4 @@
+
 import {
   Form,
   FormControl,
@@ -15,13 +16,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction } from "react";
 import { handleGetEvents } from "@/actions/event-actions";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type LoginFormProps = {
   type: "Login" | "Sign Up";
   handleLoginSubmit?: (values: {
     email: string;
     password: string;
-  }) => Promise<string>;
+  }) => Promise<any>;
 
   handleSignUpSubmit?: (values: {
     name: string;
@@ -53,6 +55,9 @@ export default function LoginForm({
   setMustShowVerify,
   setIsLoading,
 }: LoginFormProps) {
+
+  const router = useRouter()
+
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: { email: "", password: "" },
@@ -88,9 +93,14 @@ export default function LoginForm({
       setIsLoading(true);
       try {
         const res = await handleLoginSubmit(values);
+        if (!res.success) {
+          toast.error("Erro ao realizar login")
+        } else {
+          toast.success("Login bem-sucedido!")
+          router.push("/dashboard")
+        }
       } catch (error) {
-        console.log(error)
-        toast.error("Erro ao realizar login");
+        console.error(error)
       } finally {
         setIsLoading(false);
       }

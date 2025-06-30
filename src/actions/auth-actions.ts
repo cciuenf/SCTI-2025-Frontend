@@ -28,7 +28,7 @@ export async function handleLoginSubmit({
       res.result.data.access_token,
       res.result.data.refresh_token
     );
-
+    return {success: true}
   } catch (err: unknown) {
     if (err instanceof FetchError) {
 
@@ -38,7 +38,6 @@ export async function handleLoginSubmit({
       return "Erro desconhecido ao realizar o login";
     }
   }
-  redirect("/dashboard");
 }
 
 export async function handleSignUp({
