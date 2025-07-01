@@ -29,12 +29,12 @@ export default function Home() {
               <Link href={"sign-up"}>Cadastre-se</Link>
             </Button>
           </div>
-          <div className="w-full flex justify-between items-start my-3">
-            <div className="w-1/2 flex items-center">
+          <div className="w-full flex justify-around items-start my-3">
+            <div className="w-1/2 flex items-end">
               <Calendar className="text-accent mr-1" />
               <p className="text-sm text-zinc-50">1-5 de Setembro de 2025</p>
             </div>
-            <div className="w-1/2 flex items-center">
+            <div className="w-1/2 flex items-end">
               <MapPin className="text-accent mr-1" />
               <p className="text-sm text-zinc-50">
                 Universidade Estadual do Norte Fluminse - UENF

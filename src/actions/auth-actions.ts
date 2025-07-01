@@ -7,7 +7,6 @@ import {
 } from "@/types/auth-interfaces";
 import { fetchWrapper } from "@/lib/fetch";
 import { FetchError } from "@/types/utility-classes";
-import { redirect } from "next/navigation";
 import { getAuthTokens, setAuthTokens } from "@/lib/cookies";
 import jwt from "jsonwebtoken";
 
@@ -184,7 +183,7 @@ export async function handleVerifyToken(token: string) {
 
   if (!accessToken || !refreshToken) {
     console.error("Erro na checagem de tokens");
-    return "Erro na checagem de tokens";
+    return {status: 401, msg: "Erro na checagem de tokens"};
   }
 
   try {
@@ -197,7 +196,7 @@ export async function handleVerifyToken(token: string) {
       body: JSON.stringify({ token: token }),
     });
 
-    redirect("/dashboard");
+    return {status: 200, msg: "Usuário verificado"}
   } catch (error: unknown) {
     if (error instanceof FetchError) {
       console.error("Erro ao verificar autenticação: ", error.message);

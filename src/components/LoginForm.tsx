@@ -83,6 +83,8 @@ export default function LoginForm({
     if (typeof response === "string") {
       toast.error(`Erro ao realizar a criação da conta`);
       return;
+    } else {
+      toast.info("Código de verificação enviado para o e-mail cadastrado!")
     }
 
     if (response === false && setMustShowVerify) setMustShowVerify(true);
@@ -122,7 +124,7 @@ export default function LoginForm({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your email" {...field} />
+                    <Input placeholder="Coloque seu email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -133,15 +135,15 @@ export default function LoginForm({
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your password" {...field} />
+                    <Input placeholder="Coloque sua senha" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Send!</Button>
+            <Button type="submit">Enviar!</Button>
           </form>
         </Form>
       ) : (
@@ -155,9 +157,9 @@ export default function LoginForm({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel>Nome</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your first name" {...field} />
+                    <Input placeholder="Coloque seu nome" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -168,9 +170,9 @@ export default function LoginForm({
               name="last_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel>Sobrenome</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your last name" {...field} />
+                    <Input placeholder="Coloque seu sobrenome" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -183,7 +185,7 @@ export default function LoginForm({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your email" {...field} />
+                    <Input placeholder="Coloque seu email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -194,15 +196,15 @@ export default function LoginForm({
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your password" {...field} />
+                    <Input placeholder="Coloque sua senha" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Send!</Button>
+            <Button type="submit">Enviar</Button>
           </form>
         </Form>
       )}

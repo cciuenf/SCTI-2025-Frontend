@@ -21,7 +21,7 @@ export default function Login() {
             setIsLoading={setIsLoading}
           />
           <Button variant={"outline"} asChild>
-            <Link href={"/sign-up"}>Sign Up</Link>
+            <Link href={"/sign-up"}>Inscreva-se</Link>
           </Button>
         </div>
       )}
