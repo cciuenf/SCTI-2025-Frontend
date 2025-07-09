@@ -57,7 +57,13 @@ export default function Home() {
         2025
       </h2>
       <div className="w-3/4 flex items-center justify-around flex-wrap md:w-full">
-        <Image src={"/test.jpg"} width={250} height={200} alt="" className="rounded-md"/>
+        <Image
+          src={"/test.jpg"}
+          width={250}
+          height={200}
+          alt=""
+          className="rounded-md"
+        />
         <div className="w-1/2 flex flex-col items-center justify-around">
           <h3 className="text-md font-light">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec

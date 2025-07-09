@@ -39,11 +39,11 @@ const EventListSection = ({ fetchFunction, eventFilter }: Props) => {
     setSwitchedRegister(!switchedRegister)
     if (action == "inscreveu-se") {
       handleRegisterFromEvent(slug)
-      toast("Inscrição realizada com sucesso!")
+      toast.success("Inscrição realizada com sucesso!")
       return
     }
     handleUnresgiterFromEvent(slug)
-      toast("Desinscrição realizada com sucesso!")
+      toast.info("Desinscrição realizada com sucesso!")
   }
 
   const getActionButton = (slug: string): ReactNode | undefined => {
@@ -66,17 +66,17 @@ const EventListSection = ({ fetchFunction, eventFilter }: Props) => {
   return (
     <>
       {currentData?.length != 0 ? (
-        <div className="w-full max-w-4xl mt-6">
-          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="w-full max-w-5xl mt-6">
+          <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-4">
             {currentData?.map((e) => (
               <EventCard
                 key={e.Slug}
                 slug={e.Slug}
                 name={e.Name}
                 local={e.location}
-                actionButton={getActionButton(e.Slug)}
                 start_date={e.start_date}
                 end_date={e.end_date}
+                description={e.description}
               />
             ))}
           </div>
