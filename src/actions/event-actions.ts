@@ -87,7 +87,6 @@ export async function handleGetUserSubscribedEvents() {
         Refresh: `Bearer ${refreshToken}`,
       },
     });
-    console.log(res.result.data)
     return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
@@ -165,7 +164,6 @@ export async function handleUpdateSlugCreatedEvents(
         Refresh: `Bearer ${refreshToken}`,
       },
     });
-
     return { success: true, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
@@ -192,6 +190,7 @@ export async function handleRegisterFromEvent(slug: string) {
         },
       }
     );
+    console.log(res.result.data)
 
     return {
       success: true,

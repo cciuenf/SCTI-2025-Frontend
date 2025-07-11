@@ -5,7 +5,7 @@ import { useState } from "react";
 import LoginForm from "@/components/LoginForm";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Loader, { Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -21,7 +21,7 @@ export default function Login() {
             setIsLoading={setIsLoading}
           />
           <Button variant={"outline"} asChild>
-            <Link href={"/sign-up"}>Sign Up</Link>
+            <Link href={"/sign-up"}>Inscreva-se</Link>
           </Button>
         </div>
       )}

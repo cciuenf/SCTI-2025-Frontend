@@ -2,7 +2,8 @@
 import React from "react";
 import Link from "next/link";
 import { format } from "date-fns";
-import { Separator } from "./ui/separator";
+import { Calendar, MapPin, ArrowUpRightFromSquare } from "lucide-react";
+import { Badge } from "./ui/badge";
 
 type Props = {
   slug: string;
@@ -10,7 +11,7 @@ type Props = {
   local: string;
   start_date: Date;
   end_date: Date;
-  actionButton?: React.ReactNode;
+  description: string;
 };
 
 const EventCard = ({
@@ -18,37 +19,41 @@ const EventCard = ({
   name,
   start_date,
   end_date,
-  actionButton,
   local,
+  description,
 }: Props) => {
   return (
-    <div className="flex flex-col justify-around items-center gap-5 bg-white rounded-lg shadow-md px-1 py-3 hover:shadow-lg transition-shadow">
-      <div className="w-3/4 flex justify-between items-center ">
-        <Link
-          href={`/events/${slug}`}
-          key={slug}
-          className="hover:opacity-70 duration-300 w-3/5 lg:pr-5 sm:pr-0 sm:w-1/2"
-          aria-label={`Ver detalhes do evento ${name}`}
-        >
-          <h2 className="font-bold text-lg">{name}</h2>
-        </Link>
+    <div className="flex flex-col justify-around items-center bg-white rounded-lg shadow-md px-1 py-3 hover:shadow-lg transition-shadow">
+      <div className="w-full flex flex-col justify-around items-start gap-3.5 mb-0 pl-2">
+        <div className="w-full flex justify-between pr-2.5">
+          <Badge className="bg-accent text-secondary">SCTI</Badge>
+          <Link href={`/events/${slug}`} key={slug}>
+            <ArrowUpRightFromSquare className="w-4 h-4" />
+          </Link>
+        </div>
 
-        <Separator className="bg-accent" orientation="vertical" />
+        <h2 className="font-bold text-lg mb-0">{name}</h2>
 
-        <div className="flex flex-col items-center justify-around w-2/5 gap-2 pl-2 text-center sm:pl-0 sm:w-1/2">
-          <h3 className="opacity-90 text-sm">{`de ${format(
+        <div className="flex justify-between">
+          <Calendar className="text-accent h-4 w-4 mr-2.5" />
+          <h3 className="opacity-90 text-sm">{`De ${format(
             start_date,
             "dd/MM/yyyy"
-          )}`}</h3>
-          <h3 className="opacity-90 text-sm">{`até ${format(
-            end_date,
-            "dd/MM/yyyy"
-          )}`}</h3>
+          )} até ${format(end_date, "dd/MM/yyyy")}`}</h3>
+        </div>
+        <div className="flex justify-between">
+          <MapPin className="text-accent h-4 w-4 mr-2.5" />
           <h3 className="opacity-90 text-sm">{local}</h3>
         </div>
-      </div>
 
-      {actionButton}
+        <h3 className="opacity-90 text-sm">{description}</h3>
+        <Link href={`/events/${slug}`}>
+          <div className="flex justify-around">
+            <p className="font-bold mr-2 text-sm">Ver detalhes</p>
+            <ArrowUpRightFromSquare className="w-4 h-4" />
+          </div>
+        </Link>
+      </div>
     </div>
   );
 };

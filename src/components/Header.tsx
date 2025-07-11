@@ -6,20 +6,20 @@ type Props = {};
 
 const Header = (props: Props) => {
   return (
-    <div className="w-full h-10 px-3 flex justify-around items-center">
-      <Button asChild variant={"link"}>
+    <div className="w-full h-10 px-3 flex justify-around items-center bg-secondary">
+      <Button asChild variant={"header"}>
         <Link href={"/"}>Home</Link>
       </Button>
-      <Button asChild variant={"link"}>
+      <Button asChild variant={"header"}>
         <Link href={"/dashboard"}>Dashboard</Link>
       </Button>
-      <Button asChild variant={"link"}>
+      <Button asChild variant={"header"}>
         <Link href={"/events"}>Events</Link>
       </Button>
-      <Button asChild variant={"link"}>
+      <Button asChild variant={"header"}>
         <Link href={"/products"}>Products</Link>
       </Button>
-      <Button asChild variant={"link"}>
+      <Button asChild variant={"header"}>
         <Link href={"/Activites"}>Activites</Link>
       </Button>
     </div>

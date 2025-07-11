@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
 import { fontClass } from "@/lib/fonts";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -17,6 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${fontClass} antialiased min-h-screen bg-background`}>
         <Header/>
+        <Toaster position="top-right" richColors theme="light" closeButton/>
         {children}
       </body>
     </html>

@@ -4,6 +4,7 @@ import { EventCredentialsI } from "@/types/event-interfaces";
 import { useRouter } from "next/navigation";
 import CustomGenericForm, { FieldConfig } from "./ui/Generic/CustomGenericForm";
 import { EventCreationDataI, eventCreationSchema } from "@/schemas/event-schema";
+import { toast } from "sonner";
 
 type Props = {
   event?: {
@@ -34,6 +35,7 @@ const CreateEventForm = ({
   const router = useRouter()
 
   const onSubmit = async (values: EventCreationDataI) => {
+    console.log(values)
     const convertedValues = {
       ...values,
       max_tokens_per_user: parseInt(values.max_tokens_per_user),
@@ -43,10 +45,11 @@ const CreateEventForm = ({
       try {
         const result = await handleUpdate(convertedValues, slug);
         if (result.success) {
-          console.log("Evento atualizado com sucesso:", result.data.Name);
+          console.log(result.data)
+          toast.success(`Evento atualizado com sucesso: ${result.data.Name}`);
           router.push(`${result.data.Slug}`)
         } else {
-          console.error("Falha na atualização do evento:", result.data.Name);
+          toast.error(`Falha na atualização do evento: ${result.data.Name}`);
         }
       } catch (error) {
         console.error("Error updating event:", error);
@@ -56,9 +59,9 @@ const CreateEventForm = ({
       try {
         const result = await handleCreate(convertedValues);
         if (result.success) {
-          console.log("Evento criado com sucesso:", result.data.Name);
+          toast.success("Evento criado com sucesso:", result.createdEventName);
         } else {
-          console.error("Falha na criação do evento:", result.data.Name);
+          toast.error("Falha na criação do evento:", result.createdEventName);
         }
       } catch (error) {
         console.error("Error creating event:", error);

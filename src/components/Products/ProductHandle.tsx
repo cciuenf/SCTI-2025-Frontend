@@ -6,6 +6,7 @@ import { ActivityResponseI } from "@/types/activity-interface"
 import ProductModalForm from "./ProductModalForm";
 import ProductBuyModalForm from "./ProductBuyModalForm";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 interface ProductProps {
   product: ProductResponseI;
@@ -18,15 +19,18 @@ interface ProductProps {
 export default function ProductHandle({ product, currentEvent, activities, onProductDelete, onProductUpdate }: ProductProps) {
   const submitDelete = async () => {
     const result = await handleDeleteProduct({product_id: product.ID}, currentEvent.slug);
-    if (result?.success) await onProductDelete(product.ID);
+    if (result?.success) {
+      await onProductDelete(product.ID);
+      toast.warning("Produto deletado!")
+    }
   }
-  
+
   return (
   <div className="mt-4 flex gap-2">
-    <ProductModalForm 
+    <ProductModalForm
       currentEvent={currentEvent}
-      isCreating={false} 
-      product={product} 
+      isCreating={false}
+      product={product}
       activities={activities}
       onProductUpdate={onProductUpdate}
     />
