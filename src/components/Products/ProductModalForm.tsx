@@ -6,8 +6,9 @@ import { handleCreateProduct, handleUpdateProduct } from "@/actions/product-acti
 import { ProductResponseI } from "@/types/product-interfaces";
 import { ActivityResponseI } from "@/types/activity-interface";
 import { ProductCreationDataI, productCreationSchema } from "@/schemas/product-schema";
+import { toast } from "sonner";
 
-const ProductModalForm: React.FC<{ 
+const ProductModalForm: React.FC<{
   currentEvent: { id: string; slug: string }
   isCreating: boolean,
   product?: ProductResponseI,
@@ -24,14 +25,14 @@ const ProductModalForm: React.FC<{
   }));
 
   options.unshift({
-    label: currentEvent.slug, 
-    unique: true, 
+    label: currentEvent.slug,
+    unique: true,
     value: JSON.stringify({ is_event: true, target_id: currentEvent.id })
   });
 
   const transformedProduct = product ? {
     ...product,
-    access_targets: product.access_targets?.map(target => 
+    access_targets: product.access_targets?.map(target =>
       JSON.stringify({ is_event: target.is_event, target_id: target.target_id })
     ) || []
   } : undefined;
@@ -41,10 +42,10 @@ const ProductModalForm: React.FC<{
     { name: "description", label: "Descrição", placeholder: "Coloque a descrição do produto" },
     { name: "price_int", label: "Preço do Produto", type: "price" as const, placeholder: "R$ 0,00" },
     { name: "has_unlimited_quantity", label: "É infinito?", type: "switch" as const },
-    { 
-      name: "quantity", 
-      label: "Quantidade", 
-      type: "number" as const, 
+    {
+      name: "quantity",
+      label: "Quantidade",
+      type: "number" as const,
       placeholder: "0",
       disabledWhen: {
         field: "has_unlimited_quantity",
@@ -59,15 +60,15 @@ const ProductModalForm: React.FC<{
     { name: "is_hidden", label: "Está oculto?", type: "switch" as const },
     { name: "is_ticket_type", label: "É um ticket?", type: "switch" as const },
     { name: "is_event_access", label: "Permite Acesso ao Evento?", type: "switch" as const },
-    { 
-      name: "expires_at", 
-      label: "Data de Expiração", 
+    {
+      name: "expires_at",
+      label: "Data de Expiração",
       type: "datetime" as const,
       placeholder: "Selecione a data de expiração"
     },
     {
-      name: "access_targets", 
-      label: "Libera Acesso a:", 
+      name: "access_targets",
+      label: "Libera Acesso a:",
       type: "multiple_select" as const,
       options: options,
       placeholder: "Selecione o alvo do acesso"
@@ -86,12 +87,15 @@ const ProductModalForm: React.FC<{
         if (result?.success && result.data && onProductCreate) {
           setOpen(false);
           await onProductCreate(result.data);
+          toast.success("Produto criado!")
         }
       } else if(product) {
         const result = await handleUpdateProduct(transformedData, currentEvent.slug, product.ID);
         if (result?.success && result.data && onProductUpdate) {
           setOpen(false);
           await onProductUpdate(result.data);
+          toast.success("Produto atualizado!")
+
         }
       } else throw new Error("Produto Inválido")
     } catch (error) {
@@ -106,14 +110,14 @@ const ProductModalForm: React.FC<{
       open={open}
       onOpenChange={setOpen}
     >
-      <CustomGenericForm<ProductCreationDataI> 
-        schema={productCreationSchema} 
-        fields={fields} 
+      <CustomGenericForm<ProductCreationDataI>
+        schema={productCreationSchema}
+        fields={fields}
         defaultValues={transformedProduct || {
-          name: "", 
-          description: "", 
-          price_int: 0, 
-          has_unlimited_quantity: false, 
+          name: "",
+          description: "",
+          price_int: 0,
+          has_unlimited_quantity: false,
           quantity: 0,
           max_ownable_quantity: 1,
           token_quantity: 0,

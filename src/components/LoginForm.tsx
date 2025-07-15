@@ -12,15 +12,17 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction } from "react";
-import { handleGetEvents } from "@/actions/event-actions";
+import { Dispatch, SetStateAction, useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 type LoginFormProps = {
   type: "Login" | "Sign Up";
   handleLoginSubmit?: (values: {
     email: string;
     password: string;
-  }) => Promise<string>;
+  }) => Promise<any>;
 
   handleSignUpSubmit?: (values: {
     name: string;
@@ -52,6 +54,9 @@ export default function LoginForm({
   setMustShowVerify,
   setIsLoading,
 }: LoginFormProps) {
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: { email: "", password: "" },
@@ -75,20 +80,29 @@ export default function LoginForm({
     setIsLoading(false);
 
     if (typeof response === "string") {
-      console.error(response);
+      toast.error(`Erro ao realizar a criação da conta`);
       return;
+    } else {
+      toast.info("Código de verificação enviado para o e-mail cadastrado!");
     }
 
-    if (response === false && setMustShowVerify) setMustShowVerify(true)
+    if (response === false && setMustShowVerify) setMustShowVerify(true);
   };
 
   const onSubmitLogin = async (values: z.infer<typeof loginFormSchema>) => {
     if (handleLoginSubmit) {
       setIsLoading(true);
       try {
-        await handleLoginSubmit(values);
+        const res = await handleLoginSubmit(values);
+        if (!res.success) {
+          toast.error("Erro ao realizar login");
+        } else {
+          setIsLoading(false);
+          router.push("/dashboard");
+          toast.success("Login bem-sucedido!");
+        }
       } catch (error) {
-        console.error("Login failed:", error);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
@@ -110,7 +124,7 @@ export default function LoginForm({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your email" {...field} />
+                    <Input placeholder="Coloque seu email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,15 +135,31 @@ export default function LoginForm({
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your password" {...field} />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Coloque sua senha"
+                        {...field}
+                      />
+                      <div
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5 text-accent" />
+                        ) : (
+                          <Eye className="h-5 w-5 text-accent" />
+                        )}
+                      </div>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Send!</Button>
+            <Button type="submit">Enviar!</Button>
           </form>
         </Form>
       ) : (
@@ -143,9 +173,9 @@ export default function LoginForm({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel>Nome</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your first name" {...field} />
+                    <Input placeholder="Coloque seu nome" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -156,9 +186,9 @@ export default function LoginForm({
               name="last_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel>Sobrenome</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your last name" {...field} />
+                    <Input placeholder="Coloque seu sobrenome" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -171,7 +201,7 @@ export default function LoginForm({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your email" {...field} />
+                    <Input placeholder="Coloque seu email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -182,15 +212,31 @@ export default function LoginForm({
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input placeholder="Put your password" {...field} />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Coloque sua senha"
+                        {...field}
+                      />
+                      <div
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5 text-accent" />
+                        ) : (
+                          <Eye className="h-5 w-5 text-accent" />
+                        )}
+                      </div>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Send!</Button>
+            <Button type="submit">Enviar</Button>
           </form>
         </Form>
       )}

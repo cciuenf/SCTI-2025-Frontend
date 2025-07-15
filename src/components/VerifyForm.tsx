@@ -13,7 +13,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { handleVerifyToken } from "@/actions/auth-actions";
-import { ChangeEvent, Dispatch, Reference, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type Props = {
   setMustShowVerify: Dispatch<SetStateAction<boolean>>;
@@ -42,6 +44,8 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading }: Props) => {
     },
   });
 
+  const router = useRouter()
+
   const ref2 = useRef<HTMLInputElement>(null);
   const ref3 = useRef<HTMLInputElement>(null);
   const ref4 = useRef<HTMLInputElement>(null);
@@ -62,8 +66,14 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading }: Props) => {
     const res = await handleVerifyToken(token);
     setIsLoading(false);
 
-    if (typeof res === "string") {
-      return;
+    if (res.status == 200) {
+      toast.success("Usuário verificado")
+      router.push("/dashboard")
+    }
+
+    if (res.status != 200) {
+      toast.error("Código inválido")
+      return
     }
   };
 
@@ -258,7 +268,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading }: Props) => {
               )}
             />
           </div>
-          <Button ref={verifyRef} type="submit">Verify</Button>
+          <Button ref={verifyRef} type="submit">Verificar</Button>
         </form>
       </Form>
     </div>
