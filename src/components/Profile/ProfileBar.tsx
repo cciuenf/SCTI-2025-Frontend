@@ -1,11 +1,19 @@
 "use client";
 import { useState } from "react";
+import { useRouter} from "next/navigation";
 import { cn } from "@/lib/utils";
 import { User, CreditCard, BoxIcon, LockIcon } from "lucide-react";
 type Props = {};
 
 const ProfileBar = (props: Props) => {
   const [currentView, setCurrentView] = useState<string>("infos");
+  const router = useRouter()
+
+  const handleViewChange = (newView: string) => {
+    setCurrentView(newView)
+    router.push(`profile?view=${newView}`)
+  }
+
   return (
     <div className="w-4/5 flex items-center justify-around border-1 border-secondary bg-secondary rounded-md p-1 gap-1">
       <div
@@ -13,7 +21,7 @@ const ProfileBar = (props: Props) => {
           "w-1/4 flex items-center justify-center gap-2 cursor-pointer py-3 px-1 duration-300 rounded-md text-zinc-100 hover:bg-zinc-100 hover:text-secondary",
           currentView == "infos" && "bg-zinc-100 text-secondary"
         )}
-        onClick={() => setCurrentView("infos")}
+        onClick={() => handleViewChange("infos")}
       >
         <User />
         <h2>Informações</h2>
@@ -23,7 +31,7 @@ const ProfileBar = (props: Props) => {
           "w-1/4 flex items-center justify-center gap-2 cursor-pointer py-3 px-1 duration-300 rounded-md text-zinc-100 hover:bg-zinc-100 hover:text-secondary",
           currentView == "products" && "bg-zinc-100 text-secondary"
         )}
-        onClick={() => setCurrentView("products")}
+        onClick={() => handleViewChange("products")}
       >
         <BoxIcon />
         <h2>Produtos</h2>
@@ -33,7 +41,7 @@ const ProfileBar = (props: Props) => {
           "w-1/4 flex items-center justify-center gap-2 cursor-pointer py-3 px-1 duration-300 rounded-md text-zinc-100 hover:bg-zinc-100 hover:text-secondary",
           currentView == "shopping" && "bg-zinc-100 text-secondary"
         )}
-        onClick={() => setCurrentView("shopping")}
+        onClick={() => handleViewChange("shopping")}
       >
         <CreditCard />
         <h2>Compras</h2>
@@ -43,7 +51,7 @@ const ProfileBar = (props: Props) => {
           "w-1/4 flex items-center justify-center gap-2 cursor-pointer py-3 px-1 duration-300 rounded-md text-zinc-100 hover:bg-zinc-100 hover:text-secondary",
           currentView == "security" && "bg-zinc-100 text-secondary"
         )}
-        onClick={() => setCurrentView("security")}
+        onClick={() => handleViewChange("security")}
       >
         <LockIcon />
         <h2>Segurança</h2>
