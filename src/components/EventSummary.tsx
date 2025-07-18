@@ -20,6 +20,12 @@ type Props = {
 const EventSummary = ({ slug, user_info }: Props) => {
   const [currentEvent, setCurrentEvent] = useState<EventResponseI>()
 
+  const handleRegister = (slug: string, type: "register" | "unregister") => {
+    if (type == "register") {
+      handleRegisterFromEvent(slug)
+    }
+  }
+
   const fetchEvent = async () => {
     const event = await handleGetSlugCreatedEvent(slug)
     if (event?.success) {
