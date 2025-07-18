@@ -9,7 +9,7 @@ import { FetchError } from "@/types/utility-classes";
 export async function handleGetUserEventActivities(slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
   try {
-    const res = await fetchWrapper<ActivityResponseI[]>(`/events/${slug}/accesses`, {
+    const res = await fetchWrapper<ActivityResponseI[]>(`/events/${slug}/user-activities`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -30,14 +30,11 @@ export async function handleGetUserEventActivities(slug: string) {
 }
 
 export async function handleGetAllEventActivities(slug: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
   try {
     const res = await fetchWrapper<ActivityResponseI[]>(`/events/${slug}/activities`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
       },
     });
     return { success: true, data: res.result.data, message: res.result.message };
@@ -121,6 +118,56 @@ export async function handleUpdateActivity(data: Partial<ActivityCreationDataI>,
     } else {
       console.error("Erro desconhecido ao atualizar a atividade", error);
       return { success: false };
+    }
+  }
+}
+
+export async function handleRegisterFromActivity(data: ActivityResponseI, slug: string, userId: string) {
+  const { accessToken, refreshToken } = await getAuthTokens();
+  const activityType = data.is_standalone ? 'register-standalone' : 'register'
+  try {
+    const res = await fetchWrapper<ActivityResponseI>(`/events/${slug}/activity/${activityType}`, {
+      method: "POST",
+      body: JSON.stringify({activity_id: data.ID, user_id: userId}),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+    });
+    return { success: true, data: res.result.data };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao registrar na atividade", error.message);
+      return { status: error.status, success: false };
+    } else {
+      console.error("Erro ao registrar na atividade", error);
+      return { message: "Erro desconhecido", success: false };
+    }
+  }
+}
+
+export async function handleUnregisterFromActivity(data: ActivityResponseI, slug: string, userId: string) {
+  const { accessToken, refreshToken } = await getAuthTokens();
+  const activityType = data.is_standalone ? 'unregister-standalone' : 'unregister'
+  try {
+    const res = await fetchWrapper<ActivityResponseI>(`/events/${slug}/activity/${activityType}`, {
+      method: "POST",
+      body: JSON.stringify({activity_id: data.ID, user_id: userId}),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+    });
+    return { success: true, data: res.result.data };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao desinscrever da atividade", error.message);
+      return { status: error.status, success: false };
+    } else {
+      console.error("Erro ao desinscrever da atividade", error);
+      return { message: "Erro desconhecido", success: false };
     }
   }
 }

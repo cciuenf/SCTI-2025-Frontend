@@ -1,6 +1,8 @@
 "use server";
 
 import { cookies } from 'next/headers'
+import jwt from "jsonwebtoken";
+import { UserAccessTokenJwtPayload } from '@/types/auth-interfaces';
 
 export async function setAuthTokens(access_token: string | null, refresh_token: string | null) {
   const cookieStore = cookies();
@@ -33,4 +35,13 @@ export async function clearAuthTokens() {
   const cookieStore = cookies();
   (await cookieStore).delete('access_token');
   (await cookieStore).delete('refresh_token');
+}
+
+export async function getUserInfo() {
+  const cookieStore = cookies();
+  const access_token = (await cookieStore).get("access_token")?.value;
+  const user_info = jwt.decode(
+    access_token as string
+  ) as UserAccessTokenJwtPayload | null;
+  return user_info;
 }

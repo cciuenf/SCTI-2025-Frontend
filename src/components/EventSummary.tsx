@@ -11,6 +11,7 @@ import {
 import { Button } from "./ui/button";
 import DeleteTrashButton from "./DeleteTrashButton";
 import { EventResponseI } from "@/types/event-interfaces";
+import Link from "next/link";
 
 type Props = {
   slug: string;
@@ -52,6 +53,10 @@ const EventSummary = ({ slug, user_info }: Props) => {
             Desinscrever-se
           </Button>
 
+          <Button asChild>
+            <Link href={`${slug}/activities`}>Ver Atividades</Link>
+          </Button>
+          
           <Button onClick={() => handleRegisterFromEvent(slug)}>
             Inscrever-se
           </Button>
