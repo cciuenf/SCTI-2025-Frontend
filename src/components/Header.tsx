@@ -17,10 +17,7 @@ const Header = (props: Props) => {
         <Link href={"/events"}>Events</Link>
       </Button>
       <Button asChild variant={"header"}>
-        <Link href={"/products"}>Products</Link>
-      </Button>
-      <Button asChild variant={"header"}>
-        <Link href={"/Activites"}>Activites</Link>
+        <Link href={"/profile"}>Profile</Link>
       </Button>
     </div>
   );
