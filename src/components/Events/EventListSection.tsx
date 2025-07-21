@@ -12,6 +12,7 @@ import {
 import { EventResponseI } from "@/types/event-interfaces";
 import CardSkeleton from "../Loading/CardSkeleton";
 import { cn } from "@/lib/utils";
+import { Plus } from "lucide-react";
 
 const EventListSection = (props: { isEventCreator: boolean }) => {
   const [currentView, setCurrentView] = useState<string>("all");
@@ -76,31 +77,41 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
     <>
       <div 
         className={cn(
-          "flex items-center justify-around", 
-          "border-1 border-secondary bg-secondary rounded-md p-0.5 gap-1"
+          "flex items-center justify-around relative",
+          "border-1 border-secondary bg-secondary rounded-md p-0.5",
+          "gap-0.5 sm:gap-1"
         )}
       >
         <div
           className={cn(
-            "w-1/2 flex items-center justify-center gap-2 cursor-pointer", 
-            "py-2 px-1 duration-300 transition-colors rounded-md text-zinc-100",
-            "hover:bg-zinc-100 hover:text-secondary hover:font-semibold",
-            currentView == "my" && "bg-zinc-100 text-secondary font-semibold"
+            "flex-1 flex items-center justify-center gap-1 sm:gap-2 cursor-pointer",
+            "py-1 px-0.5 sm:py-2 sm:px-1 duration-300 transition-colors rounded-md",
+            "hover:bg-white hover:text-secondary hover:font-semibold",
+            "text-xs sm:text-base text-white",
+            currentView === "my" && "bg-zinc-100 text-secondary font-semibold"
           )}
           onClick={() => setCurrentView("my")}
         >
-          <h2>Meus Eventos</h2>
+          <h2 className={cn(currentView !== "my" && "opacity-80")}>Meus Eventos</h2>
         </div>
+        <Plus 
+          className={cn(
+            "absolute h-full w-auto rounded-full p-2 scale-125 cursor-pointer",
+            "text-white bg-accent shadow-md z-10 transition-all",
+            "hover:text-accent hover:bg-secondary hover:scale-[140%]"
+          )}
+        />
         <div
           className={cn(
-            "w-1/2 flex items-center justify-center gap-2 cursor-pointer", 
-            "py-2 px-1 duration-300 transition-colors rounded-md text-zinc-100",
-            "hover:bg-zinc-100 hover:text-secondary hover:font-semibold",
-            currentView == "all" && "bg-zinc-100 text-secondary font-semibold"
+            "flex-1 flex items-center justify-center gap-1 sm:gap-2 cursor-pointer",
+            "py-1 px-0.5 sm:py-2 sm:px-1 duration-300 transition-colors rounded-md",
+            "hover:bg-white hover:text-secondary hover:font-semibold",
+            "text-xs sm:text-base text-white",
+            currentView === "all" && "bg-zinc-100 text-secondary font-semibold"
           )}
           onClick={() => setCurrentView("all")}
         >
-          <h2>Todos os Eventos</h2>
+          <h2 className={cn(currentView !== "all" && "opacity-80")}>Todos os Eventos</h2>
         </div>
       </div>
 

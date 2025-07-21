@@ -24,7 +24,7 @@ export async function handleCreateEvent(data: EventCredentialsI) {
       },
     });
 
-    return { success: res.result.success, createdEventName: res.result.data };
+    return { success: res.result.success, createdEvent: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
       console.error("Erro na criação do evento", error.message);
