@@ -1,7 +1,6 @@
 "use server";
 
 import {
-  EventCredentialsI,
   EventResponseI,
   EventSubscriptionResponseI,
 } from "@/types/event-interfaces";
@@ -9,8 +8,9 @@ import { fetchWrapper } from "@/lib/fetch";
 import { getAuthTokens } from "@/lib/cookies";
 import { FetchError } from "@/types/utility-classes";
 import { redirect } from "next/navigation";
+import { EventCreationDataI } from "@/schemas/event-schema";
 
-export async function handleCreateEvent(data: EventCredentialsI) {
+export async function handleCreateEvent(data: EventCreationDataI) {
   const { accessToken, refreshToken } = await getAuthTokens();
 
   try {
@@ -24,7 +24,7 @@ export async function handleCreateEvent(data: EventCredentialsI) {
       },
     });
 
-    return { success: res.result.success, createdEvent: res.result.data };
+    return { success: res.result.success, data: res.result.data };
   } catch (error) {
     if (error instanceof FetchError) {
       console.error("Erro na criação do evento", error.message);
@@ -129,17 +129,19 @@ export async function handleGetSlugCreatedEvent(slug: string) {
     }
   }
 }
+
 export async function handleDeleteSlugCreatedEvents(slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
 
   try {
-    const res = await fetchWrapper<EventResponseI>(`/events/${slug}`, {
+    await fetchWrapper(`/events/${slug}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         Refresh: `Bearer ${refreshToken}`,
       },
     });
+    return { success: true }
   } catch (error) {
     if (error instanceof FetchError) {
       console.error(`Erro ao deletar o evento com slug: ${slug}`, error.message);
@@ -148,8 +150,9 @@ export async function handleDeleteSlugCreatedEvents(slug: string) {
   }
   redirect("/events");
 }
+
 export async function handleUpdateSlugCreatedEvents(
-  data: Partial<EventCredentialsI>,
+  data: Partial<EventCreationDataI>,
   slug: string
 ) {
   const { accessToken, refreshToken } = await getAuthTokens();
@@ -190,7 +193,6 @@ export async function handleRegisterFromEvent(slug: string) {
         },
       }
     );
-    console.log(res.result.data)
 
     return {
       success: true,
@@ -239,6 +241,7 @@ export async function handleUnresgiterFromEvent(slug: string) {
     }
   }
 }
+
 export async function handlePromoteUserInEvent(slug: string, email: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
 
@@ -255,10 +258,6 @@ export async function handlePromoteUserInEvent(slug: string, email: string) {
         body: JSON.stringify({ email: email }),
       }
     );
-    console.log({
-      success: true,
-      message: res.result.message,
-    });
     return {
       success: true,
       message: res.result.message,
@@ -273,6 +272,7 @@ export async function handlePromoteUserInEvent(slug: string, email: string) {
     }
   }
 }
+
 export async function handleDemoteUserInEvent(slug: string, email: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
 
@@ -289,10 +289,6 @@ export async function handleDemoteUserInEvent(slug: string, email: string) {
         body: JSON.stringify({ email: email }),
       }
     );
-    console.log({
-      success: true,
-      message: res.result.message,
-    });
     return {
       success: true,
       data: res.result.data,

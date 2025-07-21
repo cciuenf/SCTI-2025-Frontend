@@ -6,6 +6,7 @@ import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { formatEventDateRange } from "@/lib/utils";
+import ConfirmActionButton from "../ConfirmActionButton";
 
 type Props = {
   slug: string;
@@ -16,8 +17,10 @@ type Props = {
   description: string;
   isEventCreator: boolean;
   isSubscribed: boolean;
-  onRegister?: ((slug: string) => Promise<void>) | null;
-  onUnregister?: ((slug: string) => Promise<void>) | null;
+  onRegister?: ((id: string) => Promise<void>) | null;
+  onUnregister?: ((id: string) => Promise<void>) | null;
+  onUpdateFormOpen?: () => void | null;
+  onDelete?: (id: string) => Promise<void> | null;
 };
 
 const EventCard = ({
@@ -31,14 +34,27 @@ const EventCard = ({
   isSubscribed,
   onRegister,
   onUnregister,
+  onUpdateFormOpen,
+  onDelete
 }: Props) => {
-  const handleClick = async (e: React.MouseEvent) => {
+  const handleRegisterState = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!onRegister || !onUnregister) return;
     if (isSubscribed) await onUnregister(slug);
-    else  await onRegister(slug);
+    else await onRegister(slug);
   };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if(onUpdateFormOpen) onUpdateFormOpen();
+  };
+
+  const handleDelete = async () => {
+    if(onDelete) await onDelete(slug);
+  };
+
   return (
     <Link href={`/events/${slug}`} key={slug} className="block w-full h-full cursor-default">
       <div className={cn(
@@ -55,11 +71,32 @@ const EventCard = ({
               {slug.toUpperCase()}
             </Badge>
             <div className="flex items-center gap-3">
-              <Eye className="w-5 h-5 cursor-pointer"/>
+              <Eye className={cn(
+                "w-5 h-5 cursor-pointer transition-transform duration-200",
+                "hover:text-accent hover:scale-125"
+              )} />
               {isEventCreator && (
                 <>
-                  <Edit3 className="w-5 h-5"/>
-                  <Trash2 className="w-5 h-5"/>
+                  <Edit3 
+                    className={cn(
+                      "w-5 h-5 cursor-pointer transition-transform duration-200",
+                      "hover:text-accent hover:scale-125"
+                    )} 
+                    onClick={handleEdit}
+                  />
+                  <ConfirmActionButton
+                    trigger={(onClick) => (
+                      <Trash2
+                        className={cn(
+                          "w-5 h-5 cursor-pointer transition-transform duration-200",
+                          "hover:text-red-500 hover:scale-125"
+                        )}
+                        onClick={onClick}
+                      />
+                    )}
+                    message="Tem certeza que deseja apagar esse evento?"
+                    onConfirm={handleDelete}
+                  />
                 </>
               )}
             </div>
@@ -83,7 +120,7 @@ const EventCard = ({
           </h3>
           {(onRegister && onUnregister) && (
             <Button 
-              onClick={handleClick}
+              onClick={handleRegisterState}
               className={cn(
                 "w-full py-1 rounded-sm shadow-md cursor-pointer duration-300 transition-colors",
                 isSubscribed

@@ -1,11 +1,6 @@
 import { getUserInfo } from "@/lib/cookies";
 import { redirect } from "next/navigation";
-
-// import ProductListSection from "@/components/Products/ProductListSection";
-// import CreateEventForm from "@/components/CreateEventForm";
-// import EventSummary from "@/components/Events/EventSummary";
 import EventListSection from "@/components/Events/EventListSection";
-// import CreateEventForm from "@/components/CreateEventForm";
 
 const EventsPage = async () => {
   const user_info = await getUserInfo()

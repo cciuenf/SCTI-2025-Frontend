@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import EventCard from "./EventCard";
 import {
+  handleDeleteSlugCreatedEvents,
   handleGetEvents,
   handleGetUserSubscribedEvents,
   handleRegisterFromEvent,
@@ -13,8 +14,11 @@ import { EventResponseI } from "@/types/event-interfaces";
 import CardSkeleton from "../Loading/CardSkeleton";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
+import EventModalForm from "./EventModalForm";
 
 const EventListSection = (props: { isEventCreator: boolean }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<EventResponseI>();
   const [currentView, setCurrentView] = useState<string>("all");
   const [allEvents, setAllEvents] = useState<EventResponseI[]>([]);
   const [myEvents, setMyEvents] = useState<EventResponseI[]>([]);
@@ -53,6 +57,33 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
       </div>
     );
   }
+
+  const openEventModal = (eventToUpdate?: EventResponseI) => {
+    setSelectedEvent(eventToUpdate);
+    setIsModalOpen(true);
+  }
+
+  const handleEventCreate = async (newEvent: EventResponseI) => {
+    setAllEvents(prevEvents => [...prevEvents, newEvent]);
+  };
+
+  const handleEventUpdate = async (updatedEvent: EventResponseI) => {
+    setAllEvents(prevEvents =>
+      prevEvents.map(e => e.ID === updatedEvent.ID ? updatedEvent : e)
+    );
+    setMyEvents(prevEvents =>
+      prevEvents.map(e => e.ID === updatedEvent.ID ? updatedEvent : e)
+    );
+  };
+
+  const handleEventDelete = async (slug: string) => {
+    const res = await handleDeleteSlugCreatedEvents(slug);
+    if(res.success) {
+      setAllEvents(prevEvents => prevEvents.filter(e => e.Slug !== slug));
+      setMyEvents(prevEvents => prevEvents.filter(e => e.Slug !== slug));
+      toast.success("Evento apagado com sucesso!");
+    } else toast.error("Erro ao apagar o evento");
+  };
 
   const handleRegister = async (slug: string) => {
     const res = await handleRegisterFromEvent(slug);
@@ -100,6 +131,7 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
             "text-white bg-accent shadow-md z-10 transition-all",
             "hover:text-accent hover:bg-secondary hover:scale-[140%]"
           )}
+          onClick={() => openEventModal()}
         />
         <div
           className={cn(
@@ -131,6 +163,8 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
                 isSubscribed={myEvents.some(ev => ev.Slug === e.Slug)}
                 onRegister={handleRegister}
                 onUnregister={handleUnregister}
+                onUpdateFormOpen={() => props.isEventCreator ? openEventModal(e) : null}
+                onDelete={handleEventDelete}
               />
             ))}
           </div>
@@ -138,6 +172,14 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
       ) : (
         <p className="mt-6 mb-10">Sem eventos disponíveis nessa seção</p>
       )}
+      <EventModalForm 
+        event={selectedEvent}
+        isCreating={!selectedEvent}
+        open={isModalOpen}
+        setOpen={setIsModalOpen}
+        onEventCreate={handleEventCreate}
+        onEventUpdate={handleEventUpdate}
+      />
     </>
   );
 };
