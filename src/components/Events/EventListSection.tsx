@@ -1,48 +1,27 @@
 "use client";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-
+import { useState } from "react";
 import EventCard from "./EventCard";
-import {
-  handleDeleteSlugCreatedEvents,
-  handleGetEvents,
-  handleGetUserSubscribedEvents,
-  handleRegisterFromEvent,
-  handleUnresgiterFromEvent,
-} from "@/actions/event-actions";
 import { EventResponseI } from "@/types/event-interfaces";
 import CardSkeleton from "../Loading/CardSkeleton";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import EventModalForm from "./EventModalForm";
+import { useUserEvents } from "@/contexts/UserEventsProvider";
 
 const EventListSection = (props: { isEventCreator: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventResponseI>();
   const [currentView, setCurrentView] = useState<string>("all");
-  const [allEvents, setAllEvents] = useState<EventResponseI[]>([]);
-  const [myEvents, setMyEvents] = useState<EventResponseI[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setLoading(true);
-        const [allEventsData, myEventsData] = await Promise.all([
-          handleGetEvents(),
-          handleGetUserSubscribedEvents()
-        ]);
-
-        setAllEvents(allEventsData?.data || []);
-        setMyEvents(myEventsData?.data || []);
-      } catch (error) {
-        console.error("Erro ao carregar eventos:", error);
-        toast.error("Erro ao carregar eventos");
-      } finally { setLoading(false); }
-    };
-
-    fetchEvents();
-  }, []);
+  const { 
+    allEvents, 
+    myEvents, 
+    loading, 
+    handleEventCreate, 
+    handleEventDelete, 
+    handleEventUpdate,
+    handleRegister, 
+    handleUnregister 
+  } = useUserEvents();
 
   const currentData = currentView === "all" ? allEvents : myEvents;
 
@@ -62,47 +41,6 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
     setSelectedEvent(eventToUpdate);
     setIsModalOpen(true);
   }
-
-  const handleEventCreate = async (newEvent: EventResponseI) => {
-    setAllEvents(prevEvents => [...prevEvents, newEvent]);
-  };
-
-  const handleEventUpdate = async (updatedEvent: EventResponseI) => {
-    setAllEvents(prevEvents =>
-      prevEvents.map(e => e.ID === updatedEvent.ID ? updatedEvent : e)
-    );
-    setMyEvents(prevEvents =>
-      prevEvents.map(e => e.ID === updatedEvent.ID ? updatedEvent : e)
-    );
-  };
-
-  const handleEventDelete = async (slug: string) => {
-    const res = await handleDeleteSlugCreatedEvents(slug);
-    if(res.success) {
-      setAllEvents(prevEvents => prevEvents.filter(e => e.Slug !== slug));
-      setMyEvents(prevEvents => prevEvents.filter(e => e.Slug !== slug));
-      toast.success("Evento apagado com sucesso!");
-    } else toast.error("Erro ao apagar o evento");
-  };
-
-  const handleRegister = async (slug: string) => {
-    const res = await handleRegisterFromEvent(slug);
-    if (res.success) {
-      const event = allEvents.find(e => e.Slug === slug);
-      if (event && !myEvents.some(e => e.Slug === slug)) {
-        setMyEvents(prev => [...prev, event]);
-        toast.success("Inscrição realizada com sucesso!");
-      }
-    } else toast.error("Erro ao se inscrever no evento");
-  };
-
-  const handleUnregister = async (slug: string) => {
-    const res = await handleUnresgiterFromEvent(slug);
-    if (res.success) {
-      setMyEvents(prev => prev.filter(e => e.Slug !== slug));
-      toast.success("Inscrição cancelada com sucesso!");
-    } else toast.error("Erro ao cancelar inscrição no evento");
-  };
 
   return (
     <>

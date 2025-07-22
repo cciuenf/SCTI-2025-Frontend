@@ -9,8 +9,8 @@ import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 const EventModalForm: React.FC<{ 
   isCreating: boolean,
   event?: EventResponseI
-  onEventUpdate?: (updatedProduct: EventResponseI) => Promise<void>,
-  onEventCreate?: (newProduct: EventResponseI) => Promise<void>,
+  onEventUpdate?: (updatedProduct: EventResponseI) => void,
+  onEventCreate?: (newProduct: EventResponseI) => void,
   open: boolean,
   setOpen: (open: boolean) => void,
 }> = ({ isCreating, event, onEventCreate, onEventUpdate, open, setOpen }) => {
@@ -20,7 +20,7 @@ const EventModalForm: React.FC<{
       if(isCreating) {
         const result = await handleCreateEvent(data);
         if (result?.success && result.data && onEventCreate) {
-          await onEventCreate(result.data);
+          onEventCreate(result.data);
           setOpen(false);
           toast.success(`Evento criado com sucesso: ${result.data.Name}`, {
             description: result.data.description
@@ -30,7 +30,7 @@ const EventModalForm: React.FC<{
         const result = await handleUpdateSlugCreatedEvents(data, event.Slug);
         if (result?.success && result.data && onEventUpdate) {
           setOpen(false);
-          await onEventUpdate(result.data);
+          onEventUpdate(result.data);
           toast.success(`Evento atualizado com sucesso: ${result.data.Name}`);
         }
       } else toast.error("Evento Inválido");
