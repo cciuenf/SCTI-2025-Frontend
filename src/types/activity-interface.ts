@@ -2,6 +2,7 @@ export interface ActivityResponseI {
   ID: string,
   name: string,
   speaker: string,
+  type: string;
   description: string,
   location: string,
   has_fee: boolean,

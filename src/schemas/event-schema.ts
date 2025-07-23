@@ -13,7 +13,7 @@ export const eventCreationSchema = z.object({
     invalid_type_error: "Você precisa inserir um número",
     required_error: "Campo obrigatório",
   }).int().min(0, "Quantidade inválida"),
-}).refine((data) => data.start_date < data.end_date, {
+}).refine((data) => new Date(data.start_date) < new Date(data.end_date), {
   message: "A data de início precisa ser anterior a data de fim.",
   path: ["end_date"],
 });

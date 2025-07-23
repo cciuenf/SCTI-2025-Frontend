@@ -65,7 +65,6 @@ const EventCard = ({
           <div className="w-full flex justify-between">
             <Badge
               className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
-              style={{ textOverflow: 'ellipsis' }}
               title={slug.toUpperCase()}
             >
               {slug.toUpperCase()}

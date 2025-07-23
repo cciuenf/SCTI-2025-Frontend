@@ -19,7 +19,7 @@ export const activityCreationSchema = z.object({
     invalid_type_error: "Você precisa inserir um número",
     required_error: "Campo obrigatório",
   }).int().min(0, "Quantidade inválida"),
-}).refine((data) => data.start_time < data.end_time, {
+}).refine((data) => new Date(data.start_time) < new Date(data.end_time), {
   message: "A data de início precisa ser anterior a data de fim.",
   path: ["end_time"],
 }).refine((data) => (!data.is_standalone || data.standalone_slug.trim().length >= 2), {

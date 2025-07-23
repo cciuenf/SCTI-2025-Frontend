@@ -171,3 +171,29 @@ export async function handleUnregisterFromActivity(data: ActivityResponseI, slug
     }
   }
 }
+
+// handleGetUsersWhoParticipateInActivity
+
+// export async function handleGetRegisteredUsersInActivity(data: { id: string }, slug: string) {
+//   const { accessToken, refreshToken } = await getAuthTokens();
+//   try {
+//     const res = await fetchWrapper<any>(`/events/${slug}/activity/registrations`, {
+//       method: "GET",
+//       body: JSON.stringify(data),
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${accessToken}`,
+//         Refresh: `Bearer ${refreshToken}`,
+//       },
+//     });
+//     return { success: true, data: res.result.data };
+//   } catch (error) {
+//     if (error instanceof FetchError) {
+//       console.error("Erro ao adquirir os usuários registrados na atividade", error.message);
+//       return { status: error.status, success: false };
+//     } else {
+//       console.error("Erro ao adquirir os usuários registrados na atividade", error);
+//       return { message: "Erro desconhecido", success: false };
+//     }
+//   }
+// }

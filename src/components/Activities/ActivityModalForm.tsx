@@ -1,19 +1,20 @@
 "use client";
-import React, { useState } from "react";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import CustomGenericForm, {FieldConfig} from "../ui/Generic/CustomGenericForm";
 import { ActivityResponseI } from "@/types/activity-interface";
 import { ActivityCreationDataI, activityCreationSchema } from "@/schemas/activity-schema";
 import { handleCreateActivity, handleUpdateActivity } from "@/actions/activity-actions";
+import { toast } from "sonner";
 
 const ActivityModalForm: React.FC<{ 
   currentEvent: { id: string; slug: string }
   isCreating: boolean,
   activity?: ActivityResponseI,
-  onActivityUpdate?: (updatedProduct: ActivityResponseI) => Promise<void>,
-  onActivityCreate?: (newProduct: ActivityResponseI) => Promise<void>
-}> = ({ isCreating, currentEvent, activity, onActivityCreate, onActivityUpdate }) => {
-  const [open, setOpen] = useState(false);
+  onActivityUpdate?: (updatedProduct: ActivityResponseI) => void,
+  onActivityCreate?: (newProduct: ActivityResponseI) => void,
+  open: boolean,
+  setOpen: (open: boolean) => void,
+}> = ({ isCreating, currentEvent, activity, onActivityCreate, onActivityUpdate, open, setOpen }) => {
 
   const fields: FieldConfig<ActivityCreationDataI>[] = [
     { name: "name", label: "Nome", placeholder: "Nome do Evento" },
@@ -66,17 +67,17 @@ const ActivityModalForm: React.FC<{
         const result = await handleCreateActivity(data, currentEvent.slug);
         if (result?.success && result.data && onActivityCreate) {
           setOpen(false);
-          await onActivityCreate(result.data);
+          onActivityCreate(result.data);
         }
       } else if(activity) {
         const result = await handleUpdateActivity(data, currentEvent.slug, activity.ID);
         if (result?.success && result.data && onActivityUpdate) {
           setOpen(false);
-          await onActivityUpdate(result.data);
+          onActivityUpdate(result.data);
         }
-      } else throw new Error("Atividade Inválida")
+      } else toast.error("Atividade Inválida")
     } catch (error) {
-      console.error("Erro ao criar Atividade:", error);
+      toast.error(`Erro ao manipular Atividade: ${data.name}`);
     }
   };
 
@@ -86,6 +87,7 @@ const ActivityModalForm: React.FC<{
       description={`Preencha os campos abaixo para que consiga ${isCreating ? "criar" : "alterar"} a atividade desejada!`}
       open={open}
       onOpenChange={setOpen}
+      trigger={null}
     >
       <CustomGenericForm<ActivityCreationDataI> 
         schema={activityCreationSchema} 

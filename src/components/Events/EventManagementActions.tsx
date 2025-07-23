@@ -4,22 +4,42 @@ import { CheckCircle, Eye, Pencil, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useUserEvents } from "@/contexts/UserEventsProvider";
+import LoadingSpinner from "../Loading/LoadingSpinner";
+import { EventResponseI } from "@/types/event-interfaces";
+import EventModalForm from "./EventModalForm";
+import { useEffect, useState } from "react";
 
 interface Props {
   isEventCreator: boolean;
-  slug: string;
+  event: EventResponseI;
 }
 
-const EventManagementActions = ({
-  isEventCreator, slug
-}: Props) => {
-  const { myEvents } = useUserEvents();
-  const isSubscribed = myEvents.find(e => e.Slug === slug);
+const EventManagementActions = ({ isEventCreator, event }: Props) => {
+  const [isEditEventModalOpen, setIsEventModalOpen] = useState(false);
+  const { myEvents, allEvents, handleRegister, handleUnregister, loading, handleEventUpdate } = useUserEvents();
+  const updatedEvent = allEvents.find(e => e.Slug === event.Slug) || event;
+
+  if (loading) {
+    return (
+      <div className="w-full max-w-5xl mt-6">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  const isSubscribed = myEvents.find(e => e.Slug === updatedEvent.Slug);
+
+  const handleRegisterState = async (e: React.MouseEvent) => {
+    if (!handleRegister || !handleUnregister) return;
+    if (isSubscribed) await handleUnregister(updatedEvent.Slug);
+    else await handleRegister(updatedEvent.Slug);
+  };
+
   return(
     <>
       {isEventCreator && (
         <>
-          <Button
+          {/* <Button
             // onClick={onMarkPresence}
             className="flex-none p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 bg-foreground text-white font-medium hover:text-accent hover:bg-secondary"
             title="Marcar Presença"
@@ -44,10 +64,10 @@ const EventManagementActions = ({
           >
             <Users size={18} />
             <span className="hidden sm:inline ml-1">Ver Inscrições</span>
-          </Button>
+          </Button> */}
 
           <Button
-            // onClick={onEdit}
+            onClick={() => setIsEventModalOpen(true)}
             className="flex-none p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 bg-accent text-secondary font-medium hover:text-accent hover:bg-secondary"
             title="Editar"
           >
@@ -57,9 +77,9 @@ const EventManagementActions = ({
         </>
       )}
 
-      {/* {(onRegister && onUnregister) && ( */}
+      {
         <Button
-          // onClick={handleRegisterState}
+          onClick={handleRegisterState}
           className={cn(
             "flex-none p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200",
             isSubscribed
@@ -70,7 +90,14 @@ const EventManagementActions = ({
         >
           {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
         </Button>
-      {/* )} */}
+      }
+      <EventModalForm 
+        event={updatedEvent}
+        isCreating={false}
+        open={isEditEventModalOpen}
+        setOpen={setIsEventModalOpen}
+        onEventUpdate={handleEventUpdate}
+      />
     </>
   )
 }

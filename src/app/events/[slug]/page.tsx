@@ -1,5 +1,5 @@
-// import { handleGetAllEventActivities } from "@/actions/activity-actions";
 import { handleGetSlugCreatedEvent } from "@/actions/event-actions";
+import ActivityListSection from "@/components/Activities/ActivityListSection";
 import EventManagementActions from "@/components/Events/EventManagementActions";
 import { getUserInfo } from "@/lib/cookies";
 import { formatEventDateRange } from "@/lib/utils";
@@ -20,8 +20,6 @@ const SlugEventPage = async (props: Props) => {
   const isEventCreator = user_info?.is_event_creator || user_info?.is_super || false;
 
   const eventRes = await handleGetSlugCreatedEvent(slug);
-  // console.log(eventRes)
-  // const activitiesRes = await handleGetAllEventActivities(slug);
 
   return (
     <div className="flex flex-col mx-auto items-center justify-center gap-4 mt-10">
@@ -40,8 +38,18 @@ const SlugEventPage = async (props: Props) => {
       </div>
       <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2">Sobre o Evento</h2>
       <p className="text-center max-w-[80%] font-light">{ eventRes?.data.description }</p>
-      <div className="flex flex-wrap justify-center gap-2 px-2">
-        <EventManagementActions isEventCreator={isEventCreator} slug={slug}/>
+      <div className="flex flex-wrap justify-center gap-4 px-2">
+        {eventRes?.data && <EventManagementActions isEventCreator={isEventCreator} event={eventRes.data}/> }
+      </div>
+      <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2">Atividades</h2>
+      <div className="w-full max-w-4xl px-4">
+        {eventRes?.data && user_info && 
+          <ActivityListSection 
+            isEventCreator={isEventCreator} 
+            currentEvent={{id: eventRes.data.ID, slug: slug}} 
+            user_id={user_info.id}
+          />
+        }
       </div>
     </div>
   );
