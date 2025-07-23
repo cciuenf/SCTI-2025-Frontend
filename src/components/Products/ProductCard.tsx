@@ -4,12 +4,12 @@ import { Badge } from "../ui/badge";
 import { cn, convertNumberToBRL, formatFullDate } from "@/lib/utils";
 import { Button } from "../ui/button";
 import ConfirmActionButton from "../ConfirmActionButton";
-import { ProductBuyCredentialsI, ProductResponseI } from "@/types/product-interfaces";
+import { ProductResponseI } from "@/types/product-interfaces";
 
 type Props = {
   data: ProductResponseI;
   isEventCreator: boolean;
-  onPurchase?: ((data: ProductBuyCredentialsI) => Promise<void>) | null;
+  onOpenPurchaseModal?: ((data: ProductResponseI) => void) | null;
   onUpdateFormOpen?: () => void | null;
   onDelete?: (id: string) => Promise<void> | null;
 };
@@ -17,16 +17,15 @@ type Props = {
 const ProductCard = ({
   data,
   isEventCreator,
-  onPurchase,
+  onOpenPurchaseModal,
   onUpdateFormOpen,
   onDelete
 }: Props) => {
-  const handleBuy = async (e: React.MouseEvent) => {
+  const handleBuyModal = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!onPurchase) return;
-    // if (isSubscribed) await onUnregister(data);
-    // else await onRegister(data);
+    if (!onOpenPurchaseModal) return;
+    onOpenPurchaseModal(data);
   };
 
   const handleEdit = (e: React.MouseEvent) => {
@@ -134,9 +133,9 @@ const ProductCard = ({
         <h2 className="font-bold text-secondary text-xl">
           {convertNumberToBRL(data.price_int)}
         </h2>
-        {onPurchase && (
+        {onOpenPurchaseModal && (
           <Button 
-            onClick={handleBuy}
+            onClick={handleBuyModal}
             className={cn(
               "w-full py-1 rounded-sm shadow-md cursor-pointer duration-300 transition-colors",
               "bg-accent text-secondary font-medium hover:text-accent hover:bg-secondary"

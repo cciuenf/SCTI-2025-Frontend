@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from "react";
 import ProductModalForm from "./ProductModalForm";
-import { ProductBuyCredentialsI, ProductResponseI } from "@/types/product-interfaces";
+import { ProductPurchasesResponseI, ProductResponseI } from "@/types/product-interfaces";
 import { ActivityResponseI } from "@/types/activity-interface";
-import { handleBuyProduct, handleDeleteProduct, handleGetAllEventProducts } from "@/actions/product-actions";
+import { handleDeleteProduct, handleGetAllEventProducts } from "@/actions/product-actions";
 import { handleGetAllEventActivities } from "@/actions/activity-actions";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import CardSkeleton from "../Loading/CardSkeleton";
 import { toast } from "sonner";
 import ProductCard from "./ProductCard";
+import ProductBuyModalForm from "./ProductBuyModalForm";
 
 interface ProductListSectionProps { 
   currentEvent: { id: string; slug: string };
@@ -18,7 +19,8 @@ interface ProductListSectionProps {
 }
 
 export default function ProductListSection({ currentEvent, isEventCreator }: ProductListSectionProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
+  const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ProductResponseI>();
   const [allProducts, setAllProducts] = useState<ProductResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
@@ -56,11 +58,15 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
     );
   }
 
-  const openProductModal = (productToUpdate?: ProductResponseI) => {
+  const openCreationProductModal = (productToUpdate?: ProductResponseI) => {
     setSelectedProduct(productToUpdate);
-    setIsModalOpen(true);
+    setIsCreationModalOpen(true);
   }
 
+  const openPurchaseProductModal = (productToBuy: ProductResponseI) => {
+    setSelectedProduct(productToBuy);
+    setIsPurchaseModalOpen(true);
+  }
   
   const handleProductCreate = (newProduct: ProductResponseI) => {
     setAllProducts(prev => [...prev, newProduct]);
@@ -72,6 +78,15 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
     );
   };
 
+  const handleProductPurchase = (purchasedProduct: ProductPurchasesResponseI) => {
+    setAllProducts(prev =>
+      prev.map(p => p.ID === purchasedProduct.product_id 
+        ? {...p, quantity: Math.max((p.quantity || 0) - purchasedProduct.quantity, 0)} 
+        : p
+      )
+    );
+  };
+
   const handleProductDelete = async (product_id: string) => {
     const res = await handleDeleteProduct({ product_id: product_id }, currentEvent.slug);
     if (res.success) {
@@ -80,17 +95,11 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
     } else toast.error("Erro ao apagar o produto");
   };
 
-  const handleProductPurchase = async (data: ProductBuyCredentialsI) => {
-    const res = await handleBuyProduct(data, currentEvent.slug);
-    if (res.success) toast.success("Produto comprado com sucesso!");
-    else toast.error("Erro ao comprar o produto");
-  };
-
   return (
     <>
       {isEventCreator &&
         <Button
-          onClick={() => openProductModal()}
+          onClick={() => openCreationProductModal()}
           className={cn(
             "flex w-full p-5 rounded-sm shadow-md cursor-pointer",
             "transition-colors duration-200 bg-accent mb-4 font-bold",
@@ -109,8 +118,8 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
                 key={product.ID}
                 data={product}
                 isEventCreator={isEventCreator}
-                onPurchase={handleProductPurchase}
-                onUpdateFormOpen={() => isEventCreator ? openProductModal(product) : null}
+                onOpenPurchaseModal={openPurchaseProductModal}
+                onUpdateFormOpen={() => isEventCreator ? openCreationProductModal(product) : null}
                 onDelete={handleProductDelete}
               />
             ))}
@@ -119,16 +128,23 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
       ) : (
         <p className="mt-6 mb-10 text-center">Sem produtos disponíveis nessa seção</p>
       )}
-    <ProductModalForm
-      currentEvent={currentEvent}
-      activities={allActivities}
-      product={selectedProduct}
-      isCreating={!selectedProduct}
-      open={isModalOpen}
-      setOpen={setIsModalOpen}
-      onProductCreate={handleProductCreate}
-      onProductUpdate={handleProductUpdate}
-    />
+      <ProductModalForm
+        currentEvent={currentEvent}
+        activities={allActivities}
+        product={selectedProduct}
+        isCreating={!selectedProduct}
+        open={isCreationModalOpen}
+        setOpen={setIsCreationModalOpen}
+        onProductCreate={handleProductCreate}
+        onProductUpdate={handleProductUpdate}
+      />
+      {selectedProduct && <ProductBuyModalForm
+        slug={currentEvent.slug}
+        product={selectedProduct}
+        open={isPurchaseModalOpen}
+        setOpen={setIsPurchaseModalOpen}
+        onProductPurchase={handleProductPurchase}
+      />}
     </>
 
   );

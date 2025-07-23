@@ -106,7 +106,7 @@ export async function handleBuyProduct(data: ProductBuyCredentialsI, slug: strin
   const { accessToken, refreshToken } = await getAuthTokens();
 
   try {
-    const res = await fetchWrapper<any>(`/events/${slug}/purchase`, {
+    const res = await fetchWrapper<{purchase: ProductPurchasesResponseI}>(`/events/${slug}/purchase`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
