@@ -1,18 +1,22 @@
 "use client";
 import React from "react";
 import { Button } from "../ui/button";
-import ProductListSection from "../Products/ProductListSection";
 import { MailCheckIcon, LogOut, PenIcon } from "lucide-react";
-import { handleLogout } from "@/actions/auth-actions";
 
+import ProductListSection from "../Products/ProductListSection";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
+
+import { handleLogout } from "@/actions/auth-actions";
 import {
   UserAccessTokenJwtPayload,
   UserRefreshTokenJwtPayload,
 } from "@/types/auth-interfaces";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { clearAuthTokens, getAuthTokens } from "@/lib/cookies";
+import VerifyForm from "../VerifyForm";
 
 type Props = {
   currentView: string;
@@ -25,7 +29,9 @@ const ProfileInfos = ({
   user_access_info,
   user_refresh_info,
 }: Props) => {
-  console.log(user_refresh_info);
+  const [mustShowVerify, setMustShowVerify] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const router = useRouter();
 
   if (!user_access_info) {
@@ -70,10 +76,22 @@ const ProfileInfos = ({
                 </span>
               </h2>
               {!user_access_info.is_verified && (
-                <Button variant={"profile"} className="w-1/2">
-                  <MailCheckIcon />
-                  <p>Verificar conta</p>
-                </Button>
+                <Dialog>
+                  <Button variant={"profile"} className="w-1/2" asChild>
+                    <DialogTrigger>
+                      <MailCheckIcon />
+                      <p>Verificar conta</p>
+                    </DialogTrigger>
+                  </Button>
+                  <DialogContent>
+                    <DialogTitle></DialogTitle>
+                    <VerifyForm
+                      setMustShowVerify={setMustShowVerify}
+                      setIsLoading={setIsLoading}
+                      origin="profile"
+                    />
+                  </DialogContent>
+                </Dialog>
               )}
               <Button variant={"edit"} className="w-4/5">
                 <PenIcon />

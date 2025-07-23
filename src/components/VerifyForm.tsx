@@ -16,10 +16,12 @@ import { handleVerifyToken } from "@/actions/auth-actions";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 type Props = {
   setMustShowVerify: Dispatch<SetStateAction<boolean>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  origin: "signup" | "profile";
 };
 
 const verifyFormSchema = z.object({
@@ -31,7 +33,7 @@ const verifyFormSchema = z.object({
   digit_6: z.string().max(1).min(1),
 });
 
-const VerifyForm = ({ setMustShowVerify, setIsLoading }: Props) => {
+const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
   const verifyForm = useForm<z.infer<typeof verifyFormSchema>>({
     resolver: zodResolver(verifyFormSchema),
     defaultValues: {
@@ -95,7 +97,9 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading }: Props) => {
   };
 
   return (
-    <div className="flex flex-col justify-around items-center gap-3 max-w-md w-1/2 h-60 border-bg-zinc-100 border-1 p-3 rounded-md">
+    <div className={cn("flex flex-col justify-around items-center gap-3 max-w-md w-full h-60 p-3 rounded-md",
+      origin == "signup" && "border-bg-zinc-100 border-1"
+    )}>
       <Form {...verifyForm}>
         <form
           className="w-full max-w-[400px] h-full flex flex-col justify-between items-center gap-3"
@@ -273,9 +277,11 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading }: Props) => {
           <Button ref={verifyRef} type="submit">
             Verificar
           </Button>
-          <Button variant={"outline"} onClick={() => verifyAfter()}>
-            Deixar para depois
-          </Button>
+          {origin == "signup" && (
+            <Button variant={"outline"} onClick={() => verifyAfter()}>
+              Deixar para depois
+            </Button>
+          )}
         </form>
       </Form>
     </div>

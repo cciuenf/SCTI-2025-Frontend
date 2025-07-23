@@ -18,6 +18,7 @@ export default function Login() {
         <VerifyForm
           setMustShowVerify={setMustShowVerify}
           setIsLoading={setIsLoading}
+          origin="signup"
         />
       ) : (
         <div className="border-1 border-primary shadow-xs p-5 rounded-md flex flex-col items-center justify-around gap-3 w-[480px] h-[520px]">
