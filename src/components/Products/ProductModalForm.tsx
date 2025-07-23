@@ -1,5 +1,4 @@
 "use client";
-import React, { useState } from "react";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import CustomGenericForm, {FieldConfig} from "../ui/Generic/CustomGenericForm";
 import { handleCreateProduct, handleUpdateProduct } from "@/actions/product-actions";
@@ -13,10 +12,11 @@ const ProductModalForm: React.FC<{
   isCreating: boolean,
   product?: ProductResponseI,
   activities: ActivityResponseI[],
-  onProductUpdate?: (updatedProduct: ProductResponseI) => Promise<void>,
-  onProductCreate?: (newProduct: ProductResponseI) => Promise<void>
-}> = ({ isCreating, currentEvent, product, activities, onProductUpdate, onProductCreate }) => {
-  const [open, setOpen] = useState(false);
+  onProductUpdate?: (updatedProduct: ProductResponseI) => void,
+  onProductCreate?: (newProduct: ProductResponseI) => void,
+  open: boolean,
+  setOpen: (open: boolean) => void,
+}> = ({ isCreating, currentEvent, product, activities, onProductUpdate, onProductCreate, open, setOpen }) => {
 
   const options = activities.map(activity => ({
     label: activity.name,
@@ -86,20 +86,21 @@ const ProductModalForm: React.FC<{
         const result = await handleCreateProduct(transformedData, currentEvent.slug);
         if (result?.success && result.data && onProductCreate) {
           setOpen(false);
-          await onProductCreate(result.data);
+          onProductCreate(result.data);
           toast.success("Produto criado!")
         }
       } else if(product) {
         const result = await handleUpdateProduct(transformedData, currentEvent.slug, product.ID);
         if (result?.success && result.data && onProductUpdate) {
           setOpen(false);
-          await onProductUpdate(result.data);
+          onProductUpdate(result.data);
           toast.success("Produto atualizado!")
 
         }
-      } else throw new Error("Produto Inválido")
+      } else toast.error("Produto Inválido")
     } catch (error) {
-      console.error("Erro ao criar produto:", error);
+      console.error("Erro ao manipular o produto:", error);
+      toast.error(`Erro ao manipular o Produto: ${data.name}`);
     }
   };
 
@@ -109,6 +110,7 @@ const ProductModalForm: React.FC<{
       description={`Preencha os campos abaixo para que consiga ${isCreating ? "criar" : "alterar"} o produto desejado!`}
       open={open}
       onOpenChange={setOpen}
+      trigger={null}
     >
       <CustomGenericForm<ProductCreationDataI>
         schema={productCreationSchema}

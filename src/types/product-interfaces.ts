@@ -35,6 +35,8 @@ export interface ProductResponseI {
   is_hidden: boolean,
   has_unlimited_quantity: boolean,
   is_ticket_type: boolean,
+  expires_at: string;
+  is_event_access: boolean
   access_targets: AccessTargetsI[],
 }
 

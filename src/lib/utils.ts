@@ -20,6 +20,11 @@ export function convertNumberToBRL(value: number) {
   return (value / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
 }
 
+export function formatFullDate(dateString: string) {
+  const formatted = format(dateString, "d MMM',' yyyy 'às' HH:mm", { locale: ptBR });
+  return formatted
+}
+
 export function formatEventDateRange(start_date: Date, end_date: Date) {
   const sameDay = isSameDay(start_date, end_date);
   const sameMonth = isSameMonth(start_date, end_date);

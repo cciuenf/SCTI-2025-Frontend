@@ -126,14 +126,16 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
         >
           <h2 className={cn(currentView !== "my" && "opacity-80")}>Minhas Atividades</h2>
         </div>
-        <Plus 
-          className={cn(
-            "absolute h-full w-auto rounded-full p-2 scale-125 cursor-pointer",
-            "text-white bg-accent shadow-md z-10 transition-all",
-            "hover:text-accent hover:bg-secondary hover:scale-[140%]"
-          )}
-          onClick={() => openActivityModal()}
-        />
+        {isEventCreator && 
+          <Plus 
+            className={cn(
+              "absolute h-full w-auto rounded-full p-2 scale-125 cursor-pointer",
+              "text-white bg-accent shadow-md z-10 transition-all",
+              "hover:text-accent hover:bg-secondary hover:scale-[140%]",
+            )}
+            onClick={() => openActivityModal()}
+          />
+        }
         <div
           className={cn(
             "flex-1 flex items-center justify-center gap-1 sm:gap-2 cursor-pointer",
@@ -144,12 +146,12 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
           )}
           onClick={() => setCurrentView("all")}
         >
-          <h2 className={cn(currentView !== "all" && "opacity-80")}>Todos as Atividades</h2>
+          <h2 className={cn(currentView !== "all" && "opacity-80")}>Todas as Atividades</h2>
         </div>
       </div>
 
       {currentData?.length !== 0 ? (
-        <div className="w-full max-w-5xl mt-6 mb-6">
+        <div className="w-full max-w-5xl my-6">
           <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4">
             {currentData?.map((activity) => (
               <ActivityCard
@@ -166,7 +168,7 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
           </div>
         </div>
       ) : (
-        <p className="mt-6 mb-10">Sem atividades disponíveis nessa seção</p>
+        <p className="mt-6 mb-10 text-center">Sem atividades disponíveis nessa seção</p>
       )}
       <ActivityModalForm 
         currentEvent={currentEvent}
