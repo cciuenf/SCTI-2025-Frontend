@@ -98,7 +98,7 @@ export default function LoginForm({
           toast.error("Erro ao realizar login");
         } else {
           setIsLoading(false);
-          router.push("/dashboard");
+          router.push("/profile");
           toast.success("Login bem-sucedido!");
         }
       } catch (error) {

@@ -24,7 +24,10 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-primary-foreground dark:hover:bg-accent/50",
         header: "text-zinc-50 border-none underline-offset-4 hover:underline",
-        hour: "bg-accent border-background text-primary-foreground"
+        hour: "bg-accent border-background text-primary-foreground",
+        profile: "bg-transparent rounded-[5px] py-1 px-2.5 border-secondary text-xl hover:tracking-wide",
+        edit: "bg-secondary text-zinc-100 rounded-[5px] py-2 px-2.5 text-xl hover:tracking-wider"
+
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

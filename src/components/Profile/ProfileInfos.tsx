@@ -2,30 +2,106 @@
 import React from "react";
 import { Button } from "../ui/button";
 import ProductListSection from "../Products/ProductListSection";
+import { MailCheckIcon, LogOut, PenIcon } from "lucide-react";
+import { handleLogout } from "@/actions/auth-actions";
+
+import {
+  UserAccessTokenJwtPayload,
+  UserRefreshTokenJwtPayload,
+} from "@/types/auth-interfaces";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { format } from "date-fns";
+import { clearAuthTokens, getAuthTokens } from "@/lib/cookies";
 
 type Props = {
   currentView: string;
+  user_access_info: UserAccessTokenJwtPayload | null;
+  user_refresh_info: UserRefreshTokenJwtPayload | null;
 };
 
-const ProfileInfos = ({ currentView }: Props) => {
-  console.log(currentView);
+const ProfileInfos = ({
+  currentView,
+  user_access_info,
+  user_refresh_info,
+}: Props) => {
+  console.log(user_refresh_info);
+  const router = useRouter();
+
+  if (!user_access_info) {
+    router.push("/");
+    toast.error("Usuário não logado!");
+    return;
+  }
+
+  const handleLogoutSubmit = async () => {
+    const res = await handleLogout();
+    await clearAuthTokens();
+    const { accessToken, refreshToken } = await getAuthTokens();
+
+    if (res.success && !accessToken && !refreshToken) {
+      router.push("/");
+      toast.success("Usuario deslogado com sucesso!");
+      return;
+    }
+    toast.error("Erro ao deslogar usuário!");
+    return;
+  };
+
   return (
     <div className="w-4/5 flex flex-col items-center justify-around gap-3 mx-auto">
       {(currentView == "infos" || currentView == undefined) && (
         <>
           <h2 className="text-4xl">Informações do Usuário</h2>
-          <p className="text-md font-light">Gerencie aqui as informações do seu perfil!</p>
-          <div className="w-full flex justify-between items-center">
-            <div className="w-1/3 flex flex-col gap-3 items-center">
-              <h2 className="text-2xl">Nome do usuário: Nome</h2>
-              <h2 className="text-2xl">E-mail do usuário: E-mail</h2>
-              <Button>Verificar conta</Button>
-              <Button>Editar perfil</Button>
+          <p className="font-normal">
+            Gerencie aqui as informações do seu perfil!
+          </p>
+          <div className="w-full flex justify-between items-start">
+            <div className="w-1/3 flex flex-col gap-3 items-start justify-between">
+              <h2 className="text-2xl font-bold">
+                <span className="font-normal">
+                  Nome:{" "}
+                  {`${user_access_info.name}  ${user_access_info.last_name}`}
+                </span>
+              </h2>
+              <h2 className="text-2xl">
+                <span className="font-normal">
+                  E-mail: {user_access_info.email}
+                </span>
+              </h2>
+              {!user_access_info.is_verified && (
+                <Button variant={"profile"} className="w-1/2">
+                  <MailCheckIcon />
+                  <p>Verificar conta</p>
+                </Button>
+              )}
+              <Button variant={"edit"} className="w-4/5">
+                <PenIcon />
+                <p>Editar perfil</p>
+              </Button>
             </div>
-            <div className="w-1/3 flex flex-col gap-3 items-center">
-              <h2 className="text-2xl">Informações de Login</h2>
-              <h2 className="text-2xl">Local, dia, sistema operacional</h2>
-              <Button>Encerrar sessão</Button>
+            <div className="w-1/3 flex flex-col gap-3 items-end">
+              <div className="flex flex-col gap-2 items-start justify-around">
+                <h2 className="text-2xl">Informações de Login</h2>
+                <h3 className="text-md">{user_refresh_info?.user_agent}</h3>
+                <h3 className="text-md">{`${format(
+                  user_refresh_info!.last_used,
+                  "dd/MM/yyyy HH:mm"
+                )} • IP: ${user_refresh_info?.ip_address}`}</h3>
+              </div>
+              <Button
+                variant={"profile"}
+                className="w-1/2"
+                type="submit"
+                onClick={() => handleLogoutSubmit()}
+              >
+                <LogOut />
+                <p>Encerrar sessão</p>
+              </Button>
+              <Button variant={"edit"} className="w-4/5">
+                <PenIcon />
+                <p>Alterar Senha</p>
+              </Button>
             </div>
           </div>
         </>
@@ -35,6 +111,7 @@ const ProfileInfos = ({ currentView }: Props) => {
           <h2 className="text-4xl">Meus Produtos</h2>
           <p className="text-md font-light">Visualize todos os seus produtos</p>
           <ProductListSection
+            isSuperUser={user_access_info.is_super}
             currentEvent={{ id: "123", slug: "juanevento123" }}
           />
         </>
@@ -43,7 +120,9 @@ const ProfileInfos = ({ currentView }: Props) => {
       {currentView == "shopping" && (
         <>
           <h2 className="text-4xl">Histórico de Compras</h2>
-          <p className="text-md font-light">Visualize todas as suas transações</p>
+          <p className="text-md font-light">
+            Visualize todas as suas transações
+          </p>
         </>
       )}
 

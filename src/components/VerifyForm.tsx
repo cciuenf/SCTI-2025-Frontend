@@ -68,7 +68,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading }: Props) => {
 
     if (res.status == 200) {
       toast.success("Usuário verificado");
-      router.push("/dashboard");
+      router.push("/profile");
     }
 
     if (res.status != 200) {

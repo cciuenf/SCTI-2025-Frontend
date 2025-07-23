@@ -78,6 +78,36 @@ export async function handleSignUp({
   return await handleIsVerified();
 }
 
+export async function handleLogout() {
+  try {
+    const { accessToken, refreshToken } = await getAuthTokens();
+    const res = await fetchWrapper<RefreshTokenI[]>("logout", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+    });
+    return {
+      success: true,
+      data: res.result.data,
+      message: res.result.message,
+    };
+  } catch (err: unknown) {
+    if (err instanceof FetchError) {
+      console.error("Erro ao resgatar os tokens: ", err.message);
+      return { success: false, data: [], message: err.message };
+    } else {
+      console.error("Erro ao resgatar os tokens: ", err);
+      return {
+        success: false,
+        data: [],
+        message: "Erro desconhecido ao resgatar os tokens",
+      };
+    }
+  }
+}
+
 export async function handleGetRefreshTokens() {
   try {
     const { accessToken, refreshToken } = await getAuthTokens();
