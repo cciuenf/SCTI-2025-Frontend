@@ -78,7 +78,7 @@ export async function handleDeleteProduct(data: { product_id: string }, slug: st
     }
   }
 }
-  
+
 export async function handleGetAllEventProducts(slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
   try {

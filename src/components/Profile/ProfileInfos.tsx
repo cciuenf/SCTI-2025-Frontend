@@ -4,7 +4,12 @@ import { Button } from "../ui/button";
 import { MailCheckIcon, LogOut, PenIcon } from "lucide-react";
 
 import ProductListSection from "../Products/ProductListSection";
-import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 import { handleLogout } from "@/actions/auth-actions";
 import {
@@ -16,18 +21,26 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { clearAuthTokens, getAuthTokens } from "@/lib/cookies";
+import UserPurchases from "../UserPurchases";
 import VerifyForm from "../VerifyForm";
+import ChangeNameModalForm from "./ChangeNameModalForm";
+import UserDataView from "./UserDataView";
+import { IBrowser, IOS } from "ua-parser-js";
 
 type Props = {
   currentView: string;
   user_access_info: UserAccessTokenJwtPayload | null;
   user_refresh_info: UserRefreshTokenJwtPayload | null;
+  deviceInfos:
+     { os: string | undefined; browser: string | undefined }
+    | { os:  undefined; browser: undefined }
 };
 
 const ProfileInfos = ({
   currentView,
   user_access_info,
   user_refresh_info,
+  deviceInfos
 }: Props) => {
   const [mustShowVerify, setMustShowVerify] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -93,15 +106,15 @@ const ProfileInfos = ({
                   </DialogContent>
                 </Dialog>
               )}
-              <Button variant={"edit"} className="w-4/5">
-                <PenIcon />
-                <p>Editar perfil</p>
-              </Button>
+              <ChangeNameModalForm
+                name={user_access_info.name}
+                last_name={user_access_info.last_name}
+              />
             </div>
             <div className="w-1/3 flex flex-col gap-3 items-end">
-              <div className="flex flex-col gap-2 items-start justify-around">
+              <div className="flex flex-col gap-2 items-end justify-around">
                 <h2 className="text-2xl">Informações de Login</h2>
-                <h3 className="text-md">{user_refresh_info?.user_agent}</h3>
+                <h3 className="text-md">{`${deviceInfos.os},${deviceInfos.browser}`}</h3>
                 <h3 className="text-md">{`${format(
                   user_refresh_info!.last_used,
                   "dd/MM/yyyy HH:mm"
@@ -123,6 +136,7 @@ const ProfileInfos = ({
             </div>
           </div>
         </>
+        // <UserDataView/>
       )}
       {currentView == "products" && (
         <>
@@ -141,6 +155,7 @@ const ProfileInfos = ({
           <p className="text-md font-light">
             Visualize todas as suas transações
           </p>
+          <UserPurchases />
         </>
       )}
 

@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  setMustShowVerify: Dispatch<SetStateAction<boolean>>;
+  setMustShowVerify?: Dispatch<SetStateAction<boolean>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   origin: "signup" | "profile";
 };

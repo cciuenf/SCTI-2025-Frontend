@@ -8,6 +8,8 @@ import {
 import { fetchWrapper } from "@/lib/fetch";
 import { FetchError } from "@/types/utility-classes";
 import { getAuthTokens, setAuthTokens } from "@/lib/cookies";
+import { headers } from "next/headers";
+import {UAParser} from "ua-parser-js";
 import jwt from "jsonwebtoken";
 
 export async function handleLoginSubmit({
@@ -256,7 +258,7 @@ export async function handleChangeName(name: string, last_name: string) {
       },
       body: JSON.stringify({ name: name, last_name: last_name }),
     });
-
+    console.log(res.result.message, res.result.data)
     return { status: 200, msg: "Nome alterado" };
   } catch (error: unknown) {
     if (error instanceof FetchError) {
@@ -302,4 +304,17 @@ export async function handleChangePassword(password: string) {
       };
     }
   }
+}
+
+export async function handleGetUserDeviceInfos() {
+  const userAgent = (await headers()).get("user-agent");
+  if (userAgent) {
+    const parser = new UAParser(userAgent);
+    const os = parser.getOS()
+    const browser = parser.getBrowser()
+    console.log(os, browser)
+    return { status: 200, data: { os: os.name, browser: browser.name } }
+  }
+
+  return {status: 404, data: {}}
 }
