@@ -258,7 +258,6 @@ export async function handleChangeName(name: string, last_name: string) {
       },
       body: JSON.stringify({ name: name, last_name: last_name }),
     });
-    console.log(res.result.message, res.result.data)
     return { status: 200, msg: "Nome alterado" };
   } catch (error: unknown) {
     if (error instanceof FetchError) {
@@ -312,7 +311,6 @@ export async function handleGetUserDeviceInfos() {
     const parser = new UAParser(userAgent);
     const os = parser.getOS()
     const browser = parser.getBrowser()
-    console.log(os, browser)
     return { status: 200, data: { os: os.name, browser: browser.name } }
   }
 

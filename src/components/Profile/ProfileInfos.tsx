@@ -25,7 +25,6 @@ import UserPurchases from "../UserPurchases";
 import VerifyForm from "../VerifyForm";
 import ChangeNameModalForm from "./ChangeNameModalForm";
 import UserDataView from "./UserDataView";
-import { IBrowser, IOS } from "ua-parser-js";
 
 type Props = {
   currentView: string;
@@ -44,10 +43,17 @@ const ProfileInfos = ({
 }: Props) => {
   const [mustShowVerify, setMustShowVerify] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [accessTokenData, setAccessTokenData] = useState<UserAccessTokenJwtPayload | null>()
 
   const router = useRouter();
 
-  if (!user_access_info) {
+
+  if (user_access_info && !accessTokenData) {
+    setAccessTokenData(user_access_info)
+    return;
+  }
+
+  if (!user_access_info || !accessTokenData) {
     router.push("/");
     toast.error("Usuário não logado!");
     return;
@@ -80,15 +86,15 @@ const ProfileInfos = ({
               <h2 className="text-2xl font-bold">
                 <span className="font-normal">
                   Nome:{" "}
-                  {`${user_access_info.name}  ${user_access_info.last_name}`}
+                  {`${accessTokenData.name}  ${accessTokenData.last_name}`}
                 </span>
               </h2>
               <h2 className="text-2xl">
                 <span className="font-normal">
-                  E-mail: {user_access_info.email}
+                  E-mail: {accessTokenData.email}
                 </span>
               </h2>
-              {!user_access_info.is_verified && (
+              {!accessTokenData.is_verified && (
                 <Dialog>
                   <Button variant={"profile"} className="w-1/2" asChild>
                     <DialogTrigger>
@@ -107,8 +113,8 @@ const ProfileInfos = ({
                 </Dialog>
               )}
               <ChangeNameModalForm
-                name={user_access_info.name}
-                last_name={user_access_info.last_name}
+                accessData={accessTokenData}
+                setAccessData={setAccessTokenData}
               />
             </div>
             <div className="w-1/3 flex flex-col gap-3 items-end">
@@ -143,7 +149,7 @@ const ProfileInfos = ({
           <h2 className="text-4xl">Meus Produtos</h2>
           <p className="text-md font-light">Visualize todos os seus produtos</p>
           <ProductListSection
-            isSuperUser={user_access_info.is_super}
+            isSuperUser={accessTokenData.is_super}
             currentEvent={{ id: "123", slug: "juanevento123" }}
           />
         </>

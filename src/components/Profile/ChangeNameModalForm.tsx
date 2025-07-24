@@ -4,7 +4,7 @@ import {PenIcon} from "lucide-react";
 import { Button } from "../ui/button";
 
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import CustomGenericForm, {
   FieldConfig,
 } from "../ui/Generic/CustomGenericForm";
@@ -13,23 +13,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { z } from "zod";
 import { handleChangeName } from "@/actions/auth-actions";
+import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
 
 type Props = {
-  name: string;
-  last_name: string;
+  accessData: UserAccessTokenJwtPayload
+  setAccessData: Dispatch<SetStateAction<UserAccessTokenJwtPayload | null | undefined>>
 };
 
-const ChangeNameModalForm = ({ name, last_name }: Props) => {
+const ChangeNameModalForm = ({ accessData, setAccessData }: Props) => {
   const [open, setOpen] = useState(false);
 
   const fields: FieldConfig<z.infer<typeof changeNameFormSchema>>[] = [
-    { name: "name", label: "Nome" },
-    { name: "last_name", label: "Sobrenome" },
+    { name: "new_name", label: "Nome" },
+    { name: "new_last_name", label: "Sobrenome" },
   ];
 
   const changeNameFormSchema = z.object({
-    name: z.string().min(2, "O nome precisa de pelo menos 2 caracteres"),
-    last_name: z
+    new_name: z.string().min(2, "O nome precisa de pelo menos 2 caracteres"),
+    new_last_name: z
       .string()
       .min(2, "O sobrenome precisa de pelo menos 2 caracteres"),
   });
@@ -37,23 +38,25 @@ const ChangeNameModalForm = ({ name, last_name }: Props) => {
   const form = useForm<z.infer<typeof changeNameFormSchema>>({
     resolver: zodResolver(changeNameFormSchema),
     defaultValues: {
-      name: name,
-      last_name: last_name,
+      new_name: accessData.name,
+      new_last_name: accessData.last_name,
     },
   });
 
   const handleOnSubmit = async ({
-    name,
-    last_name,
+    new_name,
+    new_last_name,
   }: {
-    name: string;
-    last_name: string;
+    new_name: string;
+    new_last_name: string;
   }) => {
     try {
-      const result = await handleChangeName(name, last_name);
+      const result = await handleChangeName(new_name, new_last_name);
 
       if (result?.status == 200) {
-        toast.success(`Nome alterado com sucesso`);
+        const newAccessTokenData = { ...accessData, name: new_name, last_name: new_last_name }
+        setAccessData(newAccessTokenData)
+        toast.success(`Nome alterado com sucesso!`);
         setOpen(false);
         return;
       }
