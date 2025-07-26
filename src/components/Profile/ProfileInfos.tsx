@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Button } from "../ui/button";
-import { MailCheckIcon, LogOut, PenIcon } from "lucide-react";
+import { MailCheckIcon, LogOut, PenIcon, Monitor } from "lucide-react";
 
 import ProductListSection from "../Products/ProductListSection";
 import {
@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import { handleLogout } from "@/actions/auth-actions";
+import { handleGetRefreshTokens, handleLogout } from "@/actions/auth-actions";
 import {
   UserAccessTokenJwtPayload,
   UserRefreshTokenJwtPayload,
@@ -25,37 +25,38 @@ import UserPurchases from "../UserPurchases";
 import VerifyForm from "../VerifyForm";
 import ChangeNameModalForm from "./ChangeNameModalForm";
 import UserDataView from "./UserDataView";
+import UserLogins from "./UserLogins";
 
 type Props = {
   currentView: string;
   user_access_info: UserAccessTokenJwtPayload | null;
   user_refresh_info: UserRefreshTokenJwtPayload | null;
   deviceInfos:
-     { os: string | undefined; browser: string | undefined }
-    | { os:  undefined; browser: undefined }
+    | { os: string | undefined; browser: string | undefined }
+    | { os: undefined; browser: undefined };
 };
 
 const ProfileInfos = ({
   currentView,
   user_access_info,
   user_refresh_info,
-  deviceInfos
+  deviceInfos,
 }: Props) => {
   const [mustShowVerify, setMustShowVerify] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [accessTokenData, setAccessTokenData] = useState<UserAccessTokenJwtPayload | null>()
+  const [accessTokenData, setAccessTokenData] =
+    useState<UserAccessTokenJwtPayload | null>();
 
   const router = useRouter();
 
-
   if (user_access_info && !accessTokenData) {
-    setAccessTokenData(user_access_info)
+    setAccessTokenData(user_access_info);
     return;
   }
 
   if (!user_access_info || !accessTokenData) {
-    router.push("/");
-    toast.error("Usuário não logado!");
+    router.push("/login");
+    toast.info("Te redirecionamos para que você possa fazer login!");
     return;
   }
 
@@ -169,6 +170,7 @@ const ProfileInfos = ({
         <>
           <h2 className="text-4xl">Histórico de Login</h2>
           <p className="text-md font-light">Monitore os acessos à sua conta</p>
+          <UserLogins/>
         </>
       )}
     </div>

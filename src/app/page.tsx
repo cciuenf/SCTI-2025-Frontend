@@ -25,9 +25,6 @@ export default function Home() {
             <Button asChild variant={"yellow"}>
               <Link href={"login"}>Login</Link>
             </Button>
-            <Button asChild variant={"yellow"}>
-              <Link href={"sign-up"}>Cadastre-se</Link>
-            </Button>
           </div>
           <div className="w-full flex justify-around items-start my-3">
             <div className="w-1/2 flex items-end">
