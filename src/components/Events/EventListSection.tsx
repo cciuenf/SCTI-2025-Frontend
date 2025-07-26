@@ -8,7 +8,7 @@ import {
   handleUnresgiterFromEvent,
 } from "@/actions/event-actions";
 import { EventResponseI } from "@/types/event-interfaces";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 type Props = {
   fetchFunction: () => Promise<

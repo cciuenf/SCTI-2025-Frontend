@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Calendar, MapPin, ArrowUpRightFromSquare } from "lucide-react";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 
 type Props = {
   slug: string;

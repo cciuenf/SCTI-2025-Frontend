@@ -272,6 +272,32 @@ export async function handleChangeName(name: string, last_name: string) {
     }
   }
 }
+
+export async function handleForgotPassword(email: string) {
+
+  try {
+    const res = await fetchWrapper("forgot-password", {
+      method: "POST",
+
+      body: JSON.stringify({ email: email }),
+    });
+
+    return { status: res.status, msg: "Email enviado para alterar senha" };
+  } catch (error: unknown) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao iniciar processo de alteração de senha: ", error.message);
+      return { status: error.status, message: error.message };
+    } else {
+      console.error("Erro ao iniciar processo de alteração de senha: ", error);
+      return {
+        status: 500,
+        message: "Erro desconhecido",
+      };
+    }
+  }
+}
+
+
 export async function handleChangePassword(password: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
 

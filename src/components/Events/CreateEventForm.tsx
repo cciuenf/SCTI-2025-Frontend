@@ -2,7 +2,7 @@
 import React from "react";
 import { EventCredentialsI } from "@/types/event-interfaces";
 import { useRouter } from "next/navigation";
-import CustomGenericForm, { FieldConfig } from "./ui/Generic/CustomGenericForm";
+import CustomGenericForm, { FieldConfig } from "../ui/Generic/CustomGenericForm";
 import { EventCreationDataI, eventCreationSchema } from "@/schemas/event-schema";
 import { toast } from "sonner";
 

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import EventListSection from "@/components/EventListSection";
+import EventListSection from "@/components/Events/EventListSection";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar } from "lucide-react";
 import Link from "next/link";

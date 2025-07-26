@@ -8,8 +8,8 @@ import {
   handleRegisterFromEvent,
 } from "@/actions/event-actions";
 
-import { Button } from "./ui/button";
-import DeleteTrashButton from "./DeleteTrashButton";
+import { Button } from "../ui/button";
+import DeleteTrashButton from "../DeleteTrashButton";
 import { EventResponseI } from "@/types/event-interfaces";
 
 type Props = {

@@ -30,7 +30,7 @@ const CreateEventModal = (props: Props) => {
                 desejado!
               </DialogDescription>
             </DialogHeader>
-            <CreateEventForm />
+            <CreateEventForm type="Create"/>
             <ScrollBar />
           </ScrollArea>
         </DialogContent>

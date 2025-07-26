@@ -8,7 +8,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
 
-import EventListSection from "@/components/EventListSection";
+import EventListSection from "@/components/Events/EventListSection";
 import CreateEventForm from "@/components/CreateEventForm";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
