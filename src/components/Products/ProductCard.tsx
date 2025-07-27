@@ -129,6 +129,12 @@ const ProductCard = ({
           >
             Acesso ao Evento
           </Badge>}
+          {data.is_activity_access && <Badge
+            className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
+            title="Acesso a Atividade"
+          >
+            Acesso a Atividade
+          </Badge>}
         </div>
         <h2 className="font-bold text-secondary text-xl">
           {convertNumberToBRL(data.price_int)}

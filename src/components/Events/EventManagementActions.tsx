@@ -68,11 +68,14 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
 
           <Button
             onClick={() => setIsEventModalOpen(true)}
-            className="flex-none p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 bg-accent text-secondary font-medium hover:text-accent hover:bg-secondary"
+            className={cn(
+              "min-w-[140px] flex items-center justify-center gap-1 p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 font-medium", 
+              "bg-accent text-secondary hover:text-accent hover:bg-secondary"
+            )}
             title="Editar"
           >
             <Pencil size={18} />
-            <span className="hidden sm:inline ml-1">Editar</span>
+            Editar
           </Button>
         </>
       )}
@@ -81,10 +84,10 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
         <Button
           onClick={handleRegisterState}
           className={cn(
-            "flex-none p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200",
+            "min-w-[140px] flex items-center justify-center gap-1 p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 font-medium",
             isSubscribed
-              ? "bg-red-500 text-white font-medium hover:text-red-500 hover:bg-white border hover:border-red-500"
-              : "bg-accent text-secondary font-medium hover:text-accent hover:bg-secondary"
+              ? "bg-red-500 text-white hover:text-red-500 hover:bg-white border hover:border-red-500"
+              : "bg-accent text-secondary hover:text-accent hover:bg-secondary"
           )}
           title={isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
         >

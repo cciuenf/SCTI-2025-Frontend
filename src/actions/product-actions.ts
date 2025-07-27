@@ -2,11 +2,12 @@
 
 import { getAuthTokens } from "@/lib/cookies";
 import { fetchWrapper } from "@/lib/fetch";
-import { ProductBuyCredentialsI, ProductCredentialsI, ProductPurchasesResponseI, ProductResponseI, UserTokensResponseI } from "@/types/product-interfaces";
+import { ProductCreationDataI } from "@/schemas/product-schema";
+import { ProductBuyCredentialsI, ProductPurchasesResponseI, ProductResponseI, UserTokensResponseI } from "@/types/product-interfaces";
 import { FetchError } from "@/types/utility-classes";
 
 
-export async function handleCreateProduct(data: ProductCredentialsI, slug: string) {
+export async function handleCreateProduct(data: ProductCreationDataI, slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
   try {
     const res = await fetchWrapper<ProductResponseI>(`/events/${slug}/product`, {
@@ -30,7 +31,7 @@ export async function handleCreateProduct(data: ProductCredentialsI, slug: strin
   }
 }
 
-export async function handleUpdateProduct(data: Partial<ProductCredentialsI>, slug: string, product_id: string) {
+export async function handleUpdateProduct(data: Partial<ProductCreationDataI>, slug: string, product_id: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
 
   try {

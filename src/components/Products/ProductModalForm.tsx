@@ -59,7 +59,6 @@ const ProductModalForm: React.FC<{
     { name: "is_blocked", label: "Está bloqueado?", type: "switch" as const },
     { name: "is_hidden", label: "Está oculto?", type: "switch" as const },
     { name: "is_ticket_type", label: "É um ticket?", type: "switch" as const },
-    { name: "is_event_access", label: "Permite Acesso ao Evento?", type: "switch" as const },
     {
       name: "expires_at",
       label: "Data de Expiração",
@@ -77,11 +76,19 @@ const ProductModalForm: React.FC<{
 
   const handleSubmit = async (data: ProductCreationDataI) => {
     try {
+      const parsedAccessTargets = data.access_targets.map(item => JSON.parse(item));
+      const is_event_access = parsedAccessTargets.some(target => target.is_event);
+      const is_activity_access = parsedAccessTargets.some(target => !target.is_event);
       const transformedData = {
         ...data,
-        access_targets: data.access_targets.map(item => JSON.parse(item))
+        access_targets: parsedAccessTargets.map(target => ({
+          ...target,
+          product_id: product?.ID
+        })),
+        is_event_access,
+        is_activity_access,
       };
-
+      console.log(transformedData)
       if(isCreating) {
         const result = await handleCreateProduct(transformedData, currentEvent.slug);
         if (result?.success && result.data && onProductCreate) {
@@ -95,7 +102,6 @@ const ProductModalForm: React.FC<{
           setOpen(false);
           onProductUpdate(result.data);
           toast.success("Produto atualizado!")
-
         }
       } else toast.error("Produto Inválido")
     } catch (error) {
@@ -128,7 +134,6 @@ const ProductModalForm: React.FC<{
           is_blocked: false,
           is_hidden: false,
           is_ticket_type: false,
-          is_event_access: false,
           access_targets: [],
           expires_at: new Date(),
         }}
