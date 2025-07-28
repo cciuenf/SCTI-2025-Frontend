@@ -2,7 +2,7 @@
 import { handleSignUp } from "@/actions/auth-actions";
 import { useState } from "react";
 
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "@/components/Auth/LoginForm";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import VerifyForm from "@/components/VerifyForm";

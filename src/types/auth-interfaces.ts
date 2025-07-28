@@ -21,3 +21,11 @@ export interface UserAccessTokenJwtPayload {
   is_super: boolean;
   exp: string;
 }
+
+export interface UserRefreshTokenJwtPayload {
+  id: string;
+  user_agent: string;
+  ip_address: string;
+  last_used: Date | string;
+  exp: Date | string;
+}

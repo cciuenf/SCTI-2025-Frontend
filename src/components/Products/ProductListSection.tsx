@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import ProductModalForm from "./ProductModalForm";
@@ -62,7 +62,6 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
     setSelectedProduct(productToUpdate);
     setIsCreationModalOpen(true);
   }
-
   const openPurchaseProductModal = (productToBuy: ProductResponseI) => {
     setSelectedProduct(productToBuy);
     setIsPurchaseModalOpen(true);
@@ -148,4 +147,4 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
     </>
 
   );
-} 
+}

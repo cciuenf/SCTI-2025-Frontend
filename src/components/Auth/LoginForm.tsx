@@ -56,7 +56,6 @@ export default function LoginForm({
 }: LoginFormProps) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: { email: "", password: "" },
@@ -97,9 +96,9 @@ export default function LoginForm({
         if (!res.success) {
           toast.error("Erro ao realizar login");
         } else {
-          setIsLoading(false);
-          router.push("/dashboard");
+          router.push("/profile");
           toast.success("Login bem-sucedido!");
+          setIsLoading(false);
         }
       } catch (error) {
         console.error(error);

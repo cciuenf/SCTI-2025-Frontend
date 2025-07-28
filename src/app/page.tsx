@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar } from "lucide-react";
 import Link from "next/link";
@@ -22,9 +23,6 @@ export default function HomePage() {
           <div className="flex w-3/4 justify-around items-center">
             <Button asChild variant={"yellow"}>
               <Link href={"login"}>Login</Link>
-            </Button>
-            <Button asChild variant={"yellow"}>
-              <Link href={"sign-up"}>Cadastre-se</Link>
             </Button>
           </div>
           <div className="w-full flex justify-around items-start my-3">

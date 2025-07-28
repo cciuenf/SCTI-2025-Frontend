@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${fontClass} antialiased min-h-screen bg-background`}>
         <Header/>
-        <Toaster position="top-right" richColors theme="light" closeButton/>
+        <Toaster position="top-right" richColors theme="light" closeButton duration={5000}/>
         {children}
       </body>
     </html>

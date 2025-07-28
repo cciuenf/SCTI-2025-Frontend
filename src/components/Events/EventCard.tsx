@@ -15,6 +15,7 @@ type Props = {
   start_date: Date;
   end_date: Date;
   description: string;
+
   isEventCreator: boolean;
   isSubscribed: boolean;
   onRegister?: ((id: string) => Promise<void>) | null;
