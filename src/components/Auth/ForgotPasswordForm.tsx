@@ -40,7 +40,7 @@ const ForgotPasswordForm = (props: Props) => {
   };
 
   return (
-    <div className="w-4/5">
+    <div className="w-full">
       <CustomGenericForm
         schema={changePasswordSchema}
         onSubmit={handleOnSubmit}

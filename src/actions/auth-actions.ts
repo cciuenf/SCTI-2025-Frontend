@@ -298,22 +298,11 @@ export async function handleForgotPassword(email: string) {
 }
 
 
-export async function handleChangePassword(password: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
-
-  if (!accessToken || !refreshToken) {
-    console.error("Erro na checagem de tokens");
-    return { status: 401, msg: "Erro na checagem de tokens" };
-  }
-
+export async function handleChangePassword(password: string, token: string) {
   try {
-    const res = await fetchWrapper("change-password", {
+    const res = await fetchWrapper(`change-password?token=${token}`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-      body: JSON.stringify({ password: password }),
+      body: JSON.stringify({ new_password: password }),
     });
 
     return { status: 200, msg: "Senha alterada" };

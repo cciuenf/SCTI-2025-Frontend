@@ -26,6 +26,7 @@ import VerifyForm from "../VerifyForm";
 import ChangeNameModalForm from "./ChangeNameModalForm";
 import UserDataView from "./UserDataView";
 import UserLogins from "./UserLogins";
+import ChangePasswordModal from "./ChangePasswordModal";
 
 type Props = {
   currentView: string;
@@ -136,10 +137,7 @@ const ProfileInfos = ({
                 <LogOut />
                 <p>Encerrar sessão</p>
               </Button>
-              <Button variant={"edit"} className="w-4/5">
-                <PenIcon />
-                <p>Alterar Senha</p>
-              </Button>
+              <ChangePasswordModal/>
             </div>
           </div>
         </>
@@ -170,7 +168,7 @@ const ProfileInfos = ({
         <>
           <h2 className="text-4xl">Histórico de Login</h2>
           <p className="text-md font-light">Monitore os acessos à sua conta</p>
-          <UserLogins/>
+          <UserLogins />
         </>
       )}
     </div>
