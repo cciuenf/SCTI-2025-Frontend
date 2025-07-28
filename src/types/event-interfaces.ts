@@ -1,15 +1,3 @@
-export interface EventCredentialsI {
-  description: string;
-  end_date: Date | string;
-  is_blocked: boolean;
-  is_hidden: boolean;
-  location: string;
-  max_tokens_per_user: number;
-  name: string;
-  slug: string;
-  start_date: Date | string;
-}
-
 export interface EventResponseI {
   ID: string;
   Name: string;

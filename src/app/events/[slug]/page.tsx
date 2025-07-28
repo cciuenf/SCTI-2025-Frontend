@@ -1,83 +1,68 @@
-import { cookies } from "next/headers";
-
-interface EventPageProps { params: { slug: string; } }
-import jwt from "jsonwebtoken";
-import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
+import { handleGetSlugCreatedEvent } from "@/actions/event-actions";
+import ActivityListSection from "@/components/Activities/ActivityListSection";
+import EventManagementActions from "@/components/Events/EventManagementActions";
 import ProductListSection from "@/components/Products/ProductListSection";
-import CreateEventForm from "@/components/CreateEventForm";
-import EventSummary from "@/components/EventSummary";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import {
-  handleGetSlugCreatedEvent,
-  handleUpdateSlugCreatedEvents,
-} from "@/actions/event-actions";
-import { EventResponseI } from "@/types/event-interfaces";
-import PromoteDemoteForm from "@/components/PromoteDemoteForm";
+import { getUserInfo } from "@/lib/cookies";
+import { formatEventDateRange } from "@/lib/utils";
+import { Calendar, MapPin, Users } from "lucide-react";
+import { redirect } from "next/navigation";
 
-interface EventPageProps {
+type Props = {
   params: {
     slug: string;
   };
-}
+};
 
-export default async function EventPage({ params }: EventPageProps) {
-  const cookieStore = cookies();
-  const access_token = (await cookieStore).get("access_token")?.value;
-  const user_info = jwt.decode(
-    access_token as string
-  ) as UserAccessTokenJwtPayload | null;
-  const { slug } = await params;
+const SlugEventPage = async (props: Props) => {
+  const { slug } = await props.params;
+  if (slug.toUpperCase() !== "SCTI") redirect("/events/scti");
 
-  const transformEventData = (data: EventResponseI) => {
-    return {
-      id: data.ID,
-      name: data.Name,
-      slug: data.Slug,
-      description: data.description,
-      location: data.location,
-      start_date: data.start_date,
-      end_date: data.end_date,
-      is_blocked: data.is_blocked,
-      is_hidden: data.is_hidden,
-      max_tokens_per_user: data.max_tokens_per_user,
-    };
-  };
+  const user_info = await getUserInfo()
+  const isEventCreator = user_info?.is_event_creator || user_info?.is_super || false;
 
-  const currentEvent = await handleGetSlugCreatedEvent(slug);
-  const toUpdateEvent = currentEvent
-    ? transformEventData(currentEvent.data)
-    : null;
+  const eventRes = await handleGetSlugCreatedEvent(slug);
 
   return (
-    <div className="h-screen flex flex-col items-center font-spartan p-4">
-      {slug && user_info && (
-        <div className="w-full flex flex-col gap-5 items-center">
-          <EventSummary slug={slug} user_info={user_info} />
-          <div className="w-1/2 flex justify-around">
-          </div>
-        </div>
-      )}
-      {user_info && typeof user_info === "object" && user_info.is_super && (
-        <div className="w-full flex flex-col gap-5 my-10 items-center">
-          <h1 className="text-accent text-3xl">Área de Super User</h1>
-          <ScrollArea className="h-72 w-4/5 shadow-2xs border-2 rounded-md border-muted text-center">
-            <div className="p-8">
-              <h1 className="text-2xl">Atualize o seu evento!</h1>
-              <CreateEventForm
-                slug={slug}
-                event={toUpdateEvent}
-                handleUpdate={handleUpdateSlugCreatedEvents}
-                type="Update"
-              />
-            </div>
-            <ScrollBar orientation="vertical" />
-          </ScrollArea>
-          <PromoteDemoteForm
-          slug={slug}
+    <div className="flex flex-col mx-auto items-center justify-center mt-10">
+      <h1 className="xl:text-6xl text-4xl font-bold">{ eventRes?.data.Name }</h1>
+      <div className="w-full flex mt-4 mb-6 justify-center items-center flex-col gap-2 xs:flex-row xs:gap-10 px-4 text-sm">
+        <p className="flex items-center gap-2">
+          <Calendar className="text-accent" size={16} /> 
+          {formatEventDateRange(eventRes?.data.start_date || new Date(), eventRes?.data.end_date || new Date())}
+        </p>
+        <p className="flex items-center gap-2">
+          <MapPin className="text-accent" size={16} /> {eventRes?.data.location}
+        </p>
+        <p className="flex items-center gap-2">
+          <Users className="text-accent" size={16} /> 80 participantes
+        </p>
+      </div>
+      <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2">Sobre o Evento</h2>
+      <p className="text-center max-w-[80%] font-light mt-2">{ eventRes?.data.description }</p>
+      <div className="flex flex-wrap justify-center gap-4 px-2 my-6">
+        {eventRes?.data && <EventManagementActions isEventCreator={isEventCreator} event={eventRes.data}/> }
+      </div>
+      <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">Atividades</h2>
+      <div className="w-full max-w-4xl px-4">
+        {eventRes?.data && user_info && 
+          <ActivityListSection 
+            isEventCreator={isEventCreator} 
+            currentEvent={{id: eventRes.data.ID, slug: slug}} 
+            user_id={user_info.id}
           />
-          {toUpdateEvent && (<ProductListSection currentEvent={toUpdateEvent}/>)}
-        </div>
-      )}
+        }
+      </div>
+      <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">Produtos</h2>
+      <div className="w-full max-w-4xl px-4">
+        {eventRes?.data && 
+          <ProductListSection 
+            currentEvent={{id: eventRes.data.ID, slug: slug}} 
+            isEventCreator={isEventCreator}
+          />
+        }
+      </div>
     </div>
   );
-}
+};
+
+export default SlugEventPage;
