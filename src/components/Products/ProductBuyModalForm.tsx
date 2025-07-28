@@ -1,10 +1,9 @@
 "use client";
-import React, { useState } from "react";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import CustomGenericForm, {
   FieldConfig,
 } from "../ui/Generic/CustomGenericForm";
-import { ProductResponseI } from "@/types/product-interfaces";
+import { ProductPurchasesResponseI, ProductResponseI } from "@/types/product-interfaces";
 import { handleBuyProduct } from "@/actions/product-actions";
 import { convertNumberToBRL } from "@/lib/utils";
 import { useForm } from "react-hook-form";
@@ -15,8 +14,11 @@ import { toast } from "sonner";
 const ProductBuyModalForm: React.FC<{
   slug: string;
   product: ProductResponseI;
-}> = ({ slug, product }) => {
-  const [open, setOpen] = useState(false);
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  onProductPurchase: (newProduct: ProductPurchasesResponseI) => void,
+}> = ({ slug, product, open, setOpen, onProductPurchase }) => {
+
   const form = useForm<ProductBuyDataI>({
     resolver: zodResolver(productBuySchema),
     defaultValues: {
@@ -55,12 +57,14 @@ const ProductBuyModalForm: React.FC<{
         { ...data, product_id: product.ID },
         slug
       );
-      if (result?.success) {
+      if (result?.success && result.data && onProductPurchase) {
         toast.success(`Produto comprado com sucesso!`);
         setOpen(false);
+        onProductPurchase(result.data.purchase)
         return;
       }
     } catch (error) {
+      toast.error(`Erro ao criar produto: ${product.name}`);
       console.error("Erro ao criar produto:", error);
     }
     toast.error("Erro ao comprar o produto!");
@@ -72,6 +76,7 @@ const ProductBuyModalForm: React.FC<{
       description="Forneça as informações necessárias para comprar o produto!"
       open={open}
       onOpenChange={setOpen}
+      trigger={null}
     >
       <div className="flex flex-col gap-4">
         <div className="text-lg font-semibold text-gray-700">

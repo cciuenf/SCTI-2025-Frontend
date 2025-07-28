@@ -11,6 +11,7 @@ export interface RefreshTokenI {
 }
 
 export interface UserAccessTokenJwtPayload {
+  id: string;
   name: string;
   last_name: string;
   email: string;

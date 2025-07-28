@@ -10,7 +10,7 @@ import {
 import { Button } from "../button";
 
 interface GenericModalProps {
-  trigger?: React.ReactNode;
+  trigger?: React.ReactNode | null;
   title: string;
   description?: string;
   open: boolean;
@@ -25,7 +25,7 @@ const CustomGenericModal: React.FC<GenericModalProps> = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>          
-        { trigger || ( <Button variant={"yellow"}>{title}</Button> )}
+        { trigger === undefined ? ( <Button variant={"yellow"}>{title}</Button> ) : trigger}
       </DialogTrigger>
       <DialogContent className="max-h-[80vh] overflow-y-auto">
         <DialogHeader>

@@ -46,6 +46,9 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --color-gradient: var(--gradient);
+
+  /* Custom Breakpoints */
+  --breakpoint-xs: 30rem;
 }
 
 /* Removendo setas do input type number */
@@ -172,6 +175,14 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground min-w-[320px];
   }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE e Edge */
+  scrollbar-width: none;     /* Firefox */
 }

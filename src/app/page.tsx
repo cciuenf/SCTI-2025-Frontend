@@ -1,11 +1,9 @@
 import Image from "next/image";
-import EventListSection from "@/components/EventListSection";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar } from "lucide-react";
 import Link from "next/link";
-import { handleGetPublicCreatedEvents } from "@/actions/event-actions";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div className="h-screen flex flex-col gap-4 items-center font-spartan mx-auto">
       <div className="w-full flex justify-center items-center bg-secondary/90">
@@ -48,7 +46,9 @@ export default function Home() {
         Descubra nossa programação completa com palestras, workshops e
         atividades práticas nas mais diversas áreas da ciência e tecnologia.
       </h3>
-      <EventListSection fetchFunction={handleGetPublicCreatedEvents} />
+      <div className="w-3/4">
+        {/* TODO: List activities */}
+      </div>
       <h2 className="text-6xl font-bold">
         {" "}
         <span className="text-accent border-b-4 border-secondary">
@@ -56,7 +56,7 @@ export default function Home() {
         </span>{" "}
         2025
       </h2>
-      <div className="w-3/4 flex items-center justify-around flex-wrap md:w-full">
+      <div className="w-3/4 flex items-center justify-around flex-wrap md:w-full pb-6">
         <Image
           src={"/test.jpg"}
           width={250}

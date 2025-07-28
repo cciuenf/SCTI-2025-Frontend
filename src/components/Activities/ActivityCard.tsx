@@ -1,0 +1,172 @@
+"use client";
+import { Calendar, MapPin, Edit3, Trash2, Clock, Speaker } from "lucide-react";
+import { Badge } from "../ui/badge";
+import { cn, formatEventTimeRange } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { formatEventDateRange } from "@/lib/utils";
+import ConfirmActionButton from "../ConfirmActionButton";
+import { ActivityResponseI } from "@/types/activity-interface";
+
+type Props = {
+  data: ActivityResponseI;
+  isEventCreator: boolean;
+  isSubscribed: boolean;
+  onRegister?: ((data: ActivityResponseI) => Promise<void>) | null;
+  onUnregister?: ((data: ActivityResponseI) => Promise<void>) | null;
+  onUpdateFormOpen?: () => void | null;
+  onDelete?: (id: string) => Promise<void> | null;
+};
+
+const ActivityCard = ({
+  data,
+  isEventCreator,
+  isSubscribed,
+  onRegister,
+  onUnregister,
+  onUpdateFormOpen,
+  onDelete
+}: Props) => {
+  const handleRegisterState = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!onRegister || !onUnregister) return;
+    if (isSubscribed) await onUnregister(data);
+    else await onRegister(data);
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if(onUpdateFormOpen) onUpdateFormOpen();
+  };
+
+  const handleDelete = async () => {
+    if(onDelete) await onDelete(data.ID);
+  };
+
+  return (
+    <div className={cn(
+      "not-md:min-w-80 min-w-auto flex flex-col justify-left items-center bg-white rounded-lg shadow-md",
+      "px-1 py-3 transition-all hover:scale-105"
+    )}>
+      <div className="w-full flex flex-col justify-around items-start gap-3.5 px-2">
+        <div className="w-full flex justify-between">
+          <Badge
+            className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
+            title={data.is_standalone ? data.standalone_slug.toUpperCase() : "Evento"}
+          >
+            {data.is_standalone ? data.standalone_slug.toUpperCase() : "Evento"}
+          </Badge>
+          <div className="flex items-center gap-3">
+            {isEventCreator && (
+              <>
+                <Edit3 
+                  className={cn(
+                    "w-5 h-5 cursor-pointer transition-transform duration-200",
+                    "hover:text-accent hover:scale-125"
+                  )} 
+                  onClick={handleEdit}
+                />
+                <ConfirmActionButton
+                  trigger={(onClick) => (
+                    <Trash2
+                      className={cn(
+                        "w-5 h-5 cursor-pointer transition-transform duration-200",
+                        "hover:text-red-500 hover:scale-125"
+                      )}
+                      onClick={onClick}
+                    />
+                  )}
+                  message="Tem certeza que deseja apagar essa atividade?"
+                  onConfirm={handleDelete}
+                />
+              </>
+            )}
+          </div>
+        </div>
+
+        <h2 className="font-bold text-lg mb-0">{data.name}</h2>
+
+        <div className="flex justify-between items-center">
+          <Calendar className="text-accent h-4 w-4 mr-2.5" />
+          <h3 className="opacity-90 text-sm">
+            {formatEventDateRange(new Date(data.start_time), new Date(data.end_time))}
+          </h3>
+        </div>
+        <div className="flex justify-between items-center">
+          <Clock className="text-accent h-4 w-4 mr-2.5" />
+          <h3 className="opacity-90 text-sm">
+            {formatEventTimeRange(new Date(data.start_time), new Date(data.end_time))}
+          </h3>
+        </div>
+        <div className="flex justify-between items-center">
+          <Speaker className="text-accent h-4 w-4 mr-2.5" />
+          <h3 className="opacity-90 text-sm">
+            {data.speaker}
+          </h3>
+        </div>
+        <div className="flex justify-between items-center">
+          <MapPin className="text-accent h-4 w-4 mr-2.5" />
+          <h3 className="opacity-90 text-sm">{data.location || "Não Informado"}</h3>
+        </div>
+
+        <h3 className="h-9 w-full text-ellipsis overflow-hidden text-left opacity-90 text-sm">
+          {data.description || "Não Informado"}
+        </h3>
+        <div className="flex w-full overflow-x-auto scrollbar-hide gap-3 items-center px-2">
+          {data.has_fee && <Badge
+            className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
+            title="Há Taxa"
+          >
+            Há Taxa
+          </Badge>}
+          {data.is_blocked && <Badge
+            className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
+            title="Bloqueado"
+          >
+            Bloqueado
+          </Badge>}
+          {data.is_mandatory && <Badge
+            className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
+            title="Obrigatório"
+          >
+            Obrigatório
+          </Badge>}
+          {data.is_hidden && <Badge
+            className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
+            title="Oculto"
+          >
+            Oculto
+          </Badge>}
+          {data.is_standalone && <Badge
+            className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
+            title="Independente"
+          >
+            Independente
+          </Badge>}
+          {data.type && <Badge
+            className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
+            title={data.type}
+          >
+            {data.type}
+          </Badge>}
+        </div>
+        {(onRegister && onUnregister) && (
+          <Button 
+            onClick={handleRegisterState}
+            className={cn(
+              "w-full py-1 rounded-sm shadow-md cursor-pointer duration-300 transition-colors",
+              isSubscribed
+                ? "bg-red-500 text-white font-medium hover:text-red-500 hover:bg-white border border-red-500"
+                : "bg-accent text-secondary font-medium hover:text-accent hover:bg-secondary"
+            )}
+          >
+            {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ActivityCard;
