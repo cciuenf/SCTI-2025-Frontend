@@ -10,7 +10,13 @@ export interface RefreshTokenI {
   token_str: string;
 }
 
-export interface UserAccessTokenJwtPayload {
+export interface UserBasicInfo {
+  Name: string;
+  LastName: string;
+  Email: string;
+}
+
+export interface UserAccessTokenJwtPayload extends UserBasicInfo {
   id: string;
   name: string;
   last_name: string;

@@ -11,6 +11,7 @@ type Props = {
   data: ActivityResponseI;
   isEventCreator: boolean;
   isSubscribed: boolean;
+  onViewUsersOpen?: (is_registrations: boolean, data: ActivityResponseI) => void | null;
   onRegister?: ((data: ActivityResponseI) => Promise<void>) | null;
   onUnregister?: ((data: ActivityResponseI) => Promise<void>) | null;
   onUpdateFormOpen?: () => void | null;
@@ -21,6 +22,7 @@ const ActivityCard = ({
   data,
   isEventCreator,
   isSubscribed,
+  onViewUsersOpen,
   onRegister,
   onUnregister,
   onUpdateFormOpen,
@@ -76,7 +78,7 @@ const ActivityCard = ({
                       "w-5 h-5 cursor-pointer transition-transform duration-200",
                       "hover:text-accent hover:scale-125"
                     )}
-                    onClick={() => {}}
+                    onClick={() => onViewUsersOpen && onViewUsersOpen(false, data)}
                   />
                 </span>
                 <span title="Ver Inscrições" role="img" aria-label="Ver Inscrições">
@@ -85,7 +87,7 @@ const ActivityCard = ({
                       "w-5 h-5 cursor-pointer transition-transform duration-200",
                       "hover:text-accent hover:scale-125"
                     )}
-                    onClick={() => {}}
+                    onClick={() => onViewUsersOpen && onViewUsersOpen(true, data)}
                   />
                 </span>
                 <span title="Editar" role="img" aria-label="Editar">

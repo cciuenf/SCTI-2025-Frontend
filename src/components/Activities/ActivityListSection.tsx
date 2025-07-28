@@ -9,6 +9,7 @@ import { Plus } from "lucide-react";
 import CardSkeleton from "../Loading/CardSkeleton";
 import { toast } from "sonner";
 import ActivityCard from "./ActivityCard";
+import UserActivityInfoTable from "./UserActivityInfoTable";
 
 interface ActivityListSectionProps { 
   user_id: string;
@@ -17,7 +18,9 @@ interface ActivityListSectionProps {
 }
 
 export default function ActivityListSection({ currentEvent, user_id, isEventCreator }: ActivityListSectionProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
+  const [isUsersModalOpen, setIsUsersModalOpen] = useState(false);
+  const [searchUsersRegistrations, setSearchUsersRegistrations] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityResponseI>();
   const [myActivities, setMyActivities] = useState<ActivityResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
@@ -59,9 +62,15 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
     );
   }
 
-  const openActivityModal = (activityToUpdate?: ActivityResponseI) => {
+  const openCreationActivityModal = (activityToUpdate?: ActivityResponseI) => {
     setSelectedActivity(activityToUpdate);
-    setIsModalOpen(true);
+    setIsCreationModalOpen(true);
+  }
+
+  const openUsersActivityModal = (is_registrations: boolean, activityToSee: ActivityResponseI) => {
+    setSelectedActivity(activityToSee);
+    setIsUsersModalOpen(true);
+    setSearchUsersRegistrations(is_registrations);
   }
 
   const handleActivityCreate = (newActivity: ActivityResponseI) => {
@@ -133,7 +142,7 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
               "text-white bg-accent shadow-md z-10 transition-all",
               "hover:text-accent hover:bg-secondary hover:scale-[140%]",
             )}
-            onClick={() => openActivityModal()}
+            onClick={() => openCreationActivityModal()}
           />
         }
         <div
@@ -161,8 +170,9 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
                 isSubscribed={myActivities.some(a => a.ID === activity.ID)}
                 onRegister={handleRegister}
                 onUnregister={handleUnregister}
-                onUpdateFormOpen={() => isEventCreator ? openActivityModal(activity) : null}
+                onUpdateFormOpen={() => isEventCreator ? openCreationActivityModal(activity) : null}
                 onDelete={handleActivityDelete}
+                onViewUsersOpen={openUsersActivityModal}
               />
             ))}
           </div>
@@ -174,10 +184,18 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
         currentEvent={currentEvent}
         activity={selectedActivity}
         isCreating={!selectedActivity}
-        open={isModalOpen}
-        setOpen={setIsModalOpen}
+        open={isCreationModalOpen}
+        setOpen={setIsCreationModalOpen}
         onActivityCreate={handleActivityCreate}
         onActivityUpdate={handleActivityUpdate}
+      />
+      <UserActivityInfoTable
+        activityId={selectedActivity?.ID || ""}
+        slug={currentEvent.slug}
+        activityName={selectedActivity?.name || "Não Selecionado"}
+        open={isUsersModalOpen} 
+        setOpen={setIsUsersModalOpen}
+        isRegistrations={searchUsersRegistrations}
       />
     </>
   )

@@ -3,7 +3,7 @@
 import { getAuthTokens } from "@/lib/cookies";
 import { fetchWrapper } from "@/lib/fetch";
 import { ActivityCreationDataI } from "@/schemas/activity-schema";
-import { ActivityResponseI } from "@/types/activity-interface";
+import { ActivityRegistrationI, ActivityResponseI } from "@/types/activity-interface";
 import { FetchError } from "@/types/utility-classes";
 
 export async function handleGetUserEventActivities(slug: string) {
@@ -175,7 +175,7 @@ export async function handleUnregisterFromActivity(data: ActivityResponseI, slug
 export async function handleGetRegisteredUsersInActivity(data: { id: string }, slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
   try {
-    const res = await fetchWrapper<any>(`/events/${slug}/activity/registrations/${data.id}`, {
+    const res = await fetchWrapper<ActivityRegistrationI[]>(`/events/${slug}/activity/registrations/${data.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -198,7 +198,7 @@ export async function handleGetRegisteredUsersInActivity(data: { id: string }, s
 export async function handleGetUsersWhoParticipateInActivity(data: { id: string }, slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
   try {
-    const res = await fetchWrapper<any>(`/events/${slug}/activity/attendants/${data.id}`, {
+    const res = await fetchWrapper<ActivityRegistrationI[]>(`/events/${slug}/activity/attendants/${data.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
