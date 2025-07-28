@@ -12,15 +12,15 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventResponseI>();
   const [currentView, setCurrentView] = useState<string>("all");
-  const { 
-    allEvents, 
-    myEvents, 
-    loading, 
-    handleEventCreate, 
-    handleEventDelete, 
+  const {
+    allEvents,
+    myEvents,
+    loading,
+    handleEventCreate,
+    handleEventDelete,
     handleEventUpdate,
-    handleRegister, 
-    handleUnregister 
+    handleRegister,
+    handleUnregister
   } = useUserEvents();
 
   const currentData = currentView === "all" ? allEvents : myEvents;
@@ -44,7 +44,7 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
 
   return (
     <>
-      <div 
+      <div
         className={cn(
           "flex items-center justify-around relative",
           "border-1 border-secondary bg-secondary rounded-md p-0.5",
@@ -63,7 +63,7 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
         >
           <h2 className={cn(currentView !== "my" && "opacity-80")}>Meus Eventos</h2>
         </div>
-        <Plus 
+        <Plus
           className={cn(
             "absolute h-full w-auto rounded-full p-2 scale-125 cursor-pointer",
             "text-white bg-accent shadow-md z-10 transition-all",
@@ -96,7 +96,7 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
                 local={e.location}
                 start_date={e.start_date}
                 end_date={e.end_date}
-                description={e.description
+                description={e.description}
                 isEventCreator={props.isEventCreator}
                 isSubscribed={myEvents.some(ev => ev.Slug === e.Slug)}
                 onRegister={handleRegister}
@@ -110,7 +110,7 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
       ) : (
         <p className="mt-6 mb-10">Sem eventos disponíveis nessa seção</p>
       )}
-      <EventModalForm 
+      <EventModalForm
         event={selectedEvent}
         isCreating={!selectedEvent}
         open={isModalOpen}

@@ -148,8 +148,8 @@ const ProfileInfos = ({
           <h2 className="text-4xl">Meus Produtos</h2>
           <p className="text-md font-light">Visualize todos os seus produtos</p>
           <ProductListSection
-            isSuperUser={accessTokenData.is_super}
-            currentEvent={{ id: "123", slug: "juanevento123" }}
+            currentEvent={{ id: "eb5af25f-2368-4503-a160-5a117a771b5a", slug: "SCTI" }}
+            isEventCreator={accessTokenData.is_event_creator}
           />
         </>
       )}

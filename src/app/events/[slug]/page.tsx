@@ -21,13 +21,14 @@ const SlugEventPage = async (props: Props) => {
   const isEventCreator = user_info?.is_event_creator || user_info?.is_super || false;
 
   const eventRes = await handleGetSlugCreatedEvent(slug);
+  console.log(eventRes?.data.ID)
 
   return (
     <div className="flex flex-col mx-auto items-center justify-center mt-10">
       <h1 className="xl:text-6xl text-4xl font-bold">{ eventRes?.data.Name }</h1>
       <div className="w-full flex mt-4 mb-6 justify-center items-center flex-col gap-2 xs:flex-row xs:gap-10 px-4 text-sm">
         <p className="flex items-center gap-2">
-          <Calendar className="text-accent" size={16} /> 
+          <Calendar className="text-accent" size={16} />
           {formatEventDateRange(eventRes?.data.start_date || new Date(), eventRes?.data.end_date || new Date())}
         </p>
         <p className="flex items-center gap-2">
@@ -44,19 +45,19 @@ const SlugEventPage = async (props: Props) => {
       </div>
       <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">Atividades</h2>
       <div className="w-full max-w-4xl px-4">
-        {eventRes?.data && user_info && 
-          <ActivityListSection 
-            isEventCreator={isEventCreator} 
-            currentEvent={{id: eventRes.data.ID, slug: slug}} 
+        {eventRes?.data && user_info &&
+          <ActivityListSection
+            isEventCreator={isEventCreator}
+            currentEvent={{id: eventRes.data.ID, slug: slug}}
             user_id={user_info.id}
           />
         }
       </div>
       <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">Produtos</h2>
       <div className="w-full max-w-4xl px-4">
-        {eventRes?.data && 
-          <ProductListSection 
-            currentEvent={{id: eventRes.data.ID, slug: slug}} 
+        {eventRes?.data &&
+          <ProductListSection
+            currentEvent={{id: eventRes.data.ID, slug: slug}}
             isEventCreator={isEventCreator}
           />
         }
