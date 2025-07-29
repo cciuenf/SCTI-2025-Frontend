@@ -10,6 +10,7 @@ import CardSkeleton from "../Loading/CardSkeleton";
 import { toast } from "sonner";
 import ActivityCard from "./ActivityCard";
 import UserActivityInfoTable from "./UserActivityInfoTable";
+import PresenceManagmentModalForm from "./PresenceManagementModalForm";
 
 interface ActivityListSectionProps { 
   user_id: string;
@@ -20,6 +21,7 @@ interface ActivityListSectionProps {
 export default function ActivityListSection({ currentEvent, user_id, isEventCreator }: ActivityListSectionProps) {
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
   const [isUsersModalOpen, setIsUsersModalOpen] = useState(false);
+  const [isPresenceModalOpen, setIsPresenceModalOpen] = useState(false);
   const [searchUsersRegistrations, setSearchUsersRegistrations] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityResponseI>();
   const [myActivities, setMyActivities] = useState<ActivityResponseI[]>([]);
@@ -65,6 +67,11 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
   const openCreationActivityModal = (activityToUpdate?: ActivityResponseI) => {
     setSelectedActivity(activityToUpdate);
     setIsCreationModalOpen(true);
+  }
+
+  const openPresenceActivityModal = (activityToManager?: ActivityResponseI) => {
+    setSelectedActivity(activityToManager);
+    setIsPresenceModalOpen(true);
   }
 
   const openUsersActivityModal = (is_registrations: boolean, activityToSee: ActivityResponseI) => {
@@ -173,6 +180,7 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
                 onUpdateFormOpen={() => isEventCreator ? openCreationActivityModal(activity) : null}
                 onDelete={handleActivityDelete}
                 onViewUsersOpen={openUsersActivityModal}
+                onPresenceManagerOpen={openPresenceActivityModal}
               />
             ))}
           </div>
@@ -196,6 +204,14 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
         open={isUsersModalOpen} 
         setOpen={setIsUsersModalOpen}
         isRegistrations={searchUsersRegistrations}
+      />
+
+      <PresenceManagmentModalForm
+        activityId={selectedActivity?.ID || ""}
+        activityName={selectedActivity?.name || "Não Selecionado"}
+        slug={currentEvent.slug} 
+        open={isPresenceModalOpen} 
+        setOpen={setIsPresenceModalOpen}        
       />
     </>
   )

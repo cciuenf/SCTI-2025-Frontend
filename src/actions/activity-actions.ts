@@ -217,3 +217,57 @@ export async function handleGetUsersWhoParticipateInActivity(data: { id: string 
     }
   }
 }
+
+export async function handleMarkAttendanceOfActivity(
+  data: { activity_id: string, user_id: string }, 
+  slug: string
+) {
+  const { accessToken, refreshToken } = await getAuthTokens();
+  try {
+    const res = await fetchWrapper<ActivityRegistrationI[]>(`/events/${slug}/activity/attend`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+    });
+    return { success: true, data: res.result.data, message: res.result.message };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao marcar participação do usuário na atividade", error.message);
+      return { success: false, data: null, message: `Erro ao marcar participação do usuário: ${error.message}` };
+    } else {
+      console.error("Erro desconhecido ao marcar participação do usuário na atividade", error);
+      return { success: false, data: null, message: "Erro desconhecido ao marcar participação do usuário na atividade" };
+    }
+  }
+}
+
+export async function handleRemoveAttendanceOfActivity(
+  data: { activity_id: string, user_id: string }, 
+  slug: string
+) {
+  const { accessToken, refreshToken } = await getAuthTokens();
+  try {
+    const res = await fetchWrapper<ActivityRegistrationI[]>(`/events/${slug}/activity/unattend`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+    });
+    return { success: true, data: res.result.data, message: res.result.message };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao remover participação do usuário na atividade", error.message);
+      return { success: false, data: null, message: `ao remover participação do usuário na atividade: ${error.message}` };
+    } else {
+      console.error("Erro desconhecido ao remover participação do usuário na atividade", error);
+      return { success: false, data: null, message: "Erro desconhecido ao remover participação do usuário na atividade" };
+    }
+  }
+}

@@ -11,6 +11,7 @@ type Props = {
   data: ActivityResponseI;
   isEventCreator: boolean;
   isSubscribed: boolean;
+  onPresenceManagerOpen?: (data: ActivityResponseI) => void | null;
   onViewUsersOpen?: (is_registrations: boolean, data: ActivityResponseI) => void | null;
   onRegister?: ((data: ActivityResponseI) => Promise<void>) | null;
   onUnregister?: ((data: ActivityResponseI) => Promise<void>) | null;
@@ -23,6 +24,7 @@ const ActivityCard = ({
   isEventCreator,
   isSubscribed,
   onViewUsersOpen,
+  onPresenceManagerOpen,
   onRegister,
   onUnregister,
   onUpdateFormOpen,
@@ -69,7 +71,7 @@ const ActivityCard = ({
                       "w-5 h-5 cursor-pointer transition-transform duration-200",
                       "hover:text-accent hover:scale-125"
                     )}
-                    onClick={() => {}}
+                    onClick={() => onPresenceManagerOpen && onPresenceManagerOpen(data)}
                   />
                 </span>
                 <span title="Ver Presenças" role="img" aria-label="Ver Presenças">

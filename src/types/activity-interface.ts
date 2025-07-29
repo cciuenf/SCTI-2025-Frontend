@@ -22,6 +22,6 @@ export interface ActivityRegistrationI {
   activity_id: string,
   user_id: string,
   registered_at: string;
-  attended_at: string;
+  attended_at: string | null;
   access_method: string;
 }
