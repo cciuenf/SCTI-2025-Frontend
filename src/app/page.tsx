@@ -1,13 +1,45 @@
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar } from "lucide-react";
+// import { MapPin, Calendar } from "lucide-react";
 import Link from "next/link";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 export default function HomePage() {
+  const imgs = ["img_0.png", "img_1.png", "img_2.png", "img_3.png", "img_4.png"];
   return (
-    <div className="h-screen flex flex-col gap-4 items-center font-spartan mx-auto">
-      <div className="w-full flex justify-center items-center bg-secondary/90">
+    <div className="flex flex-col gap-4 items-center font-spartan mx-auto">
+      <Carousel 
+        className="relative w-full h-auto max-h-[80vh] xs:max-h-screen overflow-hidden"
+        opts={{
+          loop: true,
+        }}
+        plugins={[
+          
+        ]}
+      >
+        <div className="absolute bg-secondary/90 inset-0 z-10 flex items-center justify-center">
+          <span className="text-primary">aaa</span>
+        </div>
+        <CarouselContent className="w-full h-full m-0 aspect-video">
+          {imgs.map(name => 
+            <CarouselItem className="relative w-full h-full p-0">
+            <Image 
+              key={name}
+              src={`/img/home/${name}`}
+              alt="Evento Imagem 3" 
+              width={2000}
+              height={2000}
+              className="w-full h-full object-cover"
+              priority
+            />
+          </CarouselItem>
+          )}
+        </CarouselContent>
+        <CarouselPrevious className="absolute left-2 z-20"/>
+        <CarouselNext className="absolute right-2 z-20"/>
+      </Carousel>
+      {/* <div className="w-full flex justify-center items-center bg-secondary/90">
         <div className="w-3/4 flex flex-col items-center justify-around gap-2">
           <div className="text-center flex flex-col items-center font-medium max-h-96">
             <Image src={"/SCT.svg"} alt="Logo SCT" width={250} height={250} />
@@ -38,7 +70,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       <h2 className="text-6xl font-bold">Eventos da Semana</h2>
       <h3 className="text-md text-center font-light max-w-[760px]">
         Descubra nossa programação completa com palestras, workshops e
