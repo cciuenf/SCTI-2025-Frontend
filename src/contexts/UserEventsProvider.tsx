@@ -73,7 +73,8 @@ export const UserEventsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     if (res.success) {
       const event = allEvents.find(e => e.Slug === slug);
       if (event && !myEvents.some(e => e.Slug === slug)) {
-        setMyEvents(prev => [...prev, event]);
+        setAllEvents(prev => prev.map(e => e.Slug === slug ? {...e, participant_count: e.participant_count + 1} : e));
+        setMyEvents(prev => [...prev, {...event, participant_count: event.participant_count + 1}]);
         toast.success("Inscrição realizada com sucesso!");
       }
     } else {
@@ -84,7 +85,9 @@ export const UserEventsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const handleUnregister = useCallback(async (slug: string) => {
     const res = await handleUnresgiterFromEvent(slug);
     if (res.success) {
+      const event = allEvents.find(e => e.Slug === slug);
       setMyEvents(prev => prev.filter(e => e.Slug !== slug));
+      if(event) setAllEvents(prev => prev.map(e => e.Slug === slug ? {...e, participant_count: e.participant_count - 1} : e));
       toast.success("Inscrição cancelada com sucesso!");
     } else {
       toast.error("Erro ao cancelar inscrição no evento");

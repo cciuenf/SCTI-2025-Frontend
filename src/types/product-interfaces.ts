@@ -20,6 +20,7 @@ export interface ProductResponseI {
   expires_at: string,
   is_event_access: boolean,
   is_activity_access: boolean,
+  is_activity_token: boolean,
   access_targets: AccessTargetsI[],
 }
 

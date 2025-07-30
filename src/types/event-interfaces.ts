@@ -20,6 +20,7 @@ export interface EventResponseI {
   activities: string[];
   attendees: string[];
   products: string[];
+  participant_count: number;
 }
 
 export interface EventSubscriptionResponseI {
