@@ -1,13 +1,13 @@
 "use client";
 
-import { CheckCircle, Eye, Pencil, Users } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useUserEvents } from "@/contexts/UserEventsProvider";
 import LoadingSpinner from "../Loading/LoadingSpinner";
 import { EventResponseI } from "@/types/event-interfaces";
 import EventModalForm from "./EventModalForm";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Props {
   isEventCreator: boolean;
@@ -39,33 +39,6 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
     <>
       {isEventCreator && (
         <>
-          {/* <Button
-            // onClick={onMarkPresence}
-            className="flex-none p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 bg-foreground text-white font-medium hover:text-accent hover:bg-secondary"
-            title="Marcar Presença"
-          >
-            <CheckCircle size={18} />
-            <span className="hidden sm:inline ml-1">Marcar Presença</span>
-          </Button>
-
-          <Button
-            // onClick={onViewPresences}
-            className="flex-none p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 bg-secondary text-white font-medium hover:text-accent hover:bg-secondary"
-            title="Ver Presenças"
-          >
-            <Eye size={18} />
-            <span className="hidden sm:inline ml-1">Ver Presenças</span>
-          </Button>
-
-          <Button
-            // onClick={onViewRegistrations}
-            className="flex-none p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 bg-foreground text-white font-medium hover:text-accent hover:bg-secondary"
-            title="Ver Inscrições"
-          >
-            <Users size={18} />
-            <span className="hidden sm:inline ml-1">Ver Inscrições</span>
-          </Button> */}
-
           <Button
             onClick={() => setIsEventModalOpen(true)}
             className={cn(
@@ -79,21 +52,18 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
           </Button>
         </>
       )}
-
-      {
-        <Button
-          onClick={handleRegisterState}
-          className={cn(
-            "min-w-[140px] flex items-center justify-center gap-1 p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 font-medium",
-            isSubscribed
-              ? "bg-red-500 text-white hover:text-red-500 hover:bg-white border hover:border-red-500"
-              : "bg-accent text-secondary hover:text-accent hover:bg-secondary"
-          )}
-          title={isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
-        >
-          {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
-        </Button>
-      }
+      <Button
+        onClick={handleRegisterState}
+        className={cn(
+          "min-w-[140px] flex items-center justify-center gap-1 p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 font-medium",
+          isSubscribed
+            ? "bg-red-500 text-white hover:text-red-500 hover:bg-white border hover:border-red-500"
+            : "bg-accent text-secondary hover:text-accent hover:bg-secondary"
+        )}
+        title={isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
+      >
+        {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
+      </Button>
       <EventModalForm 
         event={updatedEvent}
         isCreating={false}

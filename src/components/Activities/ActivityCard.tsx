@@ -1,5 +1,5 @@
 "use client";
-import { Calendar, MapPin, Edit3, Trash2, Clock, Speaker } from "lucide-react";
+import { Calendar, MapPin, Edit3, Trash2, Clock, Speaker, CheckCircle, Eye, Users } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn, formatEventTimeRange } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -11,6 +11,8 @@ type Props = {
   data: ActivityResponseI;
   isEventCreator: boolean;
   isSubscribed: boolean;
+  onPresenceManagerOpen?: (data: ActivityResponseI) => void | null;
+  onViewUsersOpen?: (is_registrations: boolean, data: ActivityResponseI) => void | null;
   onRegister?: ((data: ActivityResponseI) => Promise<void>) | null;
   onUnregister?: ((data: ActivityResponseI) => Promise<void>) | null;
   onUpdateFormOpen?: () => void | null;
@@ -21,6 +23,8 @@ const ActivityCard = ({
   data,
   isEventCreator,
   isSubscribed,
+  onViewUsersOpen,
+  onPresenceManagerOpen,
   onRegister,
   onUnregister,
   onUpdateFormOpen,
@@ -60,22 +64,54 @@ const ActivityCard = ({
           <div className="flex items-center gap-3">
             {isEventCreator && (
               <>
-                <Edit3 
-                  className={cn(
-                    "w-5 h-5 cursor-pointer transition-transform duration-200",
-                    "hover:text-accent hover:scale-125"
-                  )} 
-                  onClick={handleEdit}
-                />
+
+                <span title="Marcar Presença" role="img" aria-label="Marcar Presença">
+                  <CheckCircle 
+                    className={cn(
+                      "w-5 h-5 cursor-pointer transition-transform duration-200",
+                      "hover:text-accent hover:scale-125"
+                    )}
+                    onClick={() => onPresenceManagerOpen && onPresenceManagerOpen(data)}
+                  />
+                </span>
+                <span title="Ver Presenças" role="img" aria-label="Ver Presenças">
+                  <Eye 
+                    className={cn(
+                      "w-5 h-5 cursor-pointer transition-transform duration-200",
+                      "hover:text-accent hover:scale-125"
+                    )}
+                    onClick={() => onViewUsersOpen && onViewUsersOpen(false, data)}
+                  />
+                </span>
+                <span title="Ver Inscrições" role="img" aria-label="Ver Inscrições">
+                  <Users 
+                    className={cn(
+                      "w-5 h-5 cursor-pointer transition-transform duration-200",
+                      "hover:text-accent hover:scale-125"
+                    )}
+                    onClick={() => onViewUsersOpen && onViewUsersOpen(true, data)}
+                  />
+                </span>
+                <span title="Editar" role="img" aria-label="Editar">
+                  <Edit3 
+                    className={cn(
+                      "w-5 h-5 cursor-pointer transition-transform duration-200",
+                      "hover:text-accent hover:scale-125"
+                    )} 
+                    onClick={handleEdit}
+                  />
+                </span>
                 <ConfirmActionButton
                   trigger={(onClick) => (
-                    <Trash2
-                      className={cn(
-                        "w-5 h-5 cursor-pointer transition-transform duration-200",
-                        "hover:text-red-500 hover:scale-125"
-                      )}
-                      onClick={onClick}
-                    />
+                    <span title="Deletar" role="img" aria-label="Deletar">
+                      <Trash2
+                        className={cn(
+                          "w-5 h-5 cursor-pointer transition-transform duration-200",
+                          "hover:text-red-500 hover:scale-125"
+                        )}
+                        onClick={onClick}
+                      />
+                    </span>
                   )}
                   message="Tem certeza que deseja apagar essa atividade?"
                   onConfirm={handleDelete}
