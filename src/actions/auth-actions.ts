@@ -241,6 +241,39 @@ export async function handleVerifyToken(token: string) {
     }
   }
 }
+
+export async function handleResendVerifyToken() {
+  const { accessToken, refreshToken } = await getAuthTokens()
+
+  if (!accessToken || !refreshToken) {
+    console.error("Erro na checagem de tokens");
+    return { status: 401, msg: "Erro na checagem de tokens" };
+  }
+
+  try {
+    const res = await fetchWrapper("resend-verification-code", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      }
+    });
+
+    return { status: 200, msg: "Código de verificação enviado novamente" };
+  } catch (error: unknown) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao enviar código de verificação: ", error.message);
+      return { status: error.status, message: error.message };
+    } else {
+      console.error("Erro ao enviar código de verificação: ", error);
+      return {
+        status: 500,
+        message: "Erro desconhecido ao re-enviar código ",
+      };
+    }
+  }
+}
+
 export async function handleChangeName(name: string, last_name: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
 

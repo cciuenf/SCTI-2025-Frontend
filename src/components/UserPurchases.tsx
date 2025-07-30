@@ -93,6 +93,8 @@ export default function UserPurchases() {
 
   if (loading) return <div>Carregando compras...</div>;
 
+  if(purchases.length == 0) return <p>Parece que você ainda não adquiriu nenhum de nossos produtos :/</p>
+
   return (
     <>
       <Table>
