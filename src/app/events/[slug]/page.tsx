@@ -21,7 +21,6 @@ const SlugEventPage = async (props: Props) => {
   const isEventCreator = user_info?.is_event_creator || user_info?.is_super || false;
 
   const eventRes = await handleGetSlugCreatedEvent(slug);
-  console.log(eventRes?.data.ID)
 
   return (
     <div className="flex flex-col mx-auto items-center justify-center mt-10">
@@ -35,7 +34,7 @@ const SlugEventPage = async (props: Props) => {
           <MapPin className="text-accent" size={16} /> {eventRes?.data.location}
         </p>
         <p className="flex items-center gap-2">
-          <Users className="text-accent" size={16} /> 80 participantes
+          <Users className="text-accent" size={16} /> {eventRes?.data.participant_count || 0} participantes
         </p>
       </div>
       <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2">Sobre o Evento</h2>

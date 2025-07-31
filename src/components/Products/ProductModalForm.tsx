@@ -79,6 +79,7 @@ const ProductModalForm: React.FC<{
       const parsedAccessTargets = data.access_targets.map(item => JSON.parse(item));
       const is_event_access = parsedAccessTargets.some(target => target.is_event);
       const is_activity_access = parsedAccessTargets.some(target => !target.is_event);
+      const is_activity_token = data.token_quantity > 0;
       const transformedData = {
         ...data,
         access_targets: parsedAccessTargets.map(target => ({
@@ -87,8 +88,8 @@ const ProductModalForm: React.FC<{
         })),
         is_event_access,
         is_activity_access,
+        is_activity_token
       };
-      console.log(transformedData)
       if(isCreating) {
         const result = await handleCreateProduct(transformedData, currentEvent.slug);
         if (result?.success && result.data && onProductCreate) {
