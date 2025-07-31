@@ -9,7 +9,7 @@ interface Props {
 const Connector = ({ children, className = "" }: Props) => {
   return (
     <div className="min-h-screen w-full overflow-hidden relative">
-      <div className="w-full flex flex-col items-center absolute top-0">
+      <div className="w-full flex flex-col items-center absolute top-0 pointer-events-none">
         <div className="h-5 bg-secondary w-full" />
         <svg 
           className="w-[300%] translate-x-[-0.98%]" 
@@ -26,7 +26,7 @@ const Connector = ({ children, className = "" }: Props) => {
       <div className={cn("h-full w-full my-32", className)}>
         {children}
       </div>
-      <div className="w-full flex flex-col items-center absolute bottom-0">
+      <div className="w-full flex flex-col items-center absolute bottom-0 pointer-events-none">
         <svg 
           className="transform scale-y-[-1] w-[300%] translate-x-[-0.98%]" 
           xmlns="http://www.w3.org/2000/svg" 
