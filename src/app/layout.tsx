@@ -14,12 +14,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
       <body>
-        <SidebarProvider>
+        <SidebarProvider defaultOpen={false} className="bg-transparent">
           <SiteSidebar />
           <main
             className={`${fontClass} antialiased min-h-screen bg-background w-full flex`}
           >
-            <SidebarTrigger />
+            <SidebarTrigger/>
             <Toaster
               position="top-right"
               richColors

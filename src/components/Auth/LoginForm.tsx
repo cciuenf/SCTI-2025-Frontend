@@ -114,7 +114,7 @@ export default function LoginForm({
         <Form {...loginForm}>
           <form
             onSubmit={loginForm.handleSubmit(onSubmitLogin)}
-            className="flex flex-col gap-5 w-sm items-center"
+            className="flex flex-col gap-5 w-full items-center"
           >
             <FormField
               control={loginForm.control}
@@ -165,7 +165,7 @@ export default function LoginForm({
         <Form {...signForm}>
           <form
             onSubmit={signForm.handleSubmit(onSubmitSign)}
-            className="flex flex-col gap-5 w-sm items-center"
+            className="flex flex-col gap-5 w-full items-center"
           >
             <FormField
               control={signForm.control}

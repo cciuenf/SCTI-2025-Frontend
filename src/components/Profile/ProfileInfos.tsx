@@ -76,10 +76,10 @@ const ProfileInfos = ({
   };
 
   return (
-    <div className="w-4/5 flex flex-col items-center justify-around gap-3 mx-auto">
+    <div className="w-full md:w-4/5 flex flex-col items-center justify-around gap-3 mx-auto">
       {(currentView == "infos" || currentView == undefined) && (
         <>
-          <h2 className="text-4xl">Informações do Usuário</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl">Informações do Usuário</h2>
           <p className="font-normal">
             Gerencie aqui as informações do seu perfil!
           </p>
@@ -145,8 +145,8 @@ const ProfileInfos = ({
       )}
       {currentView == "products" && (
         <>
-          <h2 className="text-4xl">Meus Produtos</h2>
-          <p className="text-md font-light">Visualize todos os seus produtos</p>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl">Meus Produtos</h2>
+          <p className="text-sm md:text-base font-light">Visualize todos os seus produtos</p>
           <ProductListSection
             currentEvent={{ id: "eb5af25f-2368-4503-a160-5a117a771b5a", slug: "SCTI" }}
             isEventCreator={accessTokenData.is_event_creator}
@@ -156,8 +156,8 @@ const ProfileInfos = ({
 
       {currentView == "shopping" && (
         <>
-          <h2 className="text-4xl">Histórico de Compras</h2>
-          <p className="text-md font-light">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl">Histórico de Compras</h2>
+          <p className="text-sm md:text-base font-light">
             Visualize todas as suas transações
           </p>
           <UserPurchases />
@@ -166,8 +166,8 @@ const ProfileInfos = ({
 
       {currentView == "security" && (
         <>
-          <h2 className="text-4xl">Histórico de Login</h2>
-          <p className="text-md font-light">Monitore os acessos à sua conta</p>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl">Histórico de Login</h2>
+          <p className="text-sm md:text-base font-light">Monitore os acessos à sua conta</p>
           <UserLogins />
         </>
       )}

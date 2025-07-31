@@ -4,7 +4,7 @@ import { handleLogout } from "@/actions/auth-actions";
 import { LogOut } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
-import { SidebarMenuButton } from "./ui/sidebar";
+import { SidebarMenuButton } from "../ui/sidebar";
 import { clearAuthTokens, getAuthTokens } from "@/lib/cookies";
 import {useRouter} from "next/navigation";
 

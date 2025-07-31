@@ -16,7 +16,7 @@ import { Calendar, Home, LayoutDashboard, User, LogOut } from "lucide-react";
 
 import Image from "next/image";
 import Link from "next/link";
-import LogoutButton from "./LogoutButton";
+import LogoutButton from "./Sidebar/LogoutButton";
 
 const items = {
   events: [
