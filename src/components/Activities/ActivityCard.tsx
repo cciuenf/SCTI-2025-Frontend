@@ -1,4 +1,3 @@
-"use client";
 import { Calendar, MapPin, Edit3, Trash2, Clock, Speaker, CheckCircle, Eye, Users } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn, formatEventTimeRange } from "@/lib/utils";
