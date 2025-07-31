@@ -4,11 +4,12 @@ import React from "react";
 interface Props {
   children: React.ReactNode;
   className?: string;
+  id?: string;
 }
 
-const Connector = ({ children, className = "" }: Props) => {
+const Connector = ({ children, className = "", id }: Props) => {
   return (
-    <div className="min-h-screen w-full overflow-hidden relative">
+    <div className="min-h-screen w-full overflow-hidden relative" id={id}>
       <div className="w-full flex flex-col items-center absolute top-0 pointer-events-none">
         <div className="h-5 bg-secondary w-full" />
         <svg 
