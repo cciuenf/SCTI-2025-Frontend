@@ -2,54 +2,60 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import InfoCarousel from "@/components/Home/InfoCarousel";
+import Connector from "@/components/ui/Generic/Connector";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col gap-4 items-center font-spartan mx-auto">
+    <div className="flex flex-col items-center font-spartan mx-auto">
       <InfoCarousel />
-      <h2 className="text-6xl font-bold">Eventos da Semana</h2>
-      <h3 className="text-md text-center font-light max-w-[760px]">
-        Descubra nossa programação completa com palestras, workshops e
-        atividades práticas nas mais diversas áreas da ciência e tecnologia.
-      </h3>
-      <div className="w-3/4" id="info">
-        {/* TODO: List activities */}
-      </div>
-      <h2 className="text-6xl font-bold">
-        <span className="text-accent border-b-4 border-secondary">
-          SCT
-        </span>
-        2025
-      </h2>
-      <div className="w-3/4 flex items-center justify-around flex-wrap md:w-full pb-6">
-        <Image
-          src={"/test.jpg"}
-          width={250}
-          height={200}
-          alt=""
-          className="rounded-md"
-        />
-        <div className="w-1/2 flex flex-col items-center justify-around">
-          <h3 className="text-md font-light">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            mollis aliquet pellentesque. Nunc elementum, nulla et suscipit
-            tincidunt, nisi ante pharetra eros, non tincidunt ante lorem eget
-            lacus. Quisque consectetur dignissim nisi id bibendum. Aliquam
-            auctor nisl a orci semper, ac sagittis ex iaculis. Nam condimentum
-            justo ut molestie gravida. Aliquam metus lectus, dictum vehicula
-            sodales sed, semper ac nisl. Donec id erat a est varius ultrices
-            suscipit vel leo. Vivamus vitae congue elit. Pellentesque mollis,
-            elit eget hendrerit efficitur, elit ipsum pretium risus, sit amet
-            congue urna ligula non lorem. Donec et volutpat nisl, in egestas
-            nibh. Cras ullamcorper, metus et lacinia tincidunt, arcu ex volutpat
-            nulla, eu sodales justo velit at mi. Mauris sollicitudin nisi arcu,
-            ac aliquam lacus sollicitudin venenatis.
-          </h3>
-          <Button asChild>
-            <Link href={"login"}>Conheça nossa equipe</Link>
-          </Button>
+      <Connector>
+        <h2 className="text-6xl font-bold">Eventos da Semana</h2>
+        <h3 className="text-md text-center font-light max-w-[760px]">
+          Descubra nossa programação completa com palestras, workshops e
+          atividades práticas nas mais diversas áreas da ciência e tecnologia.
+        </h3>
+        <div className="w-3/4" id="info">
+          {/* TODO: List activities */}
         </div>
-      </div>
+        <h2 className="text-6xl font-bold">
+          <span className="text-accent border-b-4 border-secondary">
+            SCT
+          </span>
+          2025
+        </h2>
+      </Connector>
+      <Connector>
+        <div className="w-3/4 flex items-center justify-around flex-wrap md:w-full pb-6">
+          <Image
+            src={"/test.jpg"}
+            width={250}
+            height={200}
+            alt=""
+            className="rounded-md"
+          />
+          <div className="w-1/2 flex flex-col items-center justify-around">
+            <h3 className="text-md font-light">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+              mollis aliquet pellentesque. Nunc elementum, nulla et suscipit
+              tincidunt, nisi ante pharetra eros, non tincidunt ante lorem eget
+              lacus. Quisque consectetur dignissim nisi id bibendum. Aliquam
+              auctor nisl a orci semper, ac sagittis ex iaculis. Nam condimentum
+              justo ut molestie gravida. Aliquam metus lectus, dictum vehicula
+              sodales sed, semper ac nisl. Donec id erat a est varius ultrices
+              suscipit vel leo. Vivamus vitae congue elit. Pellentesque mollis,
+              elit eget hendrerit efficitur, elit ipsum pretium risus, sit amet
+              congue urna ligula non lorem. Donec et volutpat nisl, in egestas
+              nibh. Cras ullamcorper, metus et lacinia tincidunt, arcu ex volutpat
+              nulla, eu sodales justo velit at mi. Mauris sollicitudin nisi arcu,
+              ac aliquam lacus sollicitudin venenatis.
+            </h3>
+            <Button asChild>
+              <Link href={"login"}>Conheça nossa equipe</Link>
+            </Button>
+          </div>
+        </div>
+      </Connector>
+      {/* <Connector /> */}
     </div>
   );
 }
