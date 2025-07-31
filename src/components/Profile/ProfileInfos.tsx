@@ -56,8 +56,8 @@ const ProfileInfos = ({
   }
 
   if (!user_access_info || !accessTokenData) {
-    router.push("/login");
-    toast.info("Te redirecionamos para que você possa fazer login!");
+    router.push("/");
+    toast.info("Área destinada somente para usuários logados!");
     return;
   }
 

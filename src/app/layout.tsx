@@ -2,24 +2,34 @@ import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { fontClass } from "@/lib/fonts";
 import "./globals.css";
-import Header from "@/components/Header";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SiteSidebar } from "@/components/SiteSidebar";
 
 export const metadata: Metadata = {
   title: "SCTI - 2025",
   description: "Front-end da plataforma a ser usado na SCTI-2025",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${fontClass} antialiased min-h-screen bg-background`}>
-        <Header/>
-        <Toaster position="top-right" richColors theme="light" closeButton duration={5000}/>
-        {children}
+    <html lang="pt-BR">
+      <body>
+        <SidebarProvider>
+          <SiteSidebar />
+          <main
+            className={`${fontClass} antialiased min-h-screen bg-background w-full flex`}
+          >
+            <SidebarTrigger />
+            <Toaster
+              position="top-right"
+              richColors
+              theme="light"
+              closeButton
+              duration={5000}
+            />
+            {children}
+          </main>
+        </SidebarProvider>
       </body>
     </html>
   );
