@@ -24,7 +24,7 @@ const Connector = ({ children, className = "", id }: Props) => {
           />
         </svg>
       </div>
-      <div className={cn("h-full w-full my-32", className)}>
+      <div className={cn("h-full w-full my-20 lg:my-32", className)}>
         {children}
       </div>
       <div className="w-full flex flex-col items-center absolute bottom-0 pointer-events-none">

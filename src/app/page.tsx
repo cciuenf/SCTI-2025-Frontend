@@ -3,28 +3,40 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import InfoCarousel from "@/components/Home/InfoCarousel";
 import Connector from "@/components/ui/Generic/Connector";
+import { handleGetAllEventActivities } from "@/actions/activity-actions";
+import ActivityCard from "@/components/Activities/ActivityCard";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const result = await handleGetAllEventActivities("scti");
   return (
     <div className="flex flex-col items-center font-spartan mx-auto">
       <InfoCarousel />
-      <Connector>
-        <h2 className="text-6xl font-bold">Eventos da Semana</h2>
-        <h3 className="text-md text-center font-light max-w-[760px]">
+      <Connector className="text-center flex flex-col items-center" id="info">
+        <h2 className="text-6xl font-bold">Atividades da Semana</h2>
+        <h3 className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
           Descubra nossa programação completa com palestras, workshops e
           atividades práticas nas mais diversas áreas da ciência e tecnologia.
         </h3>
-        <div className="w-3/4" id="info">
-          {/* TODO: List activities */}
+        <div 
+          className="grid justify-center md:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-2 w-full px-32" 
+        >
+          {result.data.map(card => (
+            <ActivityCard 
+              key={card.ID}
+              data={card}
+              isEventCreator={false}
+              isSubscribed={false}
+            />
+          ))}
         </div>
+      </Connector>
+      <Connector>
         <h2 className="text-6xl font-bold">
           <span className="text-accent border-b-4 border-secondary">
             SCT
           </span>
           2025
         </h2>
-      </Connector>
-      <Connector>
         <div className="w-3/4 flex items-center justify-around flex-wrap md:w-full pb-6">
           <Image
             src={"/test.jpg"}
