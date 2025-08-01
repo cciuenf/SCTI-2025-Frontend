@@ -1,18 +1,18 @@
 "use client";
 import { useState } from "react";
-import { useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { User, CreditCard, BoxIcon, LockIcon } from "lucide-react";
 type Props = {};
 
-const ProfileBar = (props: Props) => {
+const ProfileTabs = (props: Props) => {
   const [currentView, setCurrentView] = useState<string>("infos");
-  const router = useRouter()
+  const router = useRouter();
 
   const handleViewChange = (newView: string) => {
-    setCurrentView(newView)
-    router.push(`profile?view=${newView}`)
-  }
+    setCurrentView(newView);
+    router.push(`profile?view=${newView}`);
+  };
 
   return (
     <div className="w-4/5 flex items-center justify-around border-1 border-secondary bg-secondary rounded-md p-1 gap-1">
@@ -23,8 +23,8 @@ const ProfileBar = (props: Props) => {
         )}
         onClick={() => handleViewChange("infos")}
       >
-        <User />
-        <h2>Informações</h2>
+        <User className="hidden md:block md:w-5 md:h-5" />
+        <h2 className="text-[10px] md:text-base lg:text-xl">Informações</h2>
       </div>
       <div
         className={cn(
@@ -33,8 +33,8 @@ const ProfileBar = (props: Props) => {
         )}
         onClick={() => handleViewChange("products")}
       >
-        <BoxIcon />
-        <h2>Produtos</h2>
+        <BoxIcon className="hidden md:block md:w-5 md:h-5" />
+        <h2 className="text-[10px] md:text-base lg:text-xl">Produtos</h2>
       </div>
       <div
         className={cn(
@@ -43,8 +43,8 @@ const ProfileBar = (props: Props) => {
         )}
         onClick={() => handleViewChange("shopping")}
       >
-        <CreditCard />
-        <h2>Compras</h2>
+        <CreditCard className="hidden md:block md:w-5 md:h-5" />
+        <h2 className="text-[10px] md:text-base lg:text-xl">Compras</h2>
       </div>
       <div
         className={cn(
@@ -53,11 +53,11 @@ const ProfileBar = (props: Props) => {
         )}
         onClick={() => handleViewChange("security")}
       >
-        <LockIcon />
-        <h2>Segurança</h2>
+        <LockIcon className="hidden md:block md:w-5 md:h-5" />
+        <h2 className="text-[10px] md:text-base lg:text-xl">Segurança</h2>
       </div>
     </div>
   );
 };
 
-export default ProfileBar;
+export default ProfileTabs;

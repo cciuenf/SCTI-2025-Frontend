@@ -1,4 +1,4 @@
-import ProfileBar from "@/components/Profile/ProfileBar";
+import ProfileTabs from "@/components/Profile/ProfileTabs";
 import ProfileInfos from "@/components/Profile/ProfileInfos";
 
 import { cookies } from "next/headers";
@@ -28,8 +28,8 @@ const page = async ({ searchParams }: Props) => {
   const deviceInfos = await handleGetUserDeviceInfos();
 
   return (
-    <div className="flex flex-col gap-15 items-center mt-5">
-      <ProfileBar />
+    <div className="w-full flex flex-col gap-15 items-center mt-5">
+      <ProfileTabs />
       <ProfileInfos
         user_access_info={user_access_info}
         user_refresh_info={user_refresh_info}

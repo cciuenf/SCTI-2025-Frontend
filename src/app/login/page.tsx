@@ -17,12 +17,12 @@ export default function Login() {
     useState<boolean>(false);
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center gap-3">
-      <div className="border-1 border-primary shadow-xs p-5 rounded-md flex flex-col items-center justify-around gap-3 w-[480px] h-[520px]">
+    <div className="w-full h-screen flex flex-col justify-center items-center gap-3">
+      <div className="border-1 border-primary shadow-xs p-5 rounded-md flex flex-col items-center justify-around gap-3 w-[320px] h-[480px] md:w-[440px] lg:w-[480px]">
         {hasForgottedPassword ? (
           <>
-            <h2 className="text-3xl">Recuperar Senha</h2>
-            <p>
+            <h2 className="text-2xl md:text-3xl lg:text-3xl">Recuperar Senha</h2>
+            <p className="text-sm md:text-base lg:text-base">
               Parece que você se esqueceu da sua senha, para recuperá-la,
               coloque seu endereço de e-mail no campo abaixo:
             </p>
@@ -67,7 +67,7 @@ export default function Login() {
               <Loader2 className="animate-spin w-10 h-10 text-yellow-300" />
             ) : isLogin ? (
               <>
-                <h2 className="text-3xl">Faça seu Login!</h2>
+                <h2 className="text-2xl md:text-3xl lg:text-3xl">Faça seu Login!</h2>
                 <LoginForm
                   key="login-form"
                   type={"Login"}
@@ -84,7 +84,7 @@ export default function Login() {
               </>
             ) : (
               <>
-                <h2 className="text-3xl">Crie sua conta!</h2>
+                <h2 className="text-2xl md:text-3xl lg:text-3xl">Crie sua conta!</h2>
 
                 <LoginForm
                   type={"Sign Up"}
