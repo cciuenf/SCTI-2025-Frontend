@@ -48,41 +48,41 @@ const UserLogins = (props: Props) => {
 
   if (isLoading) {
     return (
-      <>
+      <div className="w-full h-screen flex items-center justify-center">
       <Loader2 className="animate-spin w-10 h-10"/>
-      </>
+      </div>
     )
   }
 
   return (
-    <>
+    <div className="w-full flex flex-col justify-around items-center gap-2">
       {userLogins &&
         userLogins.map((r) => (
           <div
-            className="w-3/4 h-[100px] py-2 px-5 flex justify-between items-center border-2 border-secondary rounded-md gap-10"
+            className="w-9/10 sm:w-4/5 min-h-[100px] py-2 px-5 flex justify-between items-center border-2 border-secondary rounded-md gap-5 sm:gap-10"
             key={r?.token}
           >
-            <div className="flex justify-between items-center gap-10">
+            <div className="flex justify-between items-center gap-2 sm:gap-10">
               <div className="flex flex-col items-center justify-center rounded-full border-2 border-secondary p-3 shadow-2xs">
-                <Monitor className="w-12 h-12" />
+                <Monitor className="w-4 h-4 sm:w-8 sm:h-8 lg:w-12 lg:h-12" />
               </div>
               <div className="flex flex-col justify-around items-start">
-                <h2 className="text-2xl">{r.payload?.user_agent}</h2>
-                <p>{`${format(r.payload!.last_used, "dd/MM/yyyy HH:mm")} • IP: ${
+                <h2 className="text-base sm:text-xl lg:text-2xl">{r.payload?.user_agent}</h2>
+                <p className="text-xs sm:text-base">{`${format(r.payload!.last_used, "dd/MM/yyyy HH:mm")} • IP: ${
                   r.payload?.ip_address
                 }`}</p>
               </div>
             </div>
             <Button
               variant={"destructive"}
-              className="border-2 border-zinc-900 rounded-sm text-xl"
+              className="border-2 border-zinc-900 rounded-sm text-xs sm:text-base px-2 py-1 sm:px-4 sm:py-2"
               onClick={() => handleRevokeClick(r?.token)}
             >
               Revogar
             </Button>
           </div>
         ))}
-    </>
+    </div>
   );
 };
 

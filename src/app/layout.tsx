@@ -17,7 +17,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <SidebarProvider defaultOpen={false} className="bg-transparent">
           <SiteSidebar />
           <main
-            className={`${fontClass} antialiased min-h-screen bg-background w-full flex`}
+            className={`${fontClass} antialiased min-h-screen bg-background w-full flex overflow-x-hidden`}
           >
             <SidebarTrigger/>
             <Toaster

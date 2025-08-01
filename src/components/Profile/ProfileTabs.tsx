@@ -15,7 +15,7 @@ const ProfileTabs = (props: Props) => {
   };
 
   return (
-    <div className="w-9/10 md:w-4/5 flex items-center justify-around border-1 border-secondary bg-secondary rounded-md p-1 gap-1">
+    <div className="w-4/5 flex items-center justify-around border-1 border-secondary bg-secondary rounded-md p-1 gap-1">
       <div
         className={cn(
           "w-1/4 flex items-center justify-center gap-2 cursor-pointer py-3 px-1 duration-300 rounded-md text-zinc-100 hover:bg-zinc-100 hover:text-secondary",
@@ -24,7 +24,7 @@ const ProfileTabs = (props: Props) => {
         onClick={() => handleViewChange("infos")}
       >
         <User className="hidden md:block md:w-5 md:h-5" />
-        <h2 className="text-xs md:text-base lg:text-xl">Informações</h2>
+        <h2 className="text-[10px] md:text-base lg:text-xl">Informações</h2>
       </div>
       <div
         className={cn(
@@ -34,7 +34,7 @@ const ProfileTabs = (props: Props) => {
         onClick={() => handleViewChange("products")}
       >
         <BoxIcon className="hidden md:block md:w-5 md:h-5" />
-        <h2 className="text-xs md:text-base lg:text-xl">Produtos</h2>
+        <h2 className="text-[10px] md:text-base lg:text-xl">Produtos</h2>
       </div>
       <div
         className={cn(
@@ -44,7 +44,7 @@ const ProfileTabs = (props: Props) => {
         onClick={() => handleViewChange("shopping")}
       >
         <CreditCard className="hidden md:block md:w-5 md:h-5" />
-        <h2 className="text-xs md:text-base lg:text-xl">Compras</h2>
+        <h2 className="text-[10px] md:text-base lg:text-xl">Compras</h2>
       </div>
       <div
         className={cn(
@@ -54,7 +54,7 @@ const ProfileTabs = (props: Props) => {
         onClick={() => handleViewChange("security")}
       >
         <LockIcon className="hidden md:block md:w-5 md:h-5" />
-        <h2 className="text-xs md:text-base lg:text-xl">Segurança</h2>
+        <h2 className="text-[10px] md:text-base lg:text-xl">Segurança</h2>
       </div>
     </div>
   );
