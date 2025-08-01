@@ -113,12 +113,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
   };
 
   return (
-    <div
-      className={cn(
-        "flex flex-col justify-around items-center gap-3 max-w-md w-full h-60 p-3 rounded-md",
-        origin != "signup" && "border-bg-zinc-100 border-1"
-      )}
-    >
+    <div className="flex flex-col justify-around items-center gap-3 max-w-md w-full h-60 p-3 rounded-md">
       <Form {...verifyForm}>
         <form
           className="w-full max-w-[400px] h-full flex flex-col justify-between items-center gap-3"
@@ -148,7 +143,6 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -176,7 +170,6 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -204,7 +197,6 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -232,7 +224,6 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -260,7 +251,6 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -288,7 +278,6 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
