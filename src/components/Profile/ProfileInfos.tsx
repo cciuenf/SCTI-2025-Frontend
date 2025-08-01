@@ -80,7 +80,7 @@ const ProfileInfos = ({
       {(currentView == "infos" || currentView == undefined) && (
         <>
           <h2 className="text-2xl md:text-3xl">Informações do Usuário</h2>
-          <p className="font-normal text-sm md:text-base md:mb-4">
+          <p className="font-light text-sm md:text-base md:mb-4">
             Gerencie aqui as informações do seu perfil!
           </p>
           <div className="w-full flex flex-col justify-around items-center md:flex-row md:justify-between md:items-start">
