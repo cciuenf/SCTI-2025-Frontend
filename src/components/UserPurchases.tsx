@@ -129,17 +129,17 @@ export default function UserPurchases() {
       </Table>
       <div className="w-full flex flex-col sm:flex-row justify-around items-center mt-5 gap-3">
         <div className="flex flex-col items-center justify-center">
-          <h2 className="text-base sm:text-xl">{overviewData.finishedPurchases}</h2>
+          <h2 className="text-xl">{overviewData.finishedPurchases}</h2>
           <h3 className="text-zinc-900/70 text-sm sm:text-base">Compras finalizadas</h3>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <h2 className="text-base sm:text-xl text-accent">
+          <h2 className="text-xl text-accent">
             {convertNumberToBRL(overviewData.totalInPurchases)}
           </h2>
           <h3 className="text-zinc-900/70 text-sm sm:text-base">Total gasto</h3>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <h2 className="text-base sm:text-xl">{overviewData.pendentPurchases}</h2>
+          <h2 className="text-xl">{overviewData.pendentPurchases}</h2>
           <h3 className="text-zinc-900/70 text-sm sm:text-base">Compras pendentes</h3>
         </div>
       </div>

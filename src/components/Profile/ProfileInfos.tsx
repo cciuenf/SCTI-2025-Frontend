@@ -119,7 +119,7 @@ const ProfileInfos = ({
                 <h2 className="text-xl md:text-xl lg:text-2xl">
                   Informações de Login
                 </h2>
-                <h3>{`${deviceInfos.os},${deviceInfos.browser}`}</h3>
+                <h3>{`${deviceInfos.os}, ${deviceInfos.browser}`}</h3>
                 <h3>
                   {format(user_refresh_info!.last_used, "dd/MM/yyyy HH:mm")}
                 </h3>
