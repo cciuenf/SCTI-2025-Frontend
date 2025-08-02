@@ -1,10 +1,9 @@
-import RefreshTokenList from "@/components/RefreshTokensList";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
-import UserPurchases from "@/components/UserPurchases";
-import UserProducts from "@/components/UserProducts";
-import UserTokens from "@/components/UserTokens";
+import TopCard from "@/components/Dashboard/TopCard";
+import ProductsDashboardCard from "@/components/Dashboard/ProductsDashboardCard";
+import ActivitiesDashboardCard from "@/components/Dashboard/ActivitiesDashboardCard";
 
 export default async function Dashboard() {
   const cookieStore = cookies();
@@ -15,36 +14,22 @@ export default async function Dashboard() {
   const refresh_token = (await cookieStore).get("refresh_token")?.value;
 
   return (
-    <div className="h-screen flex flex-col items-center font-spartan p-4">
-      <h1 className="font-black text-lg mb-3.5">
-        Nome: {user_info?.name} {user_info?.last_name}
-      </h1>
-      <h1 className="font-black text-lg mb-3.5">Email: {user_info?.email}</h1>
-      <h1 className="font-black text-lg mb-3.5">
-        Usuário Verificado: {user_info?.is_verified ? "Sim" : "Não"}
-      </h1>
-      <h1 className="font-black text-lg mb-3.5">
-        Tipo de Admin:{" "}
-        {user_info?.is_super
-          ? "Super"
-          : user_info?.is_event_creator
-          ? "Criador de Evento" 
-          : "Não é admin"}
-      </h1>
-
-      <UserProducts />
-      <UserPurchases />
-      <UserTokens />
-
-      <h1 className="font-black text-lg mt-6 mb-3.5">Meus Tokens:</h1>
-      <p className="max-w-lvw p-2 break-words">
-        Access Token: {access_token ?? ""}
-      </p>
-      <p className="max-w-lvw p-2 break-words">
-        Refresh Token: {refresh_token ?? ""}
-      </p>
-      <h1 className="font-black text-lg mt-3.5 mb-3.5">Refresh Tokens:</h1>
-      <RefreshTokenList />
+    <div className="w-full flex flex-col items-center font-spartan gap-5 py-15">
+      <div className="flex flex-col justify-around items-center">
+        <h1 className="font-bold text-6xl">Minha SCTI</h1>
+        <h2 className="font-light text-2xl">
+          Veja um resumo da sua semana acadêmica!
+        </h2>
+      </div>
+      <div className="w-7/10 flex justify-around items-center">
+        <TopCard data={user_info} />
+        <TopCard data={user_info} />
+        <TopCard data={user_info} />
+      </div>
+      <div className="w-7/10 flex justify-around items-center">
+        <ActivitiesDashboardCard />
+        <ProductsDashboardCard />
+      </div>
     </div>
   );
 }
