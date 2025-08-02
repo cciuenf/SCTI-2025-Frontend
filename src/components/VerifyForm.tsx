@@ -12,7 +12,10 @@ import { RefObject, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { handleVerifyToken } from "@/actions/auth-actions";
+import {
+  handleResendVerifyToken,
+  handleVerifyToken,
+} from "@/actions/auth-actions";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -87,6 +90,19 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
     router.push("/");
   };
 
+  const resendVerifyToken = async () => {
+    const res = await handleResendVerifyToken();
+
+    if (res.status == 200) {
+      toast.success("Código de verificação enviado re-enviado!");
+      return;
+    }
+
+    if (res.status !== 200) {
+      toast.error("Erro ao reenviar o código!");
+    }
+  };
+
   const toNext = (
     e: ChangeEvent<HTMLInputElement>,
     nextStep: RefObject<HTMLInputElement | HTMLButtonElement | null>
@@ -97,9 +113,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
   };
 
   return (
-    <div className={cn("flex flex-col justify-around items-center gap-3 max-w-md w-full h-60 p-3 rounded-md",
-      origin == "signup" && "border-bg-zinc-100 border-1"
-    )}>
+    <div className="flex flex-col justify-around items-center gap-3 max-w-md w-full h-60 p-3 rounded-md">
       <Form {...verifyForm}>
         <form
           className="w-full max-w-[400px] h-full flex flex-col justify-between items-center gap-3"
@@ -129,7 +143,6 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -157,7 +170,6 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -185,7 +197,6 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -213,7 +224,6 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -241,7 +251,6 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -269,18 +278,17 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       }
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <Button ref={verifyRef} type="submit">
-            Verificar
-          </Button>
-          {origin == "signup" && (
+          <Button ref={verifyRef}>Verificar</Button>
+          {origin == "signup" ? (
             <Button variant={"outline"} onClick={() => verifyAfter()}>
               Deixar para depois
             </Button>
+          ) : (
+            <Button onClick={resendVerifyToken}>Reenviar Código</Button>
           )}
         </form>
       </Form>

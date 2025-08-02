@@ -23,7 +23,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost:
           "hover:bg-accent hover:text-primary-foreground dark:hover:bg-accent/50",
-        header: "text-zinc-50 border-none underline-offset-4 hover:underline",
+        sidebar: "text-accent hover:scale-115 border-0 bg-transparent",
         hour: "bg-accent border-background text-primary-foreground",
         profile: "bg-transparent rounded-[5px] py-1 px-2.5 border-secondary text-xl hover:tracking-wide",
         edit: "bg-secondary text-zinc-100 rounded-[5px] py-2 px-2.5 text-xl hover:tracking-wider"

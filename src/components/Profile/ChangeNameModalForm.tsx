@@ -1,8 +1,7 @@
 "use client";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
-import {PenIcon} from "lucide-react";
+import { PenIcon } from "lucide-react";
 import { Button } from "../ui/button";
-
 
 import { Dispatch, SetStateAction, useState } from "react";
 import CustomGenericForm, {
@@ -16,8 +15,10 @@ import { handleChangeName } from "@/actions/auth-actions";
 import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
 
 type Props = {
-  accessData: UserAccessTokenJwtPayload
-  setAccessData: Dispatch<SetStateAction<UserAccessTokenJwtPayload | null | undefined>>
+  accessData: UserAccessTokenJwtPayload;
+  setAccessData: Dispatch<
+    SetStateAction<UserAccessTokenJwtPayload | null | undefined>
+  >;
 };
 
 const ChangeNameModalForm = ({ accessData, setAccessData }: Props) => {
@@ -54,8 +55,12 @@ const ChangeNameModalForm = ({ accessData, setAccessData }: Props) => {
       const result = await handleChangeName(new_name, new_last_name);
 
       if (result?.status == 200) {
-        const newAccessTokenData = { ...accessData, name: new_name, last_name: new_last_name }
-        setAccessData(newAccessTokenData)
+        const newAccessTokenData = {
+          ...accessData,
+          name: new_name,
+          last_name: new_last_name,
+        };
+        setAccessData(newAccessTokenData);
         toast.success(`Nome alterado com sucesso!`);
         setOpen(false);
         return;
@@ -71,9 +76,9 @@ const ChangeNameModalForm = ({ accessData, setAccessData }: Props) => {
       open={open}
       onOpenChange={setOpen}
       trigger={
-        <Button variant={"edit"} className="w-4/5">
-          <PenIcon />
-          <p>Editar perfil</p>
+        <Button variant={"edit"} className="w-3/5 md:w-4/5">
+          <PenIcon className="w-3 h-3 md:w-4 md:h-4" />
+          <p className="text-sm md:text-base">Editar perfil</p>
         </Button>
       }
     >
