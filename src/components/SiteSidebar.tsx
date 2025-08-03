@@ -39,8 +39,8 @@ export async function SiteSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link href={"/"} className="hover:opacity-90 duration-200">
-          <Image src={"SCT.svg"} width={200} height={150} alt="SCT logo" />
+        <Link href="/" className="hover:opacity-90 duration-200">
+          <Image src="SCT.svg" width={200} height={150} alt="SCT logo" />
         </Link>
       </SidebarHeader>
       <SidebarContent className="justify-between">
@@ -51,10 +51,10 @@ export async function SiteSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href={"/"}>
+                    <Link href="/">
                       <Home />
                       <span>Home</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -68,10 +68,10 @@ export async function SiteSidebar() {
                   {items.events.map((item) => (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
-                        <a href={item.url}>
+                        <Link href={item.url}>
                           <item.icon />
                           <span>{item.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
@@ -88,10 +88,10 @@ export async function SiteSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href={"/profile"}>
+                    <Link href="profile">
                       <User />
                       <span>Perfil</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem className="border-accent">
@@ -107,10 +107,10 @@ export async function SiteSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href={"/login"}>
+                    <Link href="login">
                       <User />
                       <span>Login</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>

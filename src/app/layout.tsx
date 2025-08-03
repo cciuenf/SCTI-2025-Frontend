@@ -13,20 +13,18 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <body>
-        <SidebarProvider defaultOpen={false} className="bg-transparent">
+      <body className={`${fontClass} antialiased min-h-screen bg-background`}>
+        <SidebarProvider defaultOpen={false}>
           <SiteSidebar />
-          <main
-            className={`${fontClass} antialiased min-h-screen bg-background w-full flex overflow-x-hidden`}
-          >
-            <SidebarTrigger/>
-            <Toaster
-              position="top-right"
-              richColors
-              theme="light"
-              closeButton
-              duration={5000}
-            />
+          <SidebarTrigger className="fixed top-4 left-4 z-50 shadow-md bg-white rounded-full"/>
+          <Toaster
+            position="top-right"
+            richColors
+            theme="light"
+            closeButton
+            duration={5000}
+          />
+          <main className="overflow-x-hidden w-full">
             {children}
           </main>
         </SidebarProvider>
