@@ -40,7 +40,7 @@ export async function SiteSidebar() {
     <Sidebar>
       <SidebarHeader>
         <Link href="/" className="hover:opacity-90 duration-200">
-          <Image src="SCT.svg" width={200} height={150} alt="SCT logo" />
+          <Image src="/SCT.svg" width={200} height={150} alt="SCT logo" />
         </Link>
       </SidebarHeader>
       <SidebarContent className="justify-between">
@@ -88,7 +88,7 @@ export async function SiteSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link href="profile">
+                    <Link href="/profile">
                       <User />
                       <span>Perfil</span>
                     </Link>
@@ -107,7 +107,7 @@ export async function SiteSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link href="login">
+                    <Link href="/login">
                       <User />
                       <span>Login</span>
                     </Link>
