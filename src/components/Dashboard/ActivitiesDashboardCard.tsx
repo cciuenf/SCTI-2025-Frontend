@@ -8,6 +8,8 @@ import {
   ArrowRight,
   ArrowRightCircle,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type Props = {};
 
@@ -16,6 +18,8 @@ const ActivitiesDashboardCard = (props: Props) => {
     Map<string, ActivityResponseI[]>
   >(new Map([]));
   const [currentDay, setCurrentDay] = useState<number>(0);
+
+  const router = useRouter()
 
   const days = [
     "Segunda-Feira",
@@ -40,6 +44,10 @@ const ActivitiesDashboardCard = (props: Props) => {
   useEffect(() => {
     const getUserActivitesByDay = async () => {
       const res = await handleGetUserEventActivities("scti");
+      if (!res.success) {
+        router.push("/")
+        toast.error("Erro ao adquirir informações do usuário!")
+      }
       if (res.success && res.data) {
         const groupedActivities = res.data.reduce((acc, activity) => {
           const date = new Date(activity.start_time).toLocaleDateString(
