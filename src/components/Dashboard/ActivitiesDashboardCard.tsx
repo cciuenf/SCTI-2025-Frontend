@@ -3,10 +3,9 @@ import { ActivityResponseI } from "@/types/activity-interface";
 import { useEffect, useState } from "react";
 import { handleGetUserEventActivities } from "@/actions/activity-actions";
 import {
-  ArrowLeft,
   ArrowLeftCircle,
-  ArrowRight,
   ArrowRightCircle,
+  Loader2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -18,8 +17,9 @@ const ActivitiesDashboardCard = (props: Props) => {
     Map<string, ActivityResponseI[]>
   >(new Map([]));
   const [currentDay, setCurrentDay] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const router = useRouter()
+  const router = useRouter();
 
   const days = [
     "Segunda-Feira",
@@ -43,10 +43,11 @@ const ActivitiesDashboardCard = (props: Props) => {
 
   useEffect(() => {
     const getUserActivitesByDay = async () => {
+      setIsLoading(true)
       const res = await handleGetUserEventActivities("scti");
       if (!res.success) {
-        router.push("/")
-        toast.error("Erro ao adquirir informações do usuário!")
+        router.push("/");
+        toast.error("Erro ao adquirir informações do usuário!");
       }
       if (res.success && res.data) {
         const groupedActivities = res.data.reduce((acc, activity) => {
@@ -62,6 +63,7 @@ const ActivitiesDashboardCard = (props: Props) => {
         }, new Map<string, ActivityResponseI[]>());
         setActivitiesByDay(groupedActivities);
       }
+      setIsLoading(false)
     };
 
     getUserActivitesByDay();
@@ -69,21 +71,24 @@ const ActivitiesDashboardCard = (props: Props) => {
 
   return (
     <div className="w-9/10 lg:w-3/5 min-h-[310px] flex flex-col gap-5 items-center shadow-sm rounded-md py-5 shrink">
-      <div className="flex justify-around items-center mb-5"></div>
-      <div className="w-full sm:w-4/5 flex justify-between items-start px-7 md:px-10">
+      <h2 className="text-2xl sm:text-3xl font-bold">Minhas Atividades</h2>
+      <div className="w-full sm:w-4/5 flex justify-between items-start px-7 md:px-20">
         <ArrowLeftCircle
-          className="cursor-pointer w-7 h-7 sm:w-9 sm:h-9 text-accent hover:opacity-70 duration-300"
+          className="cursor-pointer w-6 h-6 sm:w-7 sm:h-7 text-accent hover:opacity-70 duration-300"
           onClick={() => setDay("sub")}
         />
-        <h2 className="text-xl sm:text-3xl mb-3 ">{days[currentDay]}</h2>
+        <h2 className="text-xl sm:text-2xl mb-3 ">{days[currentDay]}</h2>
         <ArrowRightCircle
-          className="cursor-pointer w-7 h-7 sm:w-9 sm:h-9 text-accent hover:opacity-70 duration-300"
+          className="cursor-pointer w-6 h-6 sm:w-7 sm:h-7 text-accent hover:opacity-70 duration-300"
           onClick={() => setDay("add")}
         />
       </div>
 
       <div className="w-full h-full flex flex-col px-4 justify-between gap-10 text-center">
-        <div className="w-full lg:w-3/5 lg:mx-auto">
+        {isLoading ? (<div className="flex w-full justify-center items-center">
+          <Loader2 className="animate-spin text-accent w-10 h-10"/>
+        </div>) : (
+          <div className="w-full lg:w-3/5 lg:mx-auto">
           {activitiesByDay.get(days[currentDay].toLocaleLowerCase()) &&
           activitiesByDay.get(days[currentDay].toLocaleLowerCase()) !=
             undefined ? (
@@ -120,6 +125,7 @@ const ActivitiesDashboardCard = (props: Props) => {
             </p>
           )}
         </div>
+        )}
       </div>
     </div>
   );
