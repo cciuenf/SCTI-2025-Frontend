@@ -5,7 +5,11 @@ import TopCard from "@/components/Dashboard/TopCard";
 import ProductsDashboardCard from "@/components/Dashboard/ProductsDashboardCard";
 import ActivitiesDashboardCard from "@/components/Dashboard/ActivitiesDashboardCard";
 import { handleGetUserEventActivities } from "@/actions/activity-actions";
-
+import {
+  handleGetAllUserProducts,
+  handleGetAllUserProductsPurchases,
+} from "@/actions/product-actions";
+import { convertNumberToBRL } from "@/lib/utils";
 
 export default async function Dashboard() {
   const cookieStore = cookies();
@@ -14,7 +18,38 @@ export default async function Dashboard() {
     access_token as string
   ) as UserAccessTokenJwtPayload | null;
   const refresh_token = (await cookieStore).get("refresh_token")?.value;
-  const events = await handleGetUserEventActivities("scti")
+  const events = await handleGetUserEventActivities("scti");
+
+  const getUserTotalSpent = async (): Promise<number> => {
+    const [products, purchases] = await Promise.all([
+      handleGetAllUserProducts(),
+      handleGetAllUserProductsPurchases(),
+    ]);
+    const initialValue: number = 0.0;
+
+    if (products.success && purchases.success) {
+      const productsMap = new Map(products.data.map((p) => [p.ID, p]));
+
+      const purchasesWithProducts = purchases.data.map((p) => ({
+        ...p,
+        product: productsMap.get(p.product_id),
+      }));
+
+      const total: number = purchasesWithProducts.reduce((acc, p) => {
+        if (p.is_delivered && p.product) {
+          acc = acc + p.product?.price_int;
+        }
+
+        return acc;
+      }, initialValue);
+
+      return total;
+    }
+
+    return initialValue;
+  };
+
+  const totalSpent = await getUserTotalSpent();
 
   return (
     <div className="w-full flex flex-col items-center font-spartan gap-5 py-15">
@@ -43,7 +78,7 @@ export default async function Dashboard() {
           type="amount"
           data={{
             label: "Total gasto",
-            content: "10.00R$",
+            content: convertNumberToBRL(totalSpent),
           }}
         />
       </div>

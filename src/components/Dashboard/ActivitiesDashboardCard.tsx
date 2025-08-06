@@ -61,8 +61,6 @@ const ActivitiesDashboardCard = (props: Props) => {
           return acc;
         }, new Map<string, ActivityResponseI[]>());
         setActivitiesByDay(groupedActivities);
-        console.log(Array.from(groupedActivities));
-        console.log(`oi to no effect`);
       }
     };
 
