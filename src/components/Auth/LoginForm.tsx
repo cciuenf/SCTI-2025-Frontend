@@ -76,7 +76,6 @@ export default function LoginForm({
 
     setIsLoading(true);
     const response = await handleSignUpSubmit(values);
-    setIsLoading(false);
 
     if (typeof response === "string") {
       toast.error(`Erro ao realizar a criação da conta`);
@@ -84,6 +83,7 @@ export default function LoginForm({
     } else {
       toast.info("Código de verificação enviado para o e-mail cadastrado!");
     }
+    setIsLoading(false);
 
     if (response === false && setMustShowVerify) setMustShowVerify(true);
   };

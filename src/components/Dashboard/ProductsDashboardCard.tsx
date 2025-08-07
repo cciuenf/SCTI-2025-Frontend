@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { ScrollArea } from "../ui/scroll-area";
 import {
   handleGetAllUserProducts,
   handleGetAllUserProductsPurchases,
@@ -11,7 +11,7 @@ import {
   ProductResponseI,
 } from "@/types/product-interfaces";
 import { convertNumberToBRL } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
+import ProductsDashboardListSkeleton from "./ProductsDashboardListSkeleton";
 
 interface PurchaseWithProduct extends ProductPurchasesResponseI {
   product?: ProductResponseI;
@@ -60,8 +60,8 @@ const ProductsDashboardCard = () => {
     <div className="w-9/10 lg:w-1/3 min-h-72 flex flex-col items-center gap-3 rounded-md shadow-sm py-1">
       <h2 className="text-2xl font-bold">Meus Produtos</h2>
       {isLoading ? (
-        <div className="w-full flex justify-center items-center">
-          <Loader2 className="animate-spin text-accent w-10 h-10" />
+        <div className="w-full flex flex-col justify-around">
+          <ProductsDashboardListSkeleton />
         </div>
       ) : (
         <ScrollArea className="w-full h-[260px] px-2">

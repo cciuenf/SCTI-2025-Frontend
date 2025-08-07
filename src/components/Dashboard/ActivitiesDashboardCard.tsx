@@ -2,13 +2,10 @@
 import { ActivityResponseI } from "@/types/activity-interface";
 import { useEffect, useState } from "react";
 import { handleGetUserEventActivities } from "@/actions/activity-actions";
-import {
-  ArrowLeftCircle,
-  ArrowRightCircle,
-  Loader2,
-} from "lucide-react";
+import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import ActivitiesDashboardListSkeleton from "./ActivitiesDashboardListSkeleton";
 
 type Props = {};
 
@@ -17,7 +14,7 @@ const ActivitiesDashboardCard = (props: Props) => {
     Map<string, ActivityResponseI[]>
   >(new Map([]));
   const [currentDay, setCurrentDay] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -43,7 +40,7 @@ const ActivitiesDashboardCard = (props: Props) => {
 
   useEffect(() => {
     const getUserActivitesByDay = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       const res = await handleGetUserEventActivities("scti");
       if (!res.success) {
         router.push("/");
@@ -63,7 +60,7 @@ const ActivitiesDashboardCard = (props: Props) => {
         }, new Map<string, ActivityResponseI[]>());
         setActivitiesByDay(groupedActivities);
       }
-      setIsLoading(false)
+      setIsLoading(false);
     };
 
     getUserActivitesByDay();
@@ -85,46 +82,51 @@ const ActivitiesDashboardCard = (props: Props) => {
       </div>
 
       <div className="w-full h-full flex flex-col px-4 justify-between gap-10 text-center">
-        {isLoading ? (<div className="flex w-full justify-center items-center">
-          <Loader2 className="animate-spin text-accent w-10 h-10"/>
-        </div>) : (
+        {isLoading ? (
+          <div className="flex w-full justify-center items-center">
+            <ActivitiesDashboardListSkeleton />
+          </div>
+        ) : (
           <div className="w-full lg:w-3/5 lg:mx-auto">
-          {activitiesByDay.get(days[currentDay].toLocaleLowerCase()) &&
-          activitiesByDay.get(days[currentDay].toLocaleLowerCase()) !=
-            undefined ? (
-            activitiesByDay
-              .get(days[currentDay].toLocaleLowerCase())
-              ?.map((activity) => (
-                <div
-                  key={activity.ID}
-                  className="flex justify-between items-center basis-1/3 text-base sm:text-xl border-l-1 border-secondary pl-2 mb-3"
-                >
-                  <p>{activity.name}</p>
-                  <div className="flex flex-col justify-between">
-                    <p className="text-xs text-secondary">
-                      {new Date(activity.start_time).toLocaleTimeString(
-                        "pt-BR",
-                        {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }
-                      )}
-                    </p>
-                    <p className="text-xs text-foreground">
-                      {new Date(activity.end_time).toLocaleTimeString("pt-BR", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
+            {activitiesByDay.get(days[currentDay].toLocaleLowerCase()) &&
+            activitiesByDay.get(days[currentDay].toLocaleLowerCase()) !=
+              undefined ? (
+              activitiesByDay
+                .get(days[currentDay].toLocaleLowerCase())
+                ?.map((activity) => (
+                  <div
+                    key={activity.ID}
+                    className="flex justify-between items-center basis-1/3 text-base sm:text-xl border-l-1 border-secondary pl-2 mb-3"
+                  >
+                    <p>{activity.name}</p>
+                    <div className="flex flex-col justify-between">
+                      <p className="text-xs text-secondary">
+                        {new Date(activity.start_time).toLocaleTimeString(
+                          "pt-BR",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
+                      </p>
+                      <p className="text-xs text-foreground">
+                        {new Date(activity.end_time).toLocaleTimeString(
+                          "pt-BR",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))
-          ) : (
-            <p className="sm:text-xl">
-              Parece que você ainda não tem atividades para esse dia!
-            </p>
-          )}
-        </div>
+                ))
+            ) : (
+              <p className="sm:text-xl">
+                Parece que você ainda não tem atividades para esse dia!
+              </p>
+            )}
+          </div>
         )}
       </div>
     </div>
