@@ -1,14 +1,16 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Sponsor from "./Sponsor";
+import { SponsorInfoI } from "@/types/utility-interfaces";
 
 interface Props {
   scale?: string;
   speed?: number;
   delay?: number;
+  sponsors: SponsorInfoI[]
 }
 
-const AutoScrollSponsors = ({ scale = "scale-[100%]", speed = 2, delay = 500 }: Props) => {
+const AutoScrollSponsors = ({ scale = "scale-[100%]", speed = 2, delay = 500, sponsors }: Props) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [paused, setPaused] = useState(false);
   const [direction, setDirection] = useState<"left" | "right">("right");
@@ -53,13 +55,10 @@ const AutoScrollSponsors = ({ scale = "scale-[100%]", speed = 2, delay = 500 }: 
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="flex gap-4 min-w-max px-4 py-2 md:mr-4">
-        <Sponsor scale={scale} />
-        <Sponsor scale={scale} />
-        <Sponsor scale={scale} />
-        <Sponsor scale={scale} />
-        <Sponsor scale={scale} />
-        <Sponsor scale={scale} />
+      <div className="flex justify-center gap-4 min-w-max px-4 py-2 md:mr-4">
+        {sponsors.map((sponsor, i) => (
+          <Sponsor scale={scale} info={sponsor} key={i}/>
+        ))}
       </div>
     </div>
   );

@@ -1,11 +1,12 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { SponsorInfoI } from "@/types/utility-interfaces";
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 interface Props {
   scale?: string;
-  text?: string;
+  info: SponsorInfoI;
 }
 
 const RADIUS = 120;
@@ -15,7 +16,14 @@ const SPEED = 0.005;
 const MIN_LENGTH = 60;
 const SEPARATOR = ' • ';
 
-const Sponsor = ({ scale = "scale-[100%]", text = "Empresa X" }: Props) => {
+const Sponsor = ({ 
+  scale = "scale-[100%]", 
+  info: {
+    text = "Empresa X", 
+    level = "Diamante",  
+    imagePath = "/SCT.svg",
+  }
+}: Props) => {
   const chars = useMemo(() => {
     let fullText = text;
     while ((fullText + SEPARATOR + text).length < MIN_LENGTH) fullText += SEPARATOR + text;
@@ -70,39 +78,20 @@ const Sponsor = ({ scale = "scale-[100%]", text = "Empresa X" }: Props) => {
           </text>
         ))}
       </svg>
-      {/* <svg width="101%" height="101%" viewBox="0 0 288 288" className="absolute -translate-1/2 left-1/2 top-1/2">
-        <path 
-          id="curve"
-          d="M144 264 A120 120 0 1 1 144 24 A120 120 0 1 1 144 264"
-          fill="none"
-        />
-        <text className="fill-secondary animate-pulse" textAnchor="middle">
-          <textPath xlinkHref="#curve" className="text-2xl" startOffset="50%">
-            <animate
-              attributeName="startOffset"
-              from="0%"
-              to="100%"
-              dur="10s"
-              repeatCount="indefinite"
-            />
-            Empresa X
-          </textPath>
-        </text>
-      </svg> */}
       <div className={cn(
         `absolute w-56 h-56 rounded-full border-4 border-secondary`,
         "-translate-1/2 left-1/2 top-1/2 overflow-hidden",
         "flex flex-col justify-center items-center gap-5"
       )}>
         <Image 
-          src="/SCT.svg" 
+          src={imagePath}
           alt="Logo SCT" 
           width={200} 
           height={200} 
           className="w-32 h-auto"
         />
         <p className="bg-secondary text-primary py-2 w-full">
-          Apoiador Diamante
+          Apoiador {level}
         </p>
       </div>
     </div>

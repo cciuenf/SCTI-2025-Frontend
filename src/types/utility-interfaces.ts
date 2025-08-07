@@ -14,3 +14,9 @@ export interface ErrorResponseI {
   module: string;
   errors: string[];
 }
+
+export interface SponsorInfoI {
+  text?: string;
+  level?: string;
+  imagePath?: string;
+}

@@ -40,10 +40,12 @@ export default async function HomePage() {
           Conheça os parceiros que acreditam no potencial dos estudantes universitários.
         </p>
         <h3 className="text-2xl font-bold underline mb-4">Patrocinador Diamante</h3>
-        <Sponsor scale="scale-[100%]"/>
+        <Sponsor scale="scale-[100%]" info={{}}/>
         <h3 className="text-2xl font-bold underline mt-8 mb-2">Patrocinador Safira</h3>
         <div className="w-full overflow-auto">
-          <AutoScrollSponsors />
+          <AutoScrollSponsors scale="scale-[90%]" sponsors={[
+            {text: "Empresa Y", level: "Safira"}
+          ]}/>
         </div>
       </Connector>
       <Connector className="text-center flex flex-col items-center w-screen !mt-20">
