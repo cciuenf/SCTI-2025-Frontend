@@ -20,6 +20,8 @@ const AutoScrollSponsors = ({ scale = "scale-[100%]", speed = 2, delay = 500, sp
     const el = scrollRef.current;
     if (!el) return;
 
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const interval = setInterval(() => {
       if (paused || delayActive.current) return;
 
@@ -29,7 +31,7 @@ const AutoScrollSponsors = ({ scale = "scale-[100%]", speed = 2, delay = 500, sp
       if (direction === "right") {
         if (atRight) {
           delayActive.current = true;
-          setTimeout(() => {
+          timeoutId = setTimeout(() => {
             setDirection("left");
             delayActive.current = false;
           }, delay);
@@ -37,7 +39,7 @@ const AutoScrollSponsors = ({ scale = "scale-[100%]", speed = 2, delay = 500, sp
       } else {
         if (atLeft) {
           delayActive.current = true;
-          setTimeout(() => {
+          timeoutId = setTimeout(() => {
             setDirection("right");
             delayActive.current = false;
           }, delay);
@@ -45,7 +47,10 @@ const AutoScrollSponsors = ({ scale = "scale-[100%]", speed = 2, delay = 500, sp
       }
     }, 16);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if(timeoutId) clearTimeout(timeoutId);
+    }
   }, [paused, direction, delay, speed, scrollRef]);
 
   return (

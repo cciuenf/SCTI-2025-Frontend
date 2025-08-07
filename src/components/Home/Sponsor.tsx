@@ -36,6 +36,8 @@ const Sponsor = ({
   const angleRef = useRef(0);
 
   useEffect(() => {
+    let animationId: number;
+    
     const animate = () => {
       angleRef.current = (angleRef.current + SPEED) % (2 * Math.PI);
       textRefs.current.forEach((el, i) => {
@@ -47,9 +49,12 @@ const Sponsor = ({
         el.setAttribute('y', y.toString());
         el.setAttribute('transform', `rotate(${rotate} ${x} ${y})`);
       });
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     };
     animate();
+    return () => {
+      if(animationId) cancelAnimationFrame(animationId);
+    }
   }, [step]);
 
   return (
