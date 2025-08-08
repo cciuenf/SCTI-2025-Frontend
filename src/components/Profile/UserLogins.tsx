@@ -10,48 +10,47 @@ import {
 } from "@/actions/auth-actions";
 import jwt from "jsonwebtoken";
 import { toast } from "sonner";
+import UserLoginsSkeleton from "./UserLoginsSkeleton";
 
 type Props = {};
 
 const UserLogins = (props: Props) => {
   const [userLogins, setUserLogins] = useState<
-    { token: string, payload: (UserRefreshTokenJwtPayload | null)}[] | undefined>();
+    { token: string; payload: UserRefreshTokenJwtPayload | null }[] | undefined
+  >();
   const [lastDeleted, setLastDeleted] = useState<string | null>();
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const handleRevokeClick = async (token: string) => {
     const res = await handleRevokeToken(token);
     if (res.success) {
-      setLastDeleted(token)
-      toast.info("Acesso revogado!")
-      return
+      setLastDeleted(token);
+      toast.info("Acesso revogado!");
+      return;
     }
 
-    toast.error("Erro ao revogar acesso!")
+    toast.error("Erro ao revogar acesso!");
   };
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     const getLogins = async () => {
       const refreshData = await handleGetRefreshTokens();
       const transformedData = refreshData.data.reverse().map((i) => {
-        const payload = jwt.decode(i.token_str) as UserRefreshTokenJwtPayload | null;
-        return ({token: i.token_str, payload})
+        const payload = jwt.decode(
+          i.token_str
+        ) as UserRefreshTokenJwtPayload | null;
+        return { token: i.token_str, payload };
       });
 
       setUserLogins(transformedData);
     };
 
     getLogins();
-    setIsLoading(false)
-
+    setIsLoading(false);
   }, [lastDeleted]);
 
   if (isLoading) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-      <Loader2 className="animate-spin w-10 h-10"/>
-      </div>
-    )
+    return <UserLoginsSkeleton />;
   }
 
   return (
@@ -67,10 +66,13 @@ const UserLogins = (props: Props) => {
                 <Monitor className="w-4 h-4 sm:w-8 sm:h-8 lg:w-12 lg:h-12" />
               </div>
               <div className="flex flex-col justify-around items-start">
-                <h2 className="text-base sm:text-xl lg:text-2xl">{r.payload?.user_agent}</h2>
-                <p className="text-xs sm:text-base">{`${format(r.payload!.last_used, "dd/MM/yyyy HH:mm")} • IP: ${
-                  r.payload?.ip_address
-                }`}</p>
+                <h2 className="text-base sm:text-xl lg:text-2xl">
+                  {r.payload?.user_agent}
+                </h2>
+                <p className="text-xs sm:text-base">{`${format(
+                  r.payload!.last_used,
+                  "dd/MM/yyyy HH:mm"
+                )} • IP: ${r.payload?.ip_address}`}</p>
               </div>
             </div>
             <Button

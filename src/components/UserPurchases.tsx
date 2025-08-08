@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { convertNumberToBRL } from "@/lib/utils";
+import UserPurchasesSkeleton from "./Profile/UserPurchasesSkeleton";
 
 interface PurchaseWithProduct extends ProductPurchasesResponseI {
   product?: ProductResponseI;
@@ -91,7 +92,7 @@ export default function UserPurchases() {
     fetchData();
   }, []);
 
-  if (loading) return <div>Carregando compras...</div>;
+  if (loading) return <UserPurchasesSkeleton />;
 
   if (purchases.length == 0)
     return (
