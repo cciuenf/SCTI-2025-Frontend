@@ -1,88 +1,67 @@
-import Image from "next/image";
+import InfoCarousel from "@/components/Home/InfoCarousel";
+import Connector from "@/components/ui/Generic/Connector";
+import { handleGetAllEventActivities } from "@/actions/activity-actions";
+import ActivityCard from "@/components/Activities/ActivityCard";
+import Sponsor from "@/components/Home/Sponsor";
+import AutoScrollSponsors from "@/components/Home/AutoScrollSponsors";
 
-import { Button } from "@/components/ui/button";
-import { MapPin, Calendar } from "lucide-react";
-import Link from "next/link";
-
-export default function HomePage() {
+export default async function HomePage() {
+  const result = await handleGetAllEventActivities("scti");
   return (
-    <div className="h-screen flex flex-col gap-4 items-center font-spartan mx-auto">
-      <div className="w-full flex justify-center items-center bg-secondary/90">
-        <div className="w-3/4 flex flex-col items-center justify-around gap-2">
-          <div className="text-center flex flex-col items-center font-medium max-h-96">
-            <Image src={"/SCT.svg"} alt="Logo SCT" width={250} height={250} />
-            <div className="mt-[-60px]">
-              <p className="text-zinc-50">SEMANA DA</p>
-              <p className="text-accent mt-[-8px] mb-1">CIÊNCIA & TECNOLOGIA</p>
-            </div>
-          </div>
-          <h2 className="text-center text-xl font-medium text-zinc-50">
-            Explore o futuro através da ciência e tecnologia. Participe de
-            palestras, workshops e demonstrações que moldarão o amanhã.
-          </h2>
-          <div className="flex w-3/4 justify-around items-center">
-            <Button asChild variant={"yellow"}>
-              <Link href={"login"}>Login</Link>
-            </Button>
-          </div>
-          <div className="w-full flex justify-around items-start my-3">
-            <div className="w-1/2 flex items-end">
-              <Calendar className="text-accent mr-1" />
-              <p className="text-sm text-zinc-50">1-5 de Setembro de 2025</p>
-            </div>
-            <div className="w-1/2 flex items-end">
-              <MapPin className="text-accent mr-1" />
-              <p className="text-sm text-zinc-50">
-                Universidade Estadual do Norte Fluminse - UENF
-              </p>
-            </div>
-          </div>
+    <div className="flex flex-col items-center font-spartan mx-auto">
+      <InfoCarousel />
+      <Connector className="text-center flex flex-col items-center !mt-20" id="info">
+        <h2 className="text-4xl font-bold">Atividades da Semana</h2>
+        <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
+          Descubra nossa programação completa com palestras, workshops e
+          atividades práticas nas mais diversas áreas da ciência e tecnologia.
+        </p>
+        <div 
+          className="grid justify-center md:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-2 w-full px-32" 
+        >
+          {result.data && result.data.length > 0 ? result.data.map(card => (
+            <ActivityCard 
+              key={card.ID}
+              data={card}
+              isEventCreator={false}
+              isSubscribed={false}
+            />
+          )): (
+            <p className="col-span-full text-center text-gray-500">
+              Nenhuma atividade disponível no momento.
+            </p>
+          )}
         </div>
-      </div>
-      <h2 className="text-6xl font-bold">Eventos da Semana</h2>
-      <h3 className="text-md text-center font-light max-w-[760px]">
-        Descubra nossa programação completa com palestras, workshops e
-        atividades práticas nas mais diversas áreas da ciência e tecnologia.
-      </h3>
-      <div className="w-3/4">
-        {/* TODO: List activities */}
-      </div>
-      <h2 className="text-6xl font-bold">
-        {" "}
-        <span className="text-accent border-b-4 border-secondary">
-          SCT
-        </span>{" "}
-        2025
-      </h2>
-      <div className="w-3/4 flex items-center justify-around flex-wrap md:w-full pb-6">
-        <Image
-          src={"/test.jpg"}
-          width={250}
-          height={200}
-          alt=""
-          className="rounded-md"
+      </Connector>
+      <Connector className="text-center flex flex-col items-center w-screen !mt-20">
+        <h2 className="text-4xl font-bold">Nossos Patrocinadores</h2>
+        <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
+          Agradecemos imensamente às empresas que tornaram possível a realização do SCT 2025.
+          Conheça os parceiros que acreditam no potencial dos estudantes universitários.
+        </p>
+        <h3 className="text-2xl font-bold underline mb-4">Patrocinador Diamante</h3>
+        <Sponsor scale="scale-[100%]" info={{}}/>
+        <h3 className="text-2xl font-bold underline mt-8 mb-2">Patrocinador Safira</h3>
+        <div className="w-full overflow-auto">
+          <AutoScrollSponsors scale="scale-[90%]" sponsors={[
+            {text: "Empresa Y", level: "Safira"}
+          ]}/>
+        </div>
+      </Connector>
+      <Connector className="text-center flex flex-col items-center w-screen !mt-20">
+        <h2 className="text-4xl font-bold">Localização do Evento</h2>
+        <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
+          A SCT 2025 acontece no campus da UENF, em Campos dos Goytacazes (RJ), 
+          onde serão realizados todos os workshops, palestras e exposições do evento.
+        </p>
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d463.1845209940032!2d-41.29240932163486!3d-21.761824678315794!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xbdd59aeac46b65%3A0x1b713a26d44d896a!2sUENF%20-%20CCT%20Centro%20de%20Ci%C3%AAncia%20e%20Tecnologia!5e0!3m2!1spt-BR!2sbr!4v1754446232724!5m2!1spt-BR!2sbr"
+          className="w-full h-80 border-0"
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
         />
-        <div className="w-1/2 flex flex-col items-center justify-around">
-          <h3 className="text-md font-light">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            mollis aliquet pellentesque. Nunc elementum, nulla et suscipit
-            tincidunt, nisi ante pharetra eros, non tincidunt ante lorem eget
-            lacus. Quisque consectetur dignissim nisi id bibendum. Aliquam
-            auctor nisl a orci semper, ac sagittis ex iaculis. Nam condimentum
-            justo ut molestie gravida. Aliquam metus lectus, dictum vehicula
-            sodales sed, semper ac nisl. Donec id erat a est varius ultrices
-            suscipit vel leo. Vivamus vitae congue elit. Pellentesque mollis,
-            elit eget hendrerit efficitur, elit ipsum pretium risus, sit amet
-            congue urna ligula non lorem. Donec et volutpat nisl, in egestas
-            nibh. Cras ullamcorper, metus et lacinia tincidunt, arcu ex volutpat
-            nulla, eu sodales justo velit at mi. Mauris sollicitudin nisi arcu,
-            ac aliquam lacus sollicitudin venenatis.
-          </h3>
-          <Button asChild>
-            <Link href={"login"}>Conheça nossa equipe</Link>
-          </Button>
-        </div>
-      </div>
+      </Connector>
     </div>
   );
 }
