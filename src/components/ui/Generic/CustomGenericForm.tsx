@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   Form,
   FormControl,
@@ -18,7 +18,15 @@ export interface FieldConfig<T> {
   name: keyof T;
   label: string;
   placeholder?: string;
-  type?: "text" | "number" | "price" | "switch" | "select" | "multiple_select" | "datetime";
+  type?:
+    | "text"
+    | "number"
+    | "price"
+    | "switch"
+    | "select"
+    | "multiple_select"
+    | "datetime"
+    | "password";
   options?: { label: string; value: string }[];
   disabledWhen?: {
     field: keyof T;
@@ -48,7 +56,10 @@ function CustomGenericForm<T extends Record<string, any>>({
   form: externalForm,
 }: GenericFormProps<T>) {
   const [isLoading, setIsLoading] = useState(false);
-  const internalForm = useForm<T>({resolver: zodResolver(schema), ...(defaultValues ? { defaultValues } : {})});
+  const internalForm = useForm<T>({
+    resolver: zodResolver(schema),
+    ...(defaultValues ? { defaultValues } : {}),
+  });
   const form = externalForm || internalForm;
 
   const handle = async (data: T) => {
@@ -69,7 +80,10 @@ function CustomGenericForm<T extends Record<string, any>>({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handle)} className="flex flex-col gap-4 items-center">
+      <form
+        onSubmit={form.handleSubmit(handle)}
+        className="flex flex-col gap-4 items-center"
+      >
         {fields.map((f) => (
           <FormField
             key={String(f.name)}
@@ -83,7 +97,7 @@ function CustomGenericForm<T extends Record<string, any>>({
                     field,
                     disabled: isFieldDisabled(f),
                     placeholder: f.placeholder,
-                    options: f.options
+                    options: f.options,
                   })}
                 </FormControl>
                 <FormMessage />
@@ -94,7 +108,12 @@ function CustomGenericForm<T extends Record<string, any>>({
 
         <div className="flex justify-end gap-2 mt-4">
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              disabled={isLoading}
+            >
               {cancelLabel}
             </Button>
           )}
