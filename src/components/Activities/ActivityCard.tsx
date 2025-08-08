@@ -1,4 +1,3 @@
-"use client";
 import { Calendar, MapPin, Edit3, Trash2, Clock, Speaker, CheckCircle, Eye, Users } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn, formatEventTimeRange } from "@/lib/utils";
@@ -149,7 +148,7 @@ const ActivityCard = ({
         <h3 className="h-9 w-full text-ellipsis overflow-hidden text-left opacity-90 text-sm">
           {data.description || "Não Informado"}
         </h3>
-        <div className="flex w-full overflow-x-auto scrollbar-hide gap-3 items-center px-2">
+        <div className="flex w-full h-12 overflow-x-auto overflow-y-hidden gap-3 items-center px-2">
           {data.has_fee && <Badge
             className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
             title="Há Taxa"
