@@ -48,7 +48,7 @@ export async function handleGetAllEventActivities(slug: string) {
     }
   }
 }
-  
+
 export async function handleCreateActivity(data: ActivityCreationDataI, slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
   try {
@@ -139,7 +139,7 @@ export async function handleRegisterFromActivity(data: ActivityResponseI, slug: 
   } catch (error) {
     if (error instanceof FetchError) {
       console.error("Erro ao registrar na atividade", error.message);
-      return { success: false, data: null, message: `Erro ao registrar na atividade: ${error.message}` };
+      return { success: false, data: null, message:  error.message };
     } else {
       console.error("Erro desconhecido ao registrar na atividade", error);
       return { success: false, data: null, message: "Erro desconhecido ao registrar na atividade" };
@@ -219,7 +219,7 @@ export async function handleGetUsersWhoParticipateInActivity(data: { id: string 
 }
 
 export async function handleMarkAttendanceOfActivity(
-  data: { activity_id: string, user_id: string }, 
+  data: { activity_id: string, user_id: string },
   slug: string
 ) {
   const { accessToken, refreshToken } = await getAuthTokens();
@@ -246,7 +246,7 @@ export async function handleMarkAttendanceOfActivity(
 }
 
 export async function handleRemoveAttendanceOfActivity(
-  data: { activity_id: string, user_id: string }, 
+  data: { activity_id: string, user_id: string },
   slug: string
 ) {
   const { accessToken, refreshToken } = await getAuthTokens();

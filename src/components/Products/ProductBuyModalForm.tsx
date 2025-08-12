@@ -3,7 +3,10 @@ import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import CustomGenericForm, {
   FieldConfig,
 } from "../ui/Generic/CustomGenericForm";
-import { ProductPurchasesResponseI, ProductResponseI } from "@/types/product-interfaces";
+import {
+  ProductPurchasesResponseI,
+  ProductResponseI,
+} from "@/types/product-interfaces";
 import { handleBuyProduct } from "@/actions/product-actions";
 import { convertNumberToBRL } from "@/lib/utils";
 import { useForm } from "react-hook-form";
@@ -16,9 +19,8 @@ const ProductBuyModalForm: React.FC<{
   product: ProductResponseI;
   open: boolean;
   setOpen: (open: boolean) => void;
-  onProductPurchase: (newProduct: ProductPurchasesResponseI) => void,
+  onProductPurchase: (newProduct: ProductPurchasesResponseI) => void;
 }> = ({ slug, product, open, setOpen, onProductPurchase }) => {
-
   const form = useForm<ProductBuyDataI>({
     resolver: zodResolver(productBuySchema),
     defaultValues: {
@@ -52,22 +54,30 @@ const ProductBuyModalForm: React.FC<{
   ];
 
   const handleSubmit = async (data: ProductBuyDataI) => {
-    try {
-      const result = await handleBuyProduct(
-        { ...data, product_id: product.ID },
-        slug
-      );
-      if (result?.success && result.data && onProductPurchase) {
-        toast.success(`Produto comprado com sucesso!`);
-        setOpen(false);
-        onProductPurchase(result.data.purchase)
-        return;
-      }
-    } catch (error) {
-      toast.error(`Erro ao criar produto: ${product.name}`);
-      console.error("Erro ao criar produto:", error);
+    const result = await handleBuyProduct(
+      { ...data, product_id: product.ID },
+      slug
+    );
+    if (result?.success && result.data && onProductPurchase) {
+      toast.success(`Produto comprado com sucesso!`);
+      setOpen(false);
+      onProductPurchase(result.data.purchase);
+      return;
     }
-    toast.error("Erro ao comprar o produto!");
+
+    if (!result.success && result.message) {
+      const errorReason = result.message.split(":");
+
+      switch (errorReason[1].trim()) {
+        case "user is not registered to this event":
+          toast.error(
+            "Você precisa se inscrever no evento antes de comprar um produto!"
+          );
+          break;
+        default:
+          toast.error("Erro desconhecido ao tentar comprar produto!");
+      }
+    }
   };
 
   return (
