@@ -1,22 +1,27 @@
 "use client";
+import { handleGetUserEventActivities } from "@/actions/activity-actions";
 import {
   handleGetAllUserProducts,
   handleGetAllUserProductsPurchases,
 } from "@/actions/product-actions";
 import { convertNumberToBRL } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
+import { Skeleton } from "../ui/skeleton";
 
 type Props = {
-  type: "amount" | "user" | "spent";
+  type: "subs" | "user" | "spent";
   data?: { label: string; content: string | undefined };
 };
 
 const TopCard = ({ type, data }: Props) => {
   const [totalSpent, setTotalSpent] = useState<number>(0.0);
+  const [totalEvents, setTotalEvents] = useState<string>("0");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   if (type == "spent") {
     useEffect(() => {
       const getUserTotalSpent = async () => {
+        setIsLoading(true);
         const [products, purchases] = await Promise.all([
           handleGetAllUserProducts(),
           handleGetAllUserProductsPurchases(),
@@ -40,6 +45,7 @@ const TopCard = ({ type, data }: Props) => {
           }, initialValue);
 
           setTotalSpent(total);
+          setIsLoading(false);
         }
       };
 
@@ -47,12 +53,37 @@ const TopCard = ({ type, data }: Props) => {
     }, []);
   }
 
-  if (type == "amount") {
+  if (type == "subs") {
+    useEffect(() => {
+      const getUserTotalEvents = async () => {
+        setIsLoading(true);
+
+        const events = await handleGetUserEventActivities("scti");
+
+        if (events.data) {
+          setTotalEvents(events.data.length.toString());
+        }
+        setIsLoading(false);
+      };
+
+      getUserTotalEvents();
+    }, []);
+  }
+
+  if (type == "subs") {
     return (
       <>
         <div className="w-2/5 lg:w-3/10 flex flex-col justify-between items-start shadow-sm rounded-md px-3 py-2 min-h-28">
-          <h2 className="text-base sm:text-2xl font-bold">{data?.label}</h2>
-          <h2 className="text-xl text-accent sm:text-3xl">{data?.content}</h2>
+          <h2 className="text-base sm:text-2xl font-bold">
+            Total de Inscrições
+          </h2>
+          {isLoading ? (
+            <Skeleton>
+              <h2 className="w-10 h-8"></h2>
+            </Skeleton>
+          ) : (
+            <h2 className="text-xl text-accent sm:text-3xl">{totalEvents}</h2>
+          )}
         </div>
       </>
     );
@@ -63,9 +94,15 @@ const TopCard = ({ type, data }: Props) => {
       <>
         <div className="w-2/5 lg:w-3/10 flex flex-col justify-between items-start shadow-sm rounded-md px-3 py-2 min-h-28">
           <h2 className="text-base sm:text-2xl font-bold">Total gasto</h2>
-          <h2 className="text-xl text-accent sm:text-3xl">
-            {convertNumberToBRL(totalSpent)}
-          </h2>
+          {isLoading ? (
+            <Skeleton>
+              <h2 className="w-24 h-8"></h2>
+            </Skeleton>
+          ) : (
+            <h2 className="text-xl text-accent sm:text-3xl">
+              {convertNumberToBRL(totalSpent)}
+            </h2>
+          )}
         </div>
       </>
     );

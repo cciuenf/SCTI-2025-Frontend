@@ -18,7 +18,7 @@ export default function Login() {
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center gap-3">
-      <div className="border-1 border-primary shadow-xs p-5 rounded-md flex flex-col items-center justify-around gap-3 w-[320px] h-[480px] md:w-[440px] lg:w-[480px]">
+      <div className="border-1 border-primary shadow-xs p-5 rounded-md flex flex-col items-center justify-around gap-3 w-[320px] h-[500px] md:w-[440px] lg:w-[480px]">
         {hasForgottedPassword ? (
           <>
             <h2 className="text-2xl md:text-3xl lg:text-3xl">Recuperar Senha</h2>

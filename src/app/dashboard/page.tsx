@@ -13,7 +13,6 @@ export default async function Dashboard() {
     access_token as string
   ) as UserAccessTokenJwtPayload | null;
   const refresh_token = (await cookieStore).get("refresh_token")?.value;
-  const events = await handleGetUserEventActivities("scti");
 
   return (
     <div className="w-full flex flex-col items-center font-spartan gap-5 py-15">
@@ -31,13 +30,7 @@ export default async function Dashboard() {
             content: user_info?.email,
           }}
         />
-        <TopCard
-          type="amount"
-          data={{
-            label: "Total de inscrições",
-            content: events.data.length.toString(),
-          }}
-        />
+        <TopCard type="subs" />
         <TopCard type="spent" />
       </div>
       <div className="w-4/5 flex justify-center items-center flex-wrap gap-6">
