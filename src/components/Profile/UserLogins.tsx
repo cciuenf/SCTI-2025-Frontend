@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { UserRefreshTokenJwtPayload } from "@/types/auth-interfaces";
-import { Loader2, Monitor } from "lucide-react";
+import { Monitor } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "../ui/button";
 import {
