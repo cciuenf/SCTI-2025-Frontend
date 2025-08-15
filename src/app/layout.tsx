@@ -8,6 +8,9 @@ import { SiteSidebar } from "@/components/SiteSidebar";
 export const metadata: Metadata = {
   title: "SCTI - 2025",
   description: "Front-end da plataforma a ser usado na SCTI-2025",
+  icons: {
+    icon: "/SCT.svg",
+  },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
