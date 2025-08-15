@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { convertNumberToBRL } from "@/lib/utils";
+import UserPurchasesSkeleton from "./Profile/UserPurchasesSkeleton";
 
 interface PurchaseWithProduct extends ProductPurchasesResponseI {
   product?: ProductResponseI;
@@ -64,8 +65,8 @@ export default function UserPurchases() {
           const overview = filteredPurchases.reduce(
             (acc, pur) => {
               if (pur.product) {
-                acc.totalInPurchases += pur.product.price_int;
                 if (pur.is_delivered) {
+                  acc.totalInPurchases += pur.product.price_int;
                   acc.finishedPurchases += 1;
                 } else {
                   acc.pendentPurchases += 1;
@@ -91,9 +92,12 @@ export default function UserPurchases() {
     fetchData();
   }, []);
 
-  if (loading) return <div>Carregando compras...</div>;
+  if (loading) return <UserPurchasesSkeleton />;
 
-  if(purchases.length == 0) return <p>Parece que você ainda não adquiriu nenhum de nossos produtos :/</p>
+  if (purchases.length == 0)
+    return (
+      <p>Parece que você ainda não adquiriu nenhum de nossos produtos :/</p>
+    );
 
   return (
     <div className="w-8/10">
@@ -114,9 +118,7 @@ export default function UserPurchases() {
               <TableCell>{p.product?.name} </TableCell>
               <TableCell>{p.quantity}</TableCell>
               <TableCell>
-                {p.product
-                  ? `${convertNumberToBRL(p.product?.price_int)}`
-                  : ``}
+                {p.product ? `${convertNumberToBRL(p.product?.price_int)}` : ``}
               </TableCell>
               <TableCell>
                 {format(p.purchased_at, "dd/MM/yyyy HH:mm")}
@@ -130,7 +132,9 @@ export default function UserPurchases() {
       <div className="w-full flex flex-col sm:flex-row justify-around items-center mt-5 gap-3">
         <div className="flex flex-col items-center justify-center">
           <h2 className="text-xl">{overviewData.finishedPurchases}</h2>
-          <h3 className="text-zinc-900/70 text-sm sm:text-base">Compras finalizadas</h3>
+          <h3 className="text-zinc-900/70 text-sm sm:text-base">
+            Compras finalizadas
+          </h3>
         </div>
         <div className="flex flex-col items-center justify-center">
           <h2 className="text-xl text-accent">
@@ -140,7 +144,9 @@ export default function UserPurchases() {
         </div>
         <div className="flex flex-col items-center justify-center">
           <h2 className="text-xl">{overviewData.pendentPurchases}</h2>
-          <h3 className="text-zinc-900/70 text-sm sm:text-base">Compras pendentes</h3>
+          <h3 className="text-zinc-900/70 text-sm sm:text-base">
+            Compras pendentes
+          </h3>
         </div>
       </div>
     </div>

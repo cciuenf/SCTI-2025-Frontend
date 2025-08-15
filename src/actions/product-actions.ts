@@ -120,10 +120,10 @@ export async function handleBuyProduct(data: ProductBuyCredentialsI, slug: strin
   } catch (error) {
     if (error instanceof FetchError) {
       console.error("Erro ao comprar o produto", error.message);
-      return { success: false };
+      return { success: false, message: error.message };
     } else {
       console.error("Erro desconhecido ao comprar o produto", error);
-      return { success: false };
+      return { success: false, message: "Erro desconhecido ao tentar comprar produto!" };
     }
   }
 }

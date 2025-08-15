@@ -18,19 +18,35 @@ type Props = {
 const ChangePasswordForm = ({ token }: Props) => {
   const router = useRouter();
   const fields: FieldConfig<z.infer<typeof changePasswordFormSchema>>[] = [
-    { name: "new_password", label: "Nova Senha" },
+    {
+      name: "new_password",
+      label: "Nova senha",
+      type: "password",
+    },
+    {
+      name: "confirm_new_password",
+      label: "Confirme sua nova senha",
+      type: "password",
+    },
   ];
 
-  const changePasswordFormSchema = z.object({
-    new_password: z
-      .string()
-      .min(8, "A senha precisa de pelo menos 8 caracteres"),
-  });
+  const changePasswordFormSchema = z
+    .object({
+      new_password: z
+        .string()
+        .min(8, "A senha precisa de pelo menos 8 caracteres"),
+      confirm_new_password: z.string(),
+    })
+    .refine((data) => data.new_password == data.confirm_new_password, {
+      message: "As senhas não correspondem",
+      path: ["confirm_new_password"],
+    });
 
   const form = useForm<z.infer<typeof changePasswordFormSchema>>({
     resolver: zodResolver(changePasswordFormSchema),
     defaultValues: {
       new_password: "",
+      confirm_new_password: "",
     },
   });
 
@@ -38,14 +54,14 @@ const ChangePasswordForm = ({ token }: Props) => {
     const result = await handleChangePassword(new_password, token);
 
     if (result?.status == 200) {
-      await clearAuthTokens()
+      await clearAuthTokens();
       toast.success("Senha alterada com sucesso!");
       router.push("/login");
       return;
     }
 
     if (result?.status != 200) {
-      toast.error("Token inválido ou expirado!")
+      toast.error("Token inválido ou expirado!");
     }
   };
 

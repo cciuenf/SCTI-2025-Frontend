@@ -8,6 +8,7 @@ import {
 } from "@/types/auth-interfaces";
 import jwt from "jsonwebtoken";
 import { handleGetUserDeviceInfos } from "@/actions/auth-actions";
+import Connector from "@/components/ui/Generic/Connector";
 
 type Props = {
   searchParams: { view: string };
@@ -28,15 +29,20 @@ const page = async ({ searchParams }: Props) => {
   const deviceInfos = await handleGetUserDeviceInfos();
 
   return (
-    <div className="w-full flex flex-col gap-15 items-center mt-5">
-      <ProfileTabs />
-      <ProfileInfos
-        user_access_info={user_access_info}
-        user_refresh_info={user_refresh_info}
-        currentView={params.view}
-        deviceInfos={deviceInfos.data}
-      />
-    </div>
+    <Connector
+      className="text-center flex flex-col items-center !mt-20"
+      id="info"
+    >
+      <div className="w-full flex flex-col gap-15 items-center py-10">
+        <ProfileTabs />
+        <ProfileInfos
+          user_access_info={user_access_info}
+          user_refresh_info={user_refresh_info}
+          currentView={params.view}
+          deviceInfos={deviceInfos.data}
+        />
+      </div>
+    </Connector>
   );
 };
 

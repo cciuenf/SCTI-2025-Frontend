@@ -16,6 +16,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import { Checkbox } from "../ui/checkbox";
 
 type LoginFormProps = {
   type: "Login" | "Sign Up";
@@ -40,6 +41,7 @@ const formSchema = z.object({
   last_name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(8).max(20),
+  terms: z.boolean().refine((val) => val === true, "A checkbox precisa ser preenchida!"),
 });
 
 const loginFormSchema = z.object({
@@ -68,6 +70,7 @@ export default function LoginForm({
       last_name: "",
       email: "",
       password: "",
+      terms: false,
     },
   });
 
@@ -76,7 +79,6 @@ export default function LoginForm({
 
     setIsLoading(true);
     const response = await handleSignUpSubmit(values);
-    setIsLoading(false);
 
     if (typeof response === "string") {
       toast.error(`Erro ao realizar a criação da conta`);
@@ -84,6 +86,7 @@ export default function LoginForm({
     } else {
       toast.info("Código de verificação enviado para o e-mail cadastrado!");
     }
+    setIsLoading(false);
 
     if (response === false && setMustShowVerify) setMustShowVerify(true);
   };
@@ -96,7 +99,7 @@ export default function LoginForm({
         if (!res.success) {
           toast.error("Erro ao realizar login");
         } else {
-          router.push("/profile");
+          router.push("/profile?view=infos");
           toast.success("Login bem-sucedido!");
           setIsLoading(false);
         }
@@ -109,7 +112,7 @@ export default function LoginForm({
   };
 
   return (
-    <div>
+    <div className="w-full">
       {type == "Login" ? (
         <Form {...loginForm}>
           <form
@@ -231,6 +234,22 @@ export default function LoginForm({
                       </div>
                     </div>
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={signForm.control}
+              name="terms"
+              render={({ field }) => (
+                <FormItem className="flex gap-2 flex-wrap">
+                  <FormControl>
+                    <Checkbox id="terms" />
+                  </FormControl>
+                  <FormLabel className="w-4/5">
+                    Eu estou ciente que meus dados serão compartilhados com os
+                    parceiros deste evento.
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}

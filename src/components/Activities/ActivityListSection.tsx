@@ -1,6 +1,12 @@
-"use client"
+"use client";
 
-import { handleDeleteActivity, handleGetAllEventActivities, handleGetUserEventActivities, handleRegisterFromActivity, handleUnregisterFromActivity } from "@/actions/activity-actions";
+import {
+  handleDeleteActivity,
+  handleGetAllEventActivities,
+  handleGetUserEventActivities,
+  handleRegisterFromActivity,
+  handleUnregisterFromActivity,
+} from "@/actions/activity-actions";
 import { ActivityResponseI } from "@/types/activity-interface";
 import { useEffect, useState } from "react";
 import ActivityModalForm from "./ActivityModalForm";
@@ -12,17 +18,22 @@ import ActivityCard from "./ActivityCard";
 import UserActivityInfoTable from "./UserActivityInfoTable";
 import PresenceManagmentModalForm from "./PresenceManagementModalForm";
 
-interface ActivityListSectionProps { 
+interface ActivityListSectionProps {
   user_id: string;
   currentEvent: { id: string; slug: string };
   isEventCreator: boolean;
 }
 
-export default function ActivityListSection({ currentEvent, user_id, isEventCreator }: ActivityListSectionProps) {
+export default function ActivityListSection({
+  currentEvent,
+  user_id,
+  isEventCreator,
+}: ActivityListSectionProps) {
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
   const [isUsersModalOpen, setIsUsersModalOpen] = useState(false);
   const [isPresenceModalOpen, setIsPresenceModalOpen] = useState(false);
-  const [searchUsersRegistrations, setSearchUsersRegistrations] = useState(false);
+  const [searchUsersRegistrations, setSearchUsersRegistrations] =
+    useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityResponseI>();
   const [myActivities, setMyActivities] = useState<ActivityResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
@@ -67,63 +78,91 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
   const openCreationActivityModal = (activityToUpdate?: ActivityResponseI) => {
     setSelectedActivity(activityToUpdate);
     setIsCreationModalOpen(true);
-  }
+  };
 
   const openPresenceActivityModal = (activityToManager?: ActivityResponseI) => {
     setSelectedActivity(activityToManager);
     setIsPresenceModalOpen(true);
-  }
+  };
 
-  const openUsersActivityModal = (is_registrations: boolean, activityToSee: ActivityResponseI) => {
+  const openUsersActivityModal = (
+    is_registrations: boolean,
+    activityToSee: ActivityResponseI
+  ) => {
     setSelectedActivity(activityToSee);
     setIsUsersModalOpen(true);
     setSearchUsersRegistrations(is_registrations);
-  }
+  };
 
   const handleActivityCreate = (newActivity: ActivityResponseI) => {
-    setAllActivities(prev => [...prev, newActivity]);
+    setAllActivities((prev) => [...prev, newActivity]);
   };
 
   const handleActivityUpdate = (updatedActivity: ActivityResponseI) => {
-    setAllActivities(prev =>
-      prev.map(a => a.ID === updatedActivity.ID ? updatedActivity : a)
+    setAllActivities((prev) =>
+      prev.map((a) => (a.ID === updatedActivity.ID ? updatedActivity : a))
     );
-    setMyActivities(prev =>
-      prev.map(a => a.ID === updatedActivity.ID ? updatedActivity : a)
+    setMyActivities((prev) =>
+      prev.map((a) => (a.ID === updatedActivity.ID ? updatedActivity : a))
     );
   };
 
   const handleActivityDelete = async (activity_id: string) => {
-    const res = await handleDeleteActivity({ activity_id: activity_id }, currentEvent.slug);
+    const res = await handleDeleteActivity(
+      { activity_id: activity_id },
+      currentEvent.slug
+    );
     if (res.success) {
-      setAllActivities(prev => prev.filter(a => a.ID !== activity_id));
-      setMyActivities(prev => prev.filter(a => a.ID !== activity_id));
+      setAllActivities((prev) => prev.filter((a) => a.ID !== activity_id));
+      setMyActivities((prev) => prev.filter((a) => a.ID !== activity_id));
       toast.success("Atividade apagada com sucesso!");
     } else toast.error("Erro ao apagar a atividade");
   };
 
   const handleRegister = async (data: ActivityResponseI) => {
-    const res = await handleRegisterFromActivity(data, currentEvent.slug, user_id);
+    const res = await handleRegisterFromActivity(
+      data,
+      currentEvent.slug,
+      user_id
+    );
     if (res.success) {
-      const activity = allActivities.find(a => a.ID === data.ID);
-      if (activity && !myActivities.some(a => a.ID === data.ID)) {
-        setMyActivities(prev => [...prev, activity]);
+      const activity = allActivities.find((a) => a.ID === data.ID);
+      if (activity && !myActivities.some((a) => a.ID === data.ID)) {
+        setMyActivities((prev) => [...prev, activity]);
         toast.success("Inscrição realizada com sucesso!");
       }
-    } else toast.error("Erro ao se inscrever na atividade");
+    }
+
+    if (!res.success) {
+      const errorReason = res.message.split(":");
+
+      switch (errorReason[1].trim()) {
+        case "user must be registered to the event first":
+          toast.error(
+            "Você precisa se inscrever no evento antes de se inscrever em alguma atividade!"
+          );
+          break;
+        default:
+          toast.error("Erro desconhecido ao tentar se inscrever na atividade!");
+      }
+    }
   };
 
   const handleUnregister = async (data: ActivityResponseI) => {
-    const res = await handleUnregisterFromActivity(data, currentEvent.slug, user_id);
+    const res = await handleUnregisterFromActivity(
+      data,
+      currentEvent.slug,
+      user_id
+    );
     if (res.success) {
-      setMyActivities(prev => prev.filter(a => a.ID !== data.ID));
+      setMyActivities((prev) => prev.filter((a) => a.ID !== data.ID));
       toast.success("Inscrição cancelada com sucesso!");
     } else toast.error("Erro ao cancelar inscrição na atividade");
   };
 
   return (
     <>
-      <div 
+      <div
         className={cn(
           "flex items-center justify-around relative",
           "border-1 border-secondary bg-secondary rounded-md p-0.5",
@@ -140,18 +179,20 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
           )}
           onClick={() => setCurrentView("my")}
         >
-          <h2 className={cn(currentView !== "my" && "opacity-80")}>Minhas Atividades</h2>
+          <h2 className={cn(currentView !== "my" && "opacity-80")}>
+            Minhas Atividades
+          </h2>
         </div>
-        {isEventCreator && 
-          <Plus 
+        {isEventCreator && (
+          <Plus
             className={cn(
               "absolute h-full w-auto rounded-full p-2 scale-125 cursor-pointer",
               "text-white bg-accent shadow-md z-10 transition-all",
-              "hover:text-accent hover:bg-secondary hover:scale-[140%]",
+              "hover:text-accent hover:bg-secondary hover:scale-[140%]"
             )}
             onClick={() => openCreationActivityModal()}
           />
-        }
+        )}
         <div
           className={cn(
             "flex-1 flex items-center justify-center gap-1 sm:gap-2 cursor-pointer",
@@ -162,7 +203,9 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
           )}
           onClick={() => setCurrentView("all")}
         >
-          <h2 className={cn(currentView !== "all" && "opacity-80")}>Todas as Atividades</h2>
+          <h2 className={cn(currentView !== "all" && "opacity-80")}>
+            Todas as Atividades
+          </h2>
         </div>
       </div>
 
@@ -174,10 +217,12 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
                 key={activity.ID}
                 data={activity}
                 isEventCreator={isEventCreator}
-                isSubscribed={myActivities.some(a => a.ID === activity.ID)}
+                isSubscribed={myActivities.some((a) => a.ID === activity.ID)}
                 onRegister={handleRegister}
                 onUnregister={handleUnregister}
-                onUpdateFormOpen={() => isEventCreator ? openCreationActivityModal(activity) : null}
+                onUpdateFormOpen={() =>
+                  isEventCreator ? openCreationActivityModal(activity) : null
+                }
                 onDelete={handleActivityDelete}
                 onViewUsersOpen={openUsersActivityModal}
                 onPresenceManagerOpen={openPresenceActivityModal}
@@ -186,9 +231,11 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
           </div>
         </div>
       ) : (
-        <p className="mt-6 mb-10 text-center">Sem atividades disponíveis nessa seção</p>
+        <p className="mt-6 mb-10 text-center">
+          Sem atividades disponíveis nessa seção
+        </p>
       )}
-      <ActivityModalForm 
+      <ActivityModalForm
         currentEvent={currentEvent}
         activity={selectedActivity}
         isCreating={!selectedActivity}
@@ -201,7 +248,7 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
         activityId={selectedActivity?.ID || ""}
         slug={currentEvent.slug}
         activityName={selectedActivity?.name || "Não Selecionado"}
-        open={isUsersModalOpen} 
+        open={isUsersModalOpen}
         setOpen={setIsUsersModalOpen}
         isRegistrations={searchUsersRegistrations}
       />
@@ -209,10 +256,10 @@ export default function ActivityListSection({ currentEvent, user_id, isEventCrea
       <PresenceManagmentModalForm
         activityId={selectedActivity?.ID || ""}
         activityName={selectedActivity?.name || "Não Selecionado"}
-        slug={currentEvent.slug} 
-        open={isPresenceModalOpen} 
-        setOpen={setIsPresenceModalOpen}        
+        slug={currentEvent.slug}
+        open={isPresenceModalOpen}
+        setOpen={setIsPresenceModalOpen}
       />
     </>
-  )
+  );
 }

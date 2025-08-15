@@ -1,15 +1,22 @@
-import { convertNumberToBRL } from "@/lib/utils"
-import { Input } from "../../input"
-import { MultiSelect } from "../../multi-select"
-import { Switch } from "../../switch"
-import { SimpleDateTimePicker } from "./SimpleDateTimePicker"
+import { convertNumberToBRL } from "@/lib/utils";
+import { Input } from "../../input";
+import { MultiSelect } from "../../multi-select";
+import { Switch } from "../../switch";
+import { SimpleDateTimePicker } from "./SimpleDateTimePicker";
+import { EyeOff, Eye } from "lucide-react";
+import React, { SetStateAction } from "react";
 
-export const FormInputRenderMap: Record<string, (props: {
-  field: any
-  disabled: boolean
-  placeholder?: string
-  options?: { label: string; value: string }[]
-}) => React.ReactNode> = {
+export const FormInputRenderMap: Record<
+  string,
+  (props: {
+    field: any;
+    disabled: boolean;
+    placeholder?: string;
+    options?: { label: string; value: string }[];
+    showPassword?: boolean;
+    setShowPassword?: React.Dispatch<SetStateAction<boolean>>;
+  }) => React.ReactNode
+> = {
   text: ({ field, disabled, placeholder }) => (
     <Input {...field} placeholder={placeholder} disabled={disabled} />
   ),
@@ -33,11 +40,13 @@ export const FormInputRenderMap: Record<string, (props: {
   price: ({ field, disabled, placeholder }) => (
     <Input
       type="text"
-      value={ typeof field.value === "number" ? convertNumberToBRL(field.value) : "" }
+      value={
+        typeof field.value === "number" ? convertNumberToBRL(field.value) : ""
+      }
       onChange={(e) => {
         if (disabled) return;
-        const raw = e.target.value.replace(/[^\d]/g, "")
-        field.onChange(parseInt(raw || "0", 10))
+        const raw = e.target.value.replace(/[^\d]/g, "");
+        field.onChange(parseInt(raw || "0", 10));
       }}
       maxLength={23}
       placeholder={placeholder}
@@ -47,9 +56,9 @@ export const FormInputRenderMap: Record<string, (props: {
   multiple_select: ({ field, disabled, placeholder, options = [] }) => (
     <MultiSelect
       options={options}
-      onValueChange={field.onChange}    
+      onValueChange={field.onChange}
       defaultValue={field.value || []}
-      placeholder={placeholder} 
+      placeholder={placeholder}
       onChange={field.onChange}
       disabled={disabled}
     />
@@ -62,4 +71,5 @@ export const FormInputRenderMap: Record<string, (props: {
       placeholder={placeholder}
     />
   ),
-}
+  password: ({ field }) => <Input type="password" {...field} />,
+};
