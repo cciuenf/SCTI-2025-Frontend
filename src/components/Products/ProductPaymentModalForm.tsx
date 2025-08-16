@@ -53,6 +53,7 @@ export const ProductPaymentModalForm = (props: Props)  => {
 
   const initialization = {
     amount: props.price / 100,
+    // preferenceId: "",
    };
 
 
