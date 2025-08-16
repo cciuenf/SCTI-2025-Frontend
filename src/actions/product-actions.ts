@@ -3,7 +3,7 @@
 import { getAuthTokens } from "@/lib/cookies";
 import { fetchWrapper } from "@/lib/fetch";
 import { ProductCreationDataI } from "@/schemas/product-schema";
-import { ProductBuyCredentialsI, ProductPurchasesResponseI, ProductResponseI, UserTokensResponseI } from "@/types/product-interfaces";
+import { ProductBuyCredentialsI, ProductPurchasesResourceResponseI, ProductPurchasesResponseI, ProductResponseI, UserTokensResponseI } from "@/types/product-interfaces";
 import { FetchError } from "@/types/utility-classes";
 
 
@@ -107,7 +107,10 @@ export async function handleBuyProduct(data: ProductBuyCredentialsI, slug: strin
   const { accessToken, refreshToken } = await getAuthTokens();
 
   try {
-    const res = await fetchWrapper<{purchase: ProductPurchasesResponseI}>(`/events/${slug}/purchase`, {
+    const res = await fetchWrapper<{
+      purchase: ProductPurchasesResponseI, 
+      purchase_resource: ProductPurchasesResourceResponseI
+    }>(`/events/${slug}/purchase`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
