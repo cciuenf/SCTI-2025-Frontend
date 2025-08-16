@@ -10,10 +10,10 @@ interface Props {
 const Connector = ({ children, className = "", id }: Props) => {
   return (
     <div className="min-h-screen w-full overflow-hidden relative" id={id}>
-      <div className="w-full flex flex-col items-center absolute top-0 pointer-events-none">
+      <div className="w-full flex flex-col items-center fixed z-40 top-0 pointer-events-none">
         <div className="h-5 bg-secondary w-full" />
         <svg 
-          className="w-[300%] translate-x-[-0.98%]" 
+          className="w-[300%] translate-x-[-0.98%] z-40" 
           xmlns="http://www.w3.org/2000/svg" 
           viewBox="0 0 1200 120" 
           preserveAspectRatio="none"
