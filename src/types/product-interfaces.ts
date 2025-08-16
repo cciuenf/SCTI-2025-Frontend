@@ -38,6 +38,19 @@ export interface ProductPurchasesResponseI {
   purchased_at: string,
 }
 
+export interface ProductPurchasesResourceResponseI {
+  id: string,
+  transactions: TransactionResponseI,
+}
+
+export interface TransactionResponseI {
+  payments: PaymentResponseI[],
+}
+
+export interface PaymentResponseI {
+  id: string,
+}
+
 export interface UserTokensResponseI {
   id: string,
   event_id: string,

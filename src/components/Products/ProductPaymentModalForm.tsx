@@ -1,10 +1,12 @@
+"use client";
 import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
-import { Payment } from "@mercadopago/sdk-react";
+import { Payment, StatusScreen,  } from "@mercadopago/sdk-react";
 import { handleBuyProduct } from "@/actions/product-actions";
 import type { ProductBuyDataI } from "@/schemas/product-schema";
 import { toast } from "sonner";
 import type { ProductPurchasesResponseI, ProductResponseI } from "@/types/product-interfaces";
 import { customization } from "@/lib/paymentCustomization";
+import { useState } from "react";
 
 interface Props {
   product: ProductResponseI;
@@ -19,12 +21,21 @@ interface Props {
 }
 
 export const ProductPaymentModalForm = (props: Props)  => {
+  const [paymentId, setPaymentId] = useState<string | null>(null);
+  const onReady = async () => {
+    console.log("Pronto");
+  };
   const onError = async (error: any) => {
-    console.error(error);
-    toast.error(error);
+    try {
+      console.error(error);
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error);
+    }
   };
   const handleSubmit = async (data: IPaymentFormData) => {
-    // console.log(data);
+    console.log(data);
+    setPaymentId(null)
     try {
       const result = await handleBuyProduct(
         {
@@ -42,6 +53,8 @@ export const ProductPaymentModalForm = (props: Props)  => {
         props.onOpenChange(false);
         props.onProductPurchase(result.data.purchase);
         props.onBuyableChange(null);
+        console.log(result.data.purchase_resource.id)
+        setPaymentId(result.data.purchase_resource.id);
         return;
       }
     } catch (error) {
@@ -51,19 +64,25 @@ export const ProductPaymentModalForm = (props: Props)  => {
     toast.error("Erro ao comprar o produto!");
   }
 
-  const initialization = {
+  const initializationPayment = {
     amount: props.price / 100,
-    // preferenceId: "",
    };
-
-
+   
   return (
-    <Payment
-      initialization={initialization}
-      customization={customization}
-      onSubmit={handleSubmit}
-      onReady={props.onReady}
-      onError={onError}
-    />
+    (paymentId ?     
+      <StatusScreen
+        initialization={{paymentId: paymentId}}
+        onReady={onReady}
+        onError={onError}
+      /> 
+    :
+      <Payment
+        initialization={initializationPayment}
+        customization={customization}
+        onSubmit={handleSubmit}
+        onReady={props.onReady}
+        onError={onError}
+      />
+    )
   )
 }
