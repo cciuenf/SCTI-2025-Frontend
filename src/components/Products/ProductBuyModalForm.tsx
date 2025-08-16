@@ -3,28 +3,30 @@ import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import CustomGenericForm, {
   FieldConfig,
 } from "../ui/Generic/CustomGenericForm";
-import { ProductPurchasesResponseI, ProductResponseI } from "@/types/product-interfaces";
+import type { 
+  ProductPurchasesResponseI, 
+  ProductResponseI 
+} from "@/types/product-interfaces";
 import { convertNumberToBRL } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProductBuyDataI, productBuySchema } from "@/schemas/product-schema";
+import { type ProductBuyDataI, productBuySchema } from "@/schemas/product-schema";
 
-import { initMercadoPago } from '@mercadopago/sdk-react';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ProductPaymentModalForm } from "./ProductPaymentModalForm";
+import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
 
 const ProductBuyModalForm: React.FC<{
   slug: string;
   product: ProductResponseI;
   open: boolean;
   setOpen: (open: boolean) => void;
-  onProductPurchase: (newProduct: ProductPurchasesResponseI) => void;
-}> = ({ slug, product, open, setOpen, onProductPurchase }) => {
+  handlePaymentSelector: (
+    pay: IPaymentFormData, 
+    buyableProduct: ProductBuyDataI
+  ) => Promise<{state: boolean, data: ProductPurchasesResponseI | null, id?: string | null }>;
+}> = ({ slug, product, open, setOpen, handlePaymentSelector }) => {
   const [buyableProduct, setBuyableProduct] = useState<ProductBuyDataI | null>(null);
-  const [isLoadingPayment, setIsLoadingPayment] = useState(false);
-  useEffect(() => {
-    initMercadoPago(process.env.NEXT_PUBLIC_API_KEY_MERCADO!, {locale: "pt-BR"});
-  }, [])
 
   const form = useForm<ProductBuyDataI>({
     resolver: zodResolver(productBuySchema),
@@ -58,10 +60,7 @@ const ProductBuyModalForm: React.FC<{
     },
   ];
 
-  const handleSubmit = async (data: ProductBuyDataI) => {
-    setBuyableProduct(data);
-    setIsLoadingPayment(true);
-  };
+  const handleSubmit = async (data: ProductBuyDataI) => setBuyableProduct(data);
 
   // const handleSubmit = async (data: ProductBuyDataI) => {
   //   const result = await handleBuyProduct(
@@ -90,11 +89,6 @@ const ProductBuyModalForm: React.FC<{
   //   }
   // };
 
-
-  const onPaymentFormIsReady = () => {
-    setIsLoadingPayment(false);
-   };
-
   return (
     <CustomGenericModal
       title="Comprar"
@@ -103,23 +97,22 @@ const ProductBuyModalForm: React.FC<{
       onOpenChange={(open) => {setOpen(open); setBuyableProduct(null);} }
       trigger={null}
     >
-      <div className="flex flex-col gap-4">
-        <div className="text-lg font-semibold text-gray-700">
-          Preço Total: {convertNumberToBRL(totalPrice)}
-        </div>
-        {buyableProduct ? (
-          <ProductPaymentModalForm
-            buyableProduct={buyableProduct}
-            product={product}
-            onReady={(onPaymentFormIsReady)}
-            slug={slug}
-            open={open}
-            onOpenChange={setOpen}
-            price={totalPrice}
-            onProductPurchase={onProductPurchase}
-            onBuyableChange={setBuyableProduct}
-          />
-        ) : (
+      {buyableProduct ? (
+        <ProductPaymentModalForm
+          buyableProduct={buyableProduct}
+          product={product}
+          slug={slug}
+          open={open}
+          onOpenChange={setOpen}
+          price={totalPrice}
+          onBuyableChange={setBuyableProduct}
+          handlePaymentSelector={handlePaymentSelector}
+        />
+      ) : (
+        <div className="flex flex-col gap-4">
+          <div className="text-lg text-center font-semibold text-gray-700">
+            Preço Total: {convertNumberToBRL(totalPrice)}
+          </div>
           <CustomGenericForm<ProductBuyDataI>
             schema={productBuySchema}
             fields={fields}
@@ -129,8 +122,9 @@ const ProductBuyModalForm: React.FC<{
             form={form}
             submitLabel="Realizar Pedido"
           />
-        ) }
-      </div>
+        </div>
+      ) 
+      }
     </CustomGenericModal>
   );
 };

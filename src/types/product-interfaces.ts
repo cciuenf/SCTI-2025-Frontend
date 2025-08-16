@@ -49,6 +49,12 @@ export interface TransactionResponseI {
 
 export interface PaymentResponseI {
   id: string,
+  payment_method: PaymentMeyhodI
+}
+
+export interface PaymentMeyhodI {
+  id: string,
+  ticket_url: string,
 }
 
 export interface UserTokensResponseI {
