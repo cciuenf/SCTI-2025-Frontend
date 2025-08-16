@@ -88,7 +88,7 @@ export async function SiteSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link href="/profile">
+                    <Link href="/profile?view=infos">
                       <User />
                       <span>Perfil</span>
                     </Link>

@@ -284,11 +284,11 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
           </div>
           <Button ref={verifyRef}>Verificar</Button>
           {origin == "signup" ? (
-            <Button variant={"outline"} onClick={() => verifyAfter()}>
+            <Button type="button" variant={"outline"} onClick={() => verifyAfter()}>
               Deixar para depois
             </Button>
           ) : (
-            <Button onClick={resendVerifyToken}>Reenviar Código</Button>
+            <Button type="button" onClick={resendVerifyToken}>Reenviar Código</Button>
           )}
         </form>
       </Form>

@@ -18,7 +18,7 @@ const ProductBuyModalForm: React.FC<{
   product: ProductResponseI;
   open: boolean;
   setOpen: (open: boolean) => void;
-  onProductPurchase: (newProduct: ProductPurchasesResponseI) => void,
+  onProductPurchase: (newProduct: ProductPurchasesResponseI) => void;
 }> = ({ slug, product, open, setOpen, onProductPurchase }) => {
   const [buyableProduct, setBuyableProduct] = useState<ProductBuyDataI | null>(null);
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
@@ -62,6 +62,34 @@ const ProductBuyModalForm: React.FC<{
     setBuyableProduct(data);
     setIsLoadingPayment(true);
   };
+
+  // const handleSubmit = async (data: ProductBuyDataI) => {
+  //   const result = await handleBuyProduct(
+  //     { ...data, product_id: product.ID },
+  //     slug
+  //   );
+  //   if (result?.success && result.data && onProductPurchase) {
+  //     toast.success(`Produto comprado com sucesso!`);
+  //     setOpen(false);
+  //     onProductPurchase(result.data.purchase);
+  //     return;
+  //   }
+
+  //   if (!result.success && result.message) {
+  //     const errorReason = result.message.split(":");
+
+  //     switch (errorReason[1].trim()) {
+  //       case "user is not registered to this event":
+  //         toast.error(
+  //           "Você precisa se inscrever no evento antes de comprar um produto!"
+  //         );
+  //         break;
+  //       default:
+  //         toast.error("Erro desconhecido ao tentar comprar produto!");
+  //     }
+  //   }
+  // };
+
 
   const onPaymentFormIsReady = () => {
     setIsLoadingPayment(false);
