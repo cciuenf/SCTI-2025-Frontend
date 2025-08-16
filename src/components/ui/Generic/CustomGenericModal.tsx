@@ -27,7 +27,7 @@ const CustomGenericModal: React.FC<GenericModalProps> = ({
       <DialogTrigger asChild>          
         { trigger === undefined ? ( <Button variant={"yellow"}>{title}</Button> ) : trigger}
       </DialogTrigger>
-      <DialogContent className="max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-h-[80vh] min-h-80 overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
