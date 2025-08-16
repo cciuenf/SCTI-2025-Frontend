@@ -158,6 +158,10 @@
   }
   
   body::-webkit-scrollbar-thumb {
-    @apply bg-accent rounded-2xl;
+    @apply bg-accent;
+  }
+
+  body[data-scroll-locked] {
+    @apply !mr-0 !overflow-auto;
   }
 }
