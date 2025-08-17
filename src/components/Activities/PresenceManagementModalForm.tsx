@@ -138,7 +138,10 @@ const PresenceManagmentModalForm = ({
         <LoadingSpinner />
       ) : (
         <div className="flex flex-col justify-center gap-5">
-          <CameraComponent setSelectedUserId={setSelectedUserId} />
+          <CameraComponent
+            setSelectedUserId={setSelectedUserId}
+            userRegistrations={usersRegistrations}
+          />
           <Select
             placeholder="Selecione o Participante"
             options={usersRegistrations.map((reg) => ({

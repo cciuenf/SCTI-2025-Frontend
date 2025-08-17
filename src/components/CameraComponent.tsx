@@ -7,12 +7,19 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import QrScanner from "qr-scanner";
+import { ActivityRegistrationI } from "@/types/activity-interface";
+import { UserBasicInfo } from "@/types/auth-interfaces";
 
 interface Props {
-  setSelectedUserId: Dispatch<SetStateAction<string>>
+  setSelectedUserId: Dispatch<SetStateAction<string>>;
+  userRegistrations: (UserBasicInfo & ActivityRegistrationI)[];
 }
 
-export default function CameraComponent({ setSelectedUserId}: Props) {
+export default function CameraComponent({
+  setSelectedUserId,
+  userRegistrations,
+}: Props) {
+  const usersIdInActivity = userRegistrations.map((m) => m.user_id);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isStreamActive, setIsStreamActive] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -152,19 +159,29 @@ export default function CameraComponent({ setSelectedUserId}: Props) {
   };
 
   const onQrCodeDetected = (qrCodeData: string) => {
-    toast.success(`QR Code detectado: ${qrCodeData}`);
-    console.log(`QR Code detectado: ${qrCodeData}`);
+    handleScan(qrCodeData);
 
-    setTimeout(() => {
-      if (qrScanner) {
-        qrScanner.stop();
-        qrScanner.destroy();
-        setQrScanner(null);
-        setIsScanning(false);
-      }
-    }, 500)
-    // Fechar o dialog após detectar o QR code
+    if (qrScanner) {
+      qrScanner.stop();
+      qrScanner.destroy();
+      setQrScanner(null);
+      setIsScanning(false);
+    }
+
     setIsDialogOpen(false);
+  };
+
+  const handleScan = (qrId: string) => {
+    const isInActivity = usersIdInActivity.some((userId) => userId == qrId);
+
+    if (isInActivity) {
+      toast.success("Usuário encontrado na atividade!");
+      setSelectedUserId(qrId);
+    }
+
+    if (!isInActivity) {
+      toast.error("Usuário não encontrado na atividade!");
+    }
   };
 
   const stopCamera = () => {
