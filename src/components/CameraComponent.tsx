@@ -12,14 +12,14 @@ import { UserBasicInfo } from "@/types/auth-interfaces";
 
 interface Props {
   setSelectedUserId: Dispatch<SetStateAction<string>>;
-  userRegistrations: (UserBasicInfo & ActivityRegistrationI)[];
+  userRegistrations?: (UserBasicInfo & ActivityRegistrationI)[];
 }
 
 export default function CameraComponent({
   setSelectedUserId,
   userRegistrations,
 }: Props) {
-  const usersIdInActivity = userRegistrations.map((m) => m.user_id);
+  const usersIdInActivity = userRegistrations?.map((m) => m.user_id);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isStreamActive, setIsStreamActive] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -44,7 +44,7 @@ export default function CameraComponent({
 
       const constraints = {
         video: {
-          facingMode: isMobile ? "user" : "environment",
+          facingMode: isMobile ? "environment" : "user",
           width: { ideal: 320, max: 1280 },
           height: { ideal: 480, max: 720 },
         },
@@ -172,7 +172,7 @@ export default function CameraComponent({
   };
 
   const handleScan = (qrId: string) => {
-    const isInActivity = usersIdInActivity.some((userId) => userId == qrId);
+    const isInActivity = usersIdInActivity?.some((userId) => userId == qrId);
 
     if (isInActivity) {
       toast.success("Usuário encontrado na atividade!");
