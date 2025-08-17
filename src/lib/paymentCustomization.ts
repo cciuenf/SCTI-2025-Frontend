@@ -4,7 +4,6 @@ export const customization: IPaymentBrickCustomization = {
   paymentMethods: {
     minInstallments: 1,
     maxInstallments: 12,
-    ticket: "all",
     bankTransfer: "all",
     creditCard: "all",
     prepaidCard: "all",

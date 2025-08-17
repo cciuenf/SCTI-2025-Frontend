@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from "react";
 import ProductModalForm from "./ProductModalForm";
-import { ProductPurchasesResponseI, ProductResponseI } from "@/types/product-interfaces";
+import type { 
+  ProductPurchasesResponseI, 
+  ProductResponseI
+} from "@/types/product-interfaces";
 import { ActivityResponseI } from "@/types/activity-interface";
 import { handleDeleteProduct, handleGetAllEventProducts } from "@/actions/product-actions";
 import { handleGetAllEventActivities } from "@/actions/activity-actions";
@@ -12,6 +15,9 @@ import CardSkeleton from "../Loading/CardSkeleton";
 import { toast } from "sonner";
 import ProductCard from "./ProductCard";
 import ProductBuyModalForm from "./ProductBuyModalForm";
+import useMercadoPago from "@/hooks/use-mercado-pago";
+import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
+import { ProductBuyDataI } from "@/schemas/product-schema";
 
 interface ProductListSectionProps { 
   currentEvent: { id: string; slug: string };
@@ -25,6 +31,12 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
   const [allProducts, setAllProducts] = useState<ProductResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const { selectPaymentMethod } = useMercadoPago();
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const fetchProducts = async () => {
     try {
@@ -42,10 +54,6 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
   if (loading) {
     return (
@@ -76,6 +84,13 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
       prev.map(p => p.ID === updatedProduct.ID ? updatedProduct : p)
     );
   };
+
+  const handlePaymentSelector = async (pay: IPaymentFormData, buyableProduct: ProductBuyDataI) => {
+    const result = await selectPaymentMethod(pay, currentEvent.slug, selectedProduct, buyableProduct);
+    if(result.data && result.state) handleProductPurchase(result.data);
+    else toast.error("Ocorreu um erro ao proceder com o pagamento!");
+    return result;
+  }
 
   const handleProductPurchase = (purchasedProduct: ProductPurchasesResponseI) => {
     setAllProducts(prev =>
@@ -142,7 +157,7 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
         product={selectedProduct}
         open={isPurchaseModalOpen}
         setOpen={setIsPurchaseModalOpen}
-        onProductPurchase={handleProductPurchase}
+        handlePaymentSelector={handlePaymentSelector}
       />}
     </>
 

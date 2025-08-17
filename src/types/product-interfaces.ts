@@ -1,10 +1,10 @@
 export interface ProductBuyCredentialsI {
   product_id: string,
   quantity: number,
-  payment_method_id: string, // visa | master | etc...
-  payment_method_type: string, // pix
-  payment_method_token: string, // token
-  payment_method_installments: number, // installments
+  payment_method_id?: string, // visa | master | etc...
+  payment_method_type?: string, // pix
+  payment_method_token?: string, // token
+  payment_method_installments?: number, // installments
   is_gift: boolean,
   gifted_to_email: string,
 }
@@ -36,6 +36,25 @@ export interface ProductPurchasesResponseI {
   gifted_to_email: string,
   quantity: number,
   purchased_at: string,
+}
+
+export interface ProductPurchasesResourceResponseI {
+  id: string,
+  transactions: TransactionResponseI,
+}
+
+export interface TransactionResponseI {
+  payments: PaymentResponseI[],
+}
+
+export interface PaymentResponseI {
+  id: string,
+  payment_method: PaymentMeyhodI
+}
+
+export interface PaymentMeyhodI {
+  id: string,
+  ticket_url: string,
 }
 
 export interface UserTokensResponseI {
