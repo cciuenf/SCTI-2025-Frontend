@@ -18,11 +18,12 @@ interface Props {
   handlePaymentSelector: (
     pay: IPaymentFormData, 
     buyableProduct: ProductBuyDataI
-  ) => Promise<{state: boolean, data: ProductPurchasesResponseI | null, id?: string | null }>;
+  ) => Promise<{state: boolean, data: ProductPurchasesResponseI | null, id: string | null }>;
 }
 
 export const ProductPaymentModalForm = (props: Props)  => {
   const [paymentId, setPaymentId] = useState<string | null>(null);
+  
   const onError = async (error: any) => {
     try {
       console.error(error);
@@ -40,8 +41,6 @@ export const ProductPaymentModalForm = (props: Props)  => {
       props.onBuyableChange(null);
     }
   }
-
-  const initializationPayment = { amount: props.price / 100 };
    
   return (
     (paymentId ?     
@@ -51,12 +50,12 @@ export const ProductPaymentModalForm = (props: Props)  => {
         onError={onError}
       /> 
     :
-      <Payment
-        initialization={initializationPayment}
+      (<Payment
+        initialization={{amount: props.price / 100}}
         customization={customization}
         onSubmit={handleSubmit}
         onError={onError}
-      />
+      />)
     )
   )
 }

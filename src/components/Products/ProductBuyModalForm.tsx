@@ -24,7 +24,7 @@ const ProductBuyModalForm: React.FC<{
   handlePaymentSelector: (
     pay: IPaymentFormData, 
     buyableProduct: ProductBuyDataI
-  ) => Promise<{state: boolean, data: ProductPurchasesResponseI | null, id?: string | null }>;
+  ) => Promise<{state: boolean, data: ProductPurchasesResponseI | null, id: string | null }>;
 }> = ({ slug, product, open, setOpen, handlePaymentSelector }) => {
   const [buyableProduct, setBuyableProduct] = useState<ProductBuyDataI | null>(null);
 

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import ProductModalForm from "./ProductModalForm";
 import type { 
-  ProductBuyCredentialsI, 
   ProductPurchasesResponseI, 
   ProductResponseI
 } from "@/types/product-interfaces";
