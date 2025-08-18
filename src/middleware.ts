@@ -1,5 +1,5 @@
 import { handleVerifyTokens } from "@/actions/auth-actions";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { clearAuthTokens, getAuthTokens } from "./lib/cookies";
 import { isAccessTokenExpired } from "./lib/utils";
 
