@@ -1,9 +1,9 @@
 "use server";
 
 import { FetchError } from "@/types/utility-classes";
-import { ErrorResponseI, FetchResponse, SuccessResponse } from "@/types/utility-interfaces";
+import type { ErrorResponseI, FetchResponse, SuccessResponse } from "@/types/utility-interfaces";
 import { setAuthTokens } from "./cookies";
-import { getClientInfoFromHeaders, ServerClientInfoI } from "./client-info";
+import { getClientInfoFromHeaders, type ServerClientInfoI } from "./client/client-info";
 
 export async function fetchWrapper<T = unknown>(
   input: string,

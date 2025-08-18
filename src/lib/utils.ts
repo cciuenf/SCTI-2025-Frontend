@@ -1,4 +1,4 @@
-import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
+import type { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
 import jwt from "jsonwebtoken";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"

@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers'
 import jwt from "jsonwebtoken";
-import { UserAccessTokenJwtPayload } from '@/types/auth-interfaces';
+import type { UserAccessTokenJwtPayload } from '@/types/auth-interfaces';
 
 export async function setAuthTokens(access_token: string | null, refresh_token: string | null) {
   const cookieStore = cookies();

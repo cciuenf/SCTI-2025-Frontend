@@ -1,7 +1,7 @@
 'use client';
 
-import type { ActionResult } from '@/actions/_utils';
 import { toast } from 'sonner';
+import type { ActionResult } from '@/actions/_utils';
 
 type Messages<T> = {
   loading?: string;
@@ -13,14 +13,14 @@ export async function runWithToast<T>(
   actionCall: Promise<ActionResult<T>>,
   messages?: Messages<T>
 ): Promise<ActionResult<T>> {
-  const id = toast.loading(messages?.loading ?? 'Processando...');
+  const id = toast.loading(messages?.loading ?? "Processando...");
   const res = await actionCall;
   if (res.success) {
-    toast.success(
-      messages?.success?.(res) ?? res.message ?? 'Operação realizada com sucesso!', { id }
-    );
+    const msg = messages?.success?.(res);
+    toast.success(msg ?? "Operação realizada com sucesso!", { id, description: res.message});
   } else {
-    toast.error(messages?.error?.(res) ?? res.message ?? 'Falha na operação', { id });
+    const msg = messages?.error?.(res);
+    toast.error(msg ?? "Falha na operação", { id, description: res.message });
   }
   return res;
 }
