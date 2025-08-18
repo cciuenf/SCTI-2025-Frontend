@@ -2,9 +2,10 @@
 
 import { getAuthTokens } from "@/lib/cookies";
 import { fetchWrapper } from "@/lib/fetch";
-import { ActivityCreationDataI } from "@/schemas/activity-schema";
-import { ActivityRegistrationI, ActivityResponseI } from "@/types/activity-interface";
+import type { ActivityCreationDataI } from "@/schemas/activity-schema";
+import type { ActivityRegistrationI, ActivityResponseI } from "@/types/activity-interface";
 import { FetchError } from "@/types/utility-classes";
+import { actionRequest } from "./_utils";
 
 export async function handleGetUserEventActivities(slug: string) {
   const { accessToken, refreshToken } = await getAuthTokens();
@@ -30,23 +31,7 @@ export async function handleGetUserEventActivities(slug: string) {
 }
 
 export async function handleGetAllEventActivities(slug: string) {
-  try {
-    const res = await fetchWrapper<ActivityResponseI[]>(`/events/${slug}/activities`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return { success: true, data: res.result.data, message: res.result.message };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao resgatar as atividades", error.message);
-      return { success: false, data: [], message: `Erro ao resgastar as atividades: ${error.message}` };
-    } else {
-      console.error("Erro desconhecido ao resgatar as atividades", error);
-      return { success: false, data: [], message: "Erro desconhecido ao resgatar as atividades" };
-    }
-  }
+  return actionRequest<null, ActivityResponseI[]>(`/events/${slug}/activities`, { withAuth: false });
 }
 
 export async function handleCreateActivity(data: ActivityCreationDataI, slug: string) {
