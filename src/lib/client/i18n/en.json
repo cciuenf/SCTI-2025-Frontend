@@ -1,0 +1,8 @@
+{
+  "error registering to event: user already registered to this event":
+    "O usuário já está registrado neste evento",
+  "error unregistering from event: user is not registered to this event":
+    "O usuário não está registrado neste evento",
+  "unregistered from event": "Desregistrado do evento",
+  "registered to event": "Registrado no evento"
+}
