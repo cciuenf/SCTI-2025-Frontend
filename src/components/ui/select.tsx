@@ -40,7 +40,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             ref={ref}
             {...props}
             className={cn(
-              "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit",
+              "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit hover:text-inherit",
               className
             )}
             onClick={() => setOpen(!open)}
