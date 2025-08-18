@@ -3,7 +3,7 @@
 import { getAuthTokens } from "@/lib/cookies";
 import { fetchWrapper } from "@/lib/fetch";
 import { ProductCreationDataI } from "@/schemas/product-schema";
-import { ProductBuyCredentialsI, ProductPurchasesResponseI, ProductResponseI, UserTokensResponseI } from "@/types/product-interfaces";
+import { ProductBuyCredentialsI, ProductPurchasesResourceResponseI, ProductPurchasesResponseI, ProductResponseI, UserTokensResponseI } from "@/types/product-interfaces";
 import { FetchError } from "@/types/utility-classes";
 
 
@@ -107,7 +107,10 @@ export async function handleBuyProduct(data: ProductBuyCredentialsI, slug: strin
   const { accessToken, refreshToken } = await getAuthTokens();
 
   try {
-    const res = await fetchWrapper<{purchase: ProductPurchasesResponseI}>(`/events/${slug}/purchase`, {
+    const res = await fetchWrapper<{
+      purchase: ProductPurchasesResponseI, 
+      purchase_resource: ProductPurchasesResourceResponseI
+    }>(`/events/${slug}/purchase`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -124,6 +127,31 @@ export async function handleBuyProduct(data: ProductBuyCredentialsI, slug: strin
     } else {
       console.error("Erro desconhecido ao comprar o produto", error);
       return { success: false, message: "Erro desconhecido ao tentar comprar produto!" };
+    }
+  }
+}
+
+export async function handleBuyProductPix(data: ProductBuyCredentialsI, slug: string) {
+  const { accessToken, refreshToken } = await getAuthTokens();
+
+  try {
+    const res = await fetchWrapper<any>(`/events/${slug}/forced-pix`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+    });
+    return { success: true, data: res.result.data };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao comprar o produto via pix", error.message);
+      return { success: false, message: error.message };
+    } else {
+      console.error("Erro desconhecido ao comprar o produto via pix", error);
+      return { success: false, message: "Erro desconhecido ao tentar comprar produto via pix!" };
     }
   }
 }
