@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <SiteSidebar />
           <SidebarTrigger className="fixed top-4 left-4 z-50 shadow-md bg-white rounded-full"/>
           <Toaster
-            position="top-right"
+            position="bottom-right"
             richColors
             theme="light"
             closeButton
