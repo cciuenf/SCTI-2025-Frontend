@@ -131,6 +131,31 @@ export async function handleBuyProduct(data: ProductBuyCredentialsI, slug: strin
   }
 }
 
+export async function handleBuyProductPix(data: ProductBuyCredentialsI, slug: string) {
+  const { accessToken, refreshToken } = await getAuthTokens();
+
+  try {
+    const res = await fetchWrapper<any>(`/events/${slug}/forced-pix`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+    });
+    return { success: true, data: res.result.data };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao comprar o produto via pix", error.message);
+      return { success: false, message: error.message };
+    } else {
+      console.error("Erro desconhecido ao comprar o produto via pix", error);
+      return { success: false, message: "Erro desconhecido ao tentar comprar produto via pix!" };
+    }
+  }
+}
+
 export async function handleGetAllUserProducts() {
   const { accessToken, refreshToken } = await getAuthTokens();
   try {
