@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import EventCard from "./EventCard";
-import { EventResponseI } from "@/types/event-interfaces";
+import type { EventResponseI } from "@/types/event-interfaces";
 import CardSkeleton from "../Loading/CardSkeleton";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
@@ -15,7 +15,7 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
   const {
     allEvents,
     myEvents,
-    loading,
+    isLoading,
     handleEventCreate,
     handleEventDelete,
     handleEventUpdate,
@@ -25,7 +25,7 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
 
   const currentData = currentView === "all" ? allEvents : myEvents;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="w-full max-w-5xl mt-6">
         <div className="flex w-full gap-2 mb-6">

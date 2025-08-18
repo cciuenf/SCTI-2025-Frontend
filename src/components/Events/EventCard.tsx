@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Calendar, MapPin, Eye, Edit3, Trash2 } from "lucide-react";
 import { Badge } from "../ui/badge";
@@ -38,12 +38,15 @@ const EventCard = ({
   onUpdateFormOpen,
   onDelete
 }: Props) => {
+  const [isLoadingRegisterState, setIsLoadingRegisterState] = useState(false);
   const handleRegisterState = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!onRegister || !onUnregister) return;
+    setIsLoadingRegisterState(true);
     if (isSubscribed) await onUnregister(slug);
     else await onRegister(slug);
+    setIsLoadingRegisterState(false);
   };
 
   const handleEdit = (e: React.MouseEvent) => {
@@ -127,6 +130,8 @@ const EventCard = ({
                   ? "bg-red-500 text-white font-medium hover:text-red-500 hover:bg-white border border-red-500"
                   : "bg-accent text-secondary font-medium hover:text-accent hover:bg-secondary"
               )}
+              disabled={isLoadingRegisterState}
+              title={isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
             >
               {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
             </Button>
