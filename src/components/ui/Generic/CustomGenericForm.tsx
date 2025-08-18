@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import {
   Form,
   FormControl,
@@ -9,13 +9,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { useForm, DefaultValues } from "react-hook-form";
-import { ZodSchema } from "zod";
+import { useForm } from "react-hook-form";
+import type { 
+  SubmitHandler, 
+  UseFormReturn, 
+  DefaultValues, 
+  FieldValues, 
+  FieldPath, 
+  FieldPathValue 
+} from "react-hook-form";
+import type { ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInputRenderMap } from "./utils/FormInputsMap";
 
-export interface FieldConfig<T> {
-  name: keyof T;
+type BooleanFieldPath<T extends FieldValues> = {
+  [K in FieldPath<T>]: FieldPathValue<T, K> extends boolean ? K : never
+}[FieldPath<T>];
+
+export interface FieldConfig<T extends FieldValues> {
+  name: FieldPath<T>;
   label: string;
   placeholder?: string;
   type?:
@@ -29,28 +41,30 @@ export interface FieldConfig<T> {
     | "password";
   options?: { label: string; value: string }[];
   disabledWhen?: {
-    field: keyof T;
+    field: BooleanFieldPath<T>;
     value: boolean;
   };
 }
 
-interface GenericFormProps<T extends Record<string, any>> {
-  schema: ZodSchema<T>;
+interface GenericFormProps<T extends FieldValues> {
+  schema: ZodType<T>;
   fields: FieldConfig<T>[];
-  onSubmit: (data: T) => Promise<void>;
+  onSubmit: SubmitHandler<T>;
   onCancel?: () => void;
   submitLabel?: string;
+  submittingLabel?: string;
   cancelLabel?: string;
   defaultValues?: DefaultValues<T>;
-  form?: ReturnType<typeof useForm<T>>;
+  form?: UseFormReturn<T>;
 }
 
-function CustomGenericForm<T extends Record<string, any>>({
+function CustomGenericForm<T extends FieldValues>({
   schema,
   fields,
   onSubmit,
   onCancel,
   submitLabel = "Enviar",
+  submittingLabel = "Enviando",
   cancelLabel = "Cancelar",
   defaultValues,
   form: externalForm,
@@ -64,17 +78,14 @@ function CustomGenericForm<T extends Record<string, any>>({
 
   const handle = async (data: T) => {
     setIsLoading(true);
-    try {
-      await onSubmit(data);
-    } finally {
-      setIsLoading(false);
-    }
+    await onSubmit(data);
+    setIsLoading(false);
   };
 
   const isFieldDisabled = (field: FieldConfig<T>) => {
     if (!field.disabledWhen) return false;
     const { field: dependentField, value } = field.disabledWhen;
-    const watchedValue = form.watch(dependentField as any);
+    const watchedValue = form.watch(dependentField);
     return watchedValue === value;
   };
 
@@ -88,7 +99,7 @@ function CustomGenericForm<T extends Record<string, any>>({
           <FormField
             key={String(f.name)}
             control={form.control}
-            name={f.name as any}
+            name={f.name}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{f.label}</FormLabel>
@@ -106,10 +117,11 @@ function CustomGenericForm<T extends Record<string, any>>({
           />
         ))}
 
-        <div className="flex justify-end gap-2 mt-4">
+        <div className="grid grid-cols-2 gap-4 mt-4">
           {onCancel && (
             <Button
               type="button"
+              className="min-w-28"
               variant="outline"
               onClick={onCancel}
               disabled={isLoading}
@@ -117,8 +129,8 @@ function CustomGenericForm<T extends Record<string, any>>({
               {cancelLabel}
             </Button>
           )}
-          <Button type="submit" variant="yellow" disabled={isLoading}>
-            {isLoading ? "Enviando..." : submitLabel}
+          <Button type="submit" variant="yellow" className="min-w-28" disabled={isLoading}>
+            {isLoading ? submittingLabel : submitLabel}
           </Button>
         </div>
       </form>
