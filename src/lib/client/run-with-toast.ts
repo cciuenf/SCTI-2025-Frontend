@@ -2,6 +2,7 @@
 
 import { toast } from 'sonner';
 import type { ActionResult } from '@/actions/_utils';
+import { translateMessage } from './i18n/enToPt';
 
 type Messages<T> = {
   loading?: string;
@@ -17,10 +18,14 @@ export async function runWithToast<T>(
   const res = await actionCall;
   if (res.success) {
     const msg = messages?.success?.(res);
-    toast.success(msg ?? "Operação realizada com sucesso!", { id, description: res.message});
+    toast.success(msg ?? "Operação realizada com sucesso!", { id, 
+      description: translateMessage(res.message)
+    });
   } else {
     const msg = messages?.error?.(res);
-    toast.error(msg ?? "Falha na operação", { id, description: res.message });
+    toast.error(msg ?? "Falha na operação", { id, 
+      description: translateMessage(res.message)
+    });
   }
   return res;
 }

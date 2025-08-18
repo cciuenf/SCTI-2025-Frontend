@@ -61,7 +61,7 @@ const headers: Record<string, string> = {
   } catch (error: unknown) {
     const message =
       error instanceof FetchError
-        ? `Erro: ${error.message}`
+        ? `${error.message}`
         : 'Erro desconhecido ao comunicar com o servidor';
     console.error(message);
 
