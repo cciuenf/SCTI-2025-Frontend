@@ -105,7 +105,7 @@ const EventCard = ({
             </div>
           </div>
 
-          <h2 className="font-bold text-lg mb-0">{name}</h2>
+          <h2 className="w-full font-bold text-lg truncate" title={name}>{name}</h2>
 
           <div className="flex justify-between items-center">
             <Calendar className="text-accent h-4 w-4 mr-2.5" />
