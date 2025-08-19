@@ -35,8 +35,8 @@ export default async function HomePage() {
             </p>
           )}
         </div>
-      {/* </Connector> */}
-      {/* <Connector className="text-center flex flex-col items-center w-screen !mt-20"> */}
+      </Connector>
+      <Connector className="text-center flex flex-col items-center w-screen !mt-20">
         <h2 className="text-4xl font-bold">Nossos Patrocinadores</h2>
         <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
           Agradecemos imensamente às empresas que tornaram possível a realização
@@ -68,8 +68,8 @@ export default async function HomePage() {
             sponsors={[{ text: "Lucas Siqueira", level: "Silício" }]}
           />
         </div>
-      {/* </Connector> */}
-      {/* <Connector className="text-center flex flex-col items-center w-screen h-screen !mt-20"> */}
+      </Connector>
+      <Connector className="text-center flex flex-col items-center w-screen h-screen !mt-20">
         <h2 className="text-4xl font-bold">Localização do Evento</h2>
         <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
           A SCT 2025 acontece no campus da UENF, em Campos dos Goytacazes (RJ),
@@ -83,7 +83,7 @@ export default async function HomePage() {
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
         />
-      {/* </Connector> */}
+      </Connector>
       {/* <Connector className="text-center flex flex-col items-center w-screen h-screen !m-0">
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center  mt-20 text-center pointer-events-none">
           <h2 className="text-4xl font-bold">Localização do Evento</h2>
@@ -100,7 +100,7 @@ export default async function HomePage() {
           referrerPolicy="no-referrer-when-downgrade"
         />
       </Connector> */}
-      </Connector>
+      {/* </Connector> */}
     </div>
   );
 }

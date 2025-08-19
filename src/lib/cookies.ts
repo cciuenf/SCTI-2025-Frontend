@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers'
 import jwt from "jsonwebtoken";
-import { UserAccessTokenJwtPayload } from '@/types/auth-interfaces';
+import type { UserAccessTokenJwtPayload } from '@/types/auth-interfaces';
 
 export async function setAuthTokens(access_token: string | null, refresh_token: string | null) {
   const cookieStore = cookies();
@@ -44,4 +44,9 @@ export async function getUserInfo() {
     access_token as string
   ) as UserAccessTokenJwtPayload | null;
   return user_info;
+}
+
+export async function isEventCreator() {
+  const user_info = await getUserInfo();
+  return user_info?.is_super || user_info?.is_event_creator || false;
 }
