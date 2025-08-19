@@ -4,5 +4,10 @@
   "error unregistering from event: user is not registered to this event":
     "O usuário não está registrado neste evento",
   "unregistered from event": "Desregistrado do evento",
-  "registered to event": "Registrado no evento"
+  "registered to event": "Registrado no evento",
+  "deleted activity": "Atividade apagada",
+  "user must be registered to the event first":
+    "O usuário deve estar registrado no evento primeiro",
+  "registered to activity successfully": "Registrado na atividade com sucesso",
+  "unregistered from activity successfully": "Desregistrado da atividade com sucesso"
 }

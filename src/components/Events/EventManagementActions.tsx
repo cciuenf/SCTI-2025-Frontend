@@ -8,6 +8,7 @@ import LoadingSpinner from "../Loading/LoadingSpinner";
 import type { EventResponseI } from "@/types/event-interfaces";
 import EventModalForm from "./EventModalForm";
 import { useState } from "react";
+import { redirect } from "next/navigation";
 
 interface Props {
   isEventCreator: boolean;
@@ -43,6 +44,7 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
     if (isSubscribed) await handleUnregister(updatedEvent.Slug);
     else await handleRegister(updatedEvent.Slug);
     setIsLoadingRegisterState(false);
+    redirect('/events/' + updatedEvent.Slug);
   };
 
   return(

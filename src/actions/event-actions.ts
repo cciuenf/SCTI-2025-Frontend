@@ -7,7 +7,6 @@ import type {
 import { fetchWrapper } from "@/lib/fetch";
 import { getAuthTokens } from "@/lib/cookies";
 import { FetchError } from "@/types/utility-classes";
-import { redirect } from "next/navigation";
 import type { EventCreationDataI } from "@/schemas/event-schema";
 import { actionRequest } from "./_utils";
 
@@ -68,17 +67,7 @@ export async function handleGetPublicCreatedEvents() {
 }
 
 export async function handleGetSlugCreatedEvent(slug: string) {
-  try {
-    const res = await fetchWrapper<EventResponseI>(`/events/${slug}`, {
-      method: "GET",
-    });
-    return { success: true, data: res.result.data };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error(`Erro ao obter o evento com slug: ${slug}`, error.message);
-      redirect("/events");
-    }
-  }
+  return actionRequest<null, EventResponseI>(`/events/${slug}`, { withAuth: false });
 }
 
 export async function handleDeleteSlugCreatedEvents(slug: string) {

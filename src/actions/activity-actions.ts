@@ -8,26 +8,7 @@ import { FetchError } from "@/types/utility-classes";
 import { actionRequest } from "./_utils";
 
 export async function handleGetUserEventActivities(slug: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
-  try {
-    const res = await fetchWrapper<ActivityResponseI[]>(`/events/${slug}/user-activities`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data, message: res.result.message };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao resgatar as atividades", error.message);
-      return { success: false, data: [], message: `Erro ao resgastar as atividades: ${error.message}` };
-    } else {
-      console.error("Erro desconhecido ao resgatar as atividades", error);
-      return { success: false, data: [], message: "Erro desconhecido ao resgatar as atividades" };
-    }
-  }
+  return actionRequest<null, ActivityResponseI[]>(`/events/${slug}/user-activities`);
 }
 
 export async function handleGetAllEventActivities(slug: string) {
@@ -59,27 +40,10 @@ export async function handleCreateActivity(data: ActivityCreationDataI, slug: st
 }
 
 export async function handleDeleteActivity(data: { activity_id: string }, slug: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
-  try {
-    const res = await fetchWrapper<string>(`/events/${slug}/activity`, {
-      method: "DELETE",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data, message: res.result.message };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao excluir a atividade", error.message);
-      return { success: false, data: null, message: `Erro ao excluir a atividade: ${error.message}` };
-    } else {
-      console.error("Erro desconhecido ao excluir a atividade", error);
-      return { success: false, data: null, message: "Erro desconhecido ao excluir a atividade" };
-    }
-  }
+  return actionRequest<{ activity_id: string }, string>(`/events/${slug}/activity`, {
+    method: "DELETE",
+    body: data,
+  });
 }
 
 export async function handleUpdateActivity(data: Partial<ActivityCreationDataI>, slug: string, activity_id: string) {
@@ -107,54 +71,32 @@ export async function handleUpdateActivity(data: Partial<ActivityCreationDataI>,
   }
 }
 
-export async function handleRegisterFromActivity(data: ActivityResponseI, slug: string, userId: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
+export async function handleRegisterFromActivity(
+  data: ActivityResponseI, 
+  slug: string, 
+  userId: string
+) {
   const activityType = data.is_standalone ? 'register-standalone' : 'register'
-  try {
-    const res = await fetchWrapper<ActivityResponseI>(`/events/${slug}/activity/${activityType}`, {
+  return actionRequest<{ activity_id: string, user_id: string }, 
+    ActivityResponseI>(`/events/${slug}/activity/${activityType}`, {
       method: "POST",
-      body: JSON.stringify({activity_id: data.ID, user_id: userId}),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data, message: res.result.message };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao registrar na atividade", error.message);
-      return { success: false, data: null, message:  error.message };
-    } else {
-      console.error("Erro desconhecido ao registrar na atividade", error);
-      return { success: false, data: null, message: "Erro desconhecido ao registrar na atividade" };
+      body: { activity_id: data.ID, user_id: userId },
     }
-  }
+  );
 }
 
-export async function handleUnregisterFromActivity(data: ActivityResponseI, slug: string, userId: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
+export async function handleUnregisterFromActivity(
+  data: ActivityResponseI, 
+  slug: string, 
+  userId: string
+) {
   const activityType = data.is_standalone ? 'unregister-standalone' : 'unregister'
-  try {
-    const res = await fetchWrapper<ActivityResponseI>(`/events/${slug}/activity/${activityType}`, {
+  return actionRequest<{ activity_id: string, user_id: string }, 
+    ActivityResponseI>(`/events/${slug}/activity/${activityType}`, {
       method: "POST",
-      body: JSON.stringify({activity_id: data.ID, user_id: userId}),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data, message: res.result.message };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao desinscrever da atividade", error.message);
-      return { success: false, data: null, message: `Erro ao desinscrever da atividade: ${error.message}` };
-    } else {
-      console.error("Erro desconhecido ao desinscrever da atividade", error);
-      return { success: false, data: null, message: "Erro desconhecido ao desinscrever da atividade" };
+      body: { activity_id: data.ID, user_id: userId },
     }
-  }
+  );
 }
 
 export async function handleGetRegisteredUsersInActivity(data: { id: string }, slug: string) {

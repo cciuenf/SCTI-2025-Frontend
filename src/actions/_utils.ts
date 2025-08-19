@@ -55,7 +55,7 @@ const headers: Record<string, string> = {
 
     return {
       success: true,
-      data: anyRes?.result?.data ?? (res as unknown as T),
+      data: anyRes?.result?.data || null,
       message: anyRes?.result?.message ?? 'Operação realizada com sucesso',
     };
   } catch (error: unknown) {

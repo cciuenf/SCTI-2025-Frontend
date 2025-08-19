@@ -6,6 +6,8 @@ import CustomGenericForm, { type FieldConfig } from "../ui/Generic/CustomGeneric
 import { handleCreateEvent, handleUpdateSlugCreatedEvents } from "@/actions/event-actions";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import { runWithToast } from "@/lib/client/run-with-toast";
+import { redirect, usePathname } from "next/navigation";
+import { addDays } from "date-fns";
 
 const EventModalForm: React.FC<{ 
   isCreating: boolean,
@@ -15,6 +17,7 @@ const EventModalForm: React.FC<{
   open: boolean,
   setOpen: (open: boolean) => void,
 }> = ({ isCreating, event, onEventCreate, onEventUpdate, open, setOpen }) => {
+  const pathName = usePathname();
 
   const handleSubmit = async (data: EventCreationDataI) => {
     if(isCreating) {
@@ -48,6 +51,8 @@ const EventModalForm: React.FC<{
       if (result.success && result.data && onEventUpdate) {
         onEventUpdate(result.data);
         setOpen(false);
+        if(pathName === `/events/${event?.Slug.toLowerCase()}`) 
+          redirect('/events/' + result.data.Slug);
       } 
     } else toast.error("Evento Inválido");
   };
@@ -87,7 +92,7 @@ const EventModalForm: React.FC<{
             location: event?.location || "",
             description: event?.description || "",
             start_date: event?.start_date || new Date(),
-            end_date: event?.end_date || new Date(),
+            end_date: event?.end_date || addDays(new Date(), 7),
             is_blocked: event?.is_blocked || false,
             is_hidden: event?.is_hidden || false,
             max_tokens_per_user: event?.max_tokens_per_user || 0

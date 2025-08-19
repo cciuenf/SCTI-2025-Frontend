@@ -21,7 +21,8 @@ const SlugEventPage = async (props: Props) => {
   const isEventCreator = user_info?.is_event_creator || user_info?.is_super || false;
 
   const eventRes = await handleGetSlugCreatedEvent(slug);
-
+  if (!eventRes || !eventRes.data) redirect("/events");
+  
   return (
     <div className="flex flex-col mx-auto items-center justify-center mt-10">
       <h1 className="xl:text-6xl text-4xl font-bold">{ eventRes?.data.Name }</h1>
