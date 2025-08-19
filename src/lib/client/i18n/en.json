@@ -9,5 +9,13 @@
   "user must be registered to the event first":
     "O usuário deve estar registrado no evento primeiro",
   "registered to activity successfully": "Registrado na atividade com sucesso",
-  "unregistered from activity successfully": "Desregistrado da atividade com sucesso"
+  "unregistered from activity successfully": "Desregistrado da atividade com sucesso",
+  "error creating activity: activity must be scheduled within event timeframe":
+    "A atividade deve ser agendada dentro do período do evento",
+  "error updating activity: activity must be scheduled within event timeframe":
+    "A atividade deve ser agendada dentro do período do evento",
+  "attendance marked successfully": "Presença marcada com sucesso",
+  "attendance removed successfully": "Presença removida com sucesso",
+  "error unregistering from activity: user has already attended this activity":
+    "O usuário já participou desta atividade"
 }

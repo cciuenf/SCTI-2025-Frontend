@@ -144,7 +144,7 @@ export default function ActivityListSection({
       {
         loading: `Removendo a inscrição da atividade: ${data.name}...`,
         success: () => "Inscrição cancelada com sucesso!",
-        error: () => "Erro ao cabcelar inscrição na atividade",
+        error: () => "Erro ao cancelar inscrição na atividade",
       }
     );
     if (res.success) setMyActivities((prev) => prev.filter((a) => a.ID !== data.ID));

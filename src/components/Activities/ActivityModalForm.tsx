@@ -1,10 +1,12 @@
 "use client";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
-import CustomGenericForm, {FieldConfig} from "../ui/Generic/CustomGenericForm";
-import { ActivityResponseI } from "@/types/activity-interface";
-import { ActivityCreationDataI, activityCreationSchema } from "@/schemas/activity-schema";
+import CustomGenericForm, { type FieldConfig } from "../ui/Generic/CustomGenericForm";
+import type { ActivityResponseI } from "@/types/activity-interface";
+import { type ActivityCreationDataI, activityCreationSchema } from "@/schemas/activity-schema";
 import { handleCreateActivity, handleUpdateActivity } from "@/actions/activity-actions";
 import { toast } from "sonner";
+import { runWithToast } from "@/lib/client/run-with-toast";
+import { addDays } from "date-fns";
 
 const ActivityModalForm: React.FC<{ 
   currentEvent: { id: string; slug: string }
@@ -62,23 +64,33 @@ const ActivityModalForm: React.FC<{
   ];
 
   const handleSubmit = async (data: ActivityCreationDataI) => {
-    try {
-      if(isCreating) {
-        const result = await handleCreateActivity(data, currentEvent.slug);
-        if (result?.success && result.data && onActivityCreate) {
-          setOpen(false);
-          onActivityCreate(result.data);
+    if (isCreating) {
+      const res = await runWithToast(
+        handleCreateActivity(data, currentEvent.slug),
+        {
+          loading: `Criando atividade: ${data.name}...`,
+          success: () => "Atividade criada com sucesso!",
+          error: () => "Erro ao criar a atividade",
         }
-      } else if(activity) {
-        const result = await handleUpdateActivity(data, currentEvent.slug, activity.ID);
-        if (result?.success && result.data && onActivityUpdate) {
-          setOpen(false);
-          onActivityUpdate(result.data);
+      );
+      if (res.success && res.data && onActivityCreate) {
+        setOpen(false);
+        onActivityCreate(res.data);
+      }
+    } else if (activity) {
+      const res = await runWithToast(
+        handleUpdateActivity(data, currentEvent.slug, activity.ID),
+        {
+          loading: `Atualizando atividade: ${data.name}...`,
+          success: () => "Atividade atualizada com sucesso!",
+          error: () => "Erro ao atualizar a atividade",
         }
-      } else toast.error("Atividade Inválida")
-    } catch (error) {
-      toast.error(`Erro ao manipular Atividade: ${data.name}`);
-    }
+      );
+      if (res.success && res.data && onActivityUpdate) {
+        setOpen(false);
+        onActivityUpdate(res.data);
+      }
+    } else toast.error("Atividade Inválida");
   };
 
   return (
@@ -107,10 +119,12 @@ const ActivityModalForm: React.FC<{
           is_hidden: false,
           is_mandatory: false,
           start_time: new Date(),
-          end_time: new Date(),
+          end_time: addDays(new Date(), 7),
         }}
         onSubmit={handleSubmit}
         onCancel={() => setOpen(false)}
+        submitLabel={isCreating ? "Criar" : "Editar"}
+        submittingLabel={isCreating ? "Criando..." : "Editando..."}
       />
     </CustomGenericModal>
   );
