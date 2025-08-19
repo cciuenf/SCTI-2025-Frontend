@@ -1,9 +1,9 @@
 "use client";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import CustomGenericForm, {
-  FieldConfig,
+  type FieldConfig,
 } from "../ui/Generic/CustomGenericForm";
-import {
+import type {
   ProductPurchasesResponseI,
   ProductResponseI,
 } from "@/types/product-interfaces";
@@ -11,8 +11,8 @@ import { handleBuyProduct } from "@/actions/product-actions";
 import { convertNumberToBRL } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProductBuyDataI, productBuySchema } from "@/schemas/product-schema";
-import { toast } from "sonner";
+import { type ProductBuyDataI, productBuySchema } from "@/schemas/product-schema";
+import { runWithToast } from "@/lib/client/run-with-toast";
 
 const ProductBuyModalForm: React.FC<{
   slug: string;
@@ -54,29 +54,17 @@ const ProductBuyModalForm: React.FC<{
   ];
 
   const handleSubmit = async (data: ProductBuyDataI) => {
-    const result = await handleBuyProduct(
-      { ...data, product_id: product.ID },
-      slug
-    );
-    if (result?.success && result.data && onProductPurchase) {
-      toast.success(`Produto comprado com sucesso!`);
-      setOpen(false);
-      onProductPurchase(result.data.purchase);
-      return;
-    }
-
-    if (!result.success && result.message) {
-      const errorReason = result.message.split(":");
-
-      switch (errorReason[1].trim()) {
-        case "user is not registered to this event":
-          toast.error(
-            "Você precisa se inscrever no evento antes de comprar um produto!"
-          );
-          break;
-        default:
-          toast.error("Erro desconhecido ao tentar comprar produto!");
+    const res = await runWithToast(
+      handleBuyProduct({ ...data, product_id: product.ID }, slug),
+      {
+        loading: 'Processando a compra...',
+        success: () => "Produto comprado com sucesso!",
+        error: () => "Erro ao tentar comprar o produto",
       }
+    );
+    if (res.success && res.data && onProductPurchase) {
+      setOpen(false);
+      onProductPurchase(res.data.purchase);
     }
   };
 
@@ -99,6 +87,8 @@ const ProductBuyModalForm: React.FC<{
           onSubmit={handleSubmit}
           onCancel={() => setOpen(false)}
           form={form}
+          submitLabel="Realizar Pedido"
+          submittingLabel="Processando..."
         />
       </div>
     </CustomGenericModal>

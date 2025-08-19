@@ -17,5 +17,7 @@
   "attendance marked successfully": "Presença marcada com sucesso",
   "attendance removed successfully": "Presença removida com sucesso",
   "error unregistering from activity: user has already attended this activity":
-    "O usuário já participou desta atividade"
+    "O usuário já participou desta atividade",
+  "deleted product": "Produto apagado",
+  "error processing purchase: payment method id is required": "Método de pagamento é obrigatório"
 }

@@ -1,11 +1,13 @@
 "use client";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
-import CustomGenericForm, {FieldConfig} from "../ui/Generic/CustomGenericForm";
+import CustomGenericForm, { type FieldConfig } from "../ui/Generic/CustomGenericForm";
 import { handleCreateProduct, handleUpdateProduct } from "@/actions/product-actions";
-import { ProductResponseI } from "@/types/product-interfaces";
-import { ActivityResponseI } from "@/types/activity-interface";
-import { ProductCreationDataI, productCreationSchema } from "@/schemas/product-schema";
+import type { ProductResponseI } from "@/types/product-interfaces";
+import type { ActivityResponseI } from "@/types/activity-interface";
+import { type ProductCreationDataI, productCreationSchema } from "@/schemas/product-schema";
 import { toast } from "sonner";
+import { runWithToast } from "@/lib/client/run-with-toast";
+import { addDays } from "date-fns";
 
 const ProductModalForm: React.FC<{
   currentEvent: { id: string; slug: string }
@@ -16,7 +18,16 @@ const ProductModalForm: React.FC<{
   onProductCreate?: (newProduct: ProductResponseI) => void,
   open: boolean,
   setOpen: (open: boolean) => void,
-}> = ({ isCreating, currentEvent, product, activities, onProductUpdate, onProductCreate, open, setOpen }) => {
+}> = ({ 
+  isCreating, 
+  currentEvent, 
+  product, 
+  activities, 
+  onProductUpdate, 
+  onProductCreate, 
+  open, 
+  setOpen 
+}) => {
 
   const options = activities.map(activity => ({
     label: activity.name,
@@ -75,46 +86,54 @@ const ProductModalForm: React.FC<{
   ];
 
   const handleSubmit = async (data: ProductCreationDataI) => {
-    try {
-      const parsedAccessTargets = data.access_targets.map(item => JSON.parse(item));
-      const is_event_access = parsedAccessTargets.some(target => target.is_event);
-      const is_activity_access = parsedAccessTargets.some(target => !target.is_event);
-      const is_activity_token = data.token_quantity > 0;
-      const transformedData = {
-        ...data,
-        access_targets: parsedAccessTargets.map(target => ({
-          ...target,
-          product_id: product?.ID
-        })),
-        is_event_access,
-        is_activity_access,
-        is_activity_token
-      };
-      if(isCreating) {
-        const result = await handleCreateProduct(transformedData, currentEvent.slug);
-        if (result?.success && result.data && onProductCreate) {
-          setOpen(false);
-          onProductCreate(result.data);
-          toast.success("Produto criado!")
+    const parsedAccessTargets = data.access_targets.map(item => JSON.parse(item));
+    const is_event_access = parsedAccessTargets.some(target => target.is_event);
+    const is_activity_access = parsedAccessTargets.some(target => !target.is_event);
+    const is_activity_token = data.token_quantity > 0;
+    const transformedData = {
+      ...data,
+      access_targets: parsedAccessTargets.map(target => ({
+        ...target,
+        product_id: product?.ID
+      })),
+      is_event_access,
+      is_activity_access,
+      is_activity_token
+    };
+    if(isCreating) {
+      const res = await runWithToast(
+        handleCreateProduct(transformedData, currentEvent.slug),
+        {
+          loading: 'Criando o produto...',
+          success: () => "Produto criado com sucesso!",
+          error: () => "Erro ao criar o produto",
         }
-      } else if(product) {
-        const result = await handleUpdateProduct(transformedData, currentEvent.slug, product.ID);
-        if (result?.success && result.data && onProductUpdate) {
-          setOpen(false);
-          onProductUpdate(result.data);
-          toast.success("Produto atualizado!")
+      );
+      if (res.success && res.data && onProductCreate) {
+        setOpen(false);
+        onProductCreate(res.data);
+      }
+    } else if(product) {
+      const res = await runWithToast(
+        handleUpdateProduct(transformedData, currentEvent.slug, product.ID),
+        {
+          loading: 'Atualizando o produto...',
+          success: () => "Produto atualizado com sucesso!",
+          error: () => "Erro ao atualizado o produto",
         }
-      } else toast.error("Produto Inválido")
-    } catch (error) {
-      console.error("Erro ao manipular o produto:", error);
-      toast.error(`Erro ao manipular o Produto: ${data.name}`);
-    }
+      );
+      if (res.success && res.data && onProductUpdate) {
+        setOpen(false);
+        onProductUpdate(res.data);
+      }
+    } else toast.error("Produto Inválido")
   };
 
   return (
     <CustomGenericModal
       title={isCreating ? "Crie seu Produto" : "Altere seu Produto"}
-      description={`Preencha os campos abaixo para que consiga ${isCreating ? "criar" : "alterar"} o produto desejado!`}
+      description={`Preencha os campos abaixo para que consiga 
+        ${isCreating ? "criar" : "alterar"} o produto desejado!`}
       open={open}
       onOpenChange={setOpen}
       trigger={null}
@@ -136,10 +155,12 @@ const ProductModalForm: React.FC<{
           is_hidden: false,
           is_ticket_type: false,
           access_targets: [],
-          expires_at: new Date(),
+          expires_at: addDays(new Date(), 7)
         }}
         onSubmit={handleSubmit}
         onCancel={() => setOpen(false)}
+        submitLabel={isCreating ? "Criar" : "Atualizar"}
+        submittingLabel={isCreating ? "Criando..." : "Atualizando..."}
       />
     </CustomGenericModal>
   );
