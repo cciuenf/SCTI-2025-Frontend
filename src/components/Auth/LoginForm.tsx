@@ -100,8 +100,19 @@ export default function LoginForm({
       setIsLoading(true);
       try {
         const res = await handleLoginSubmit(values);
+
         if (!res.success) {
-          toast.error("Erro ao realizar login");
+          const message = res.message.split(": ")[1]
+          switch (message) {
+            case "invalid password":
+              toast.error("Senha inválida!");
+              break;
+            case "record not found":
+              toast.error("Usuário não encontrado!");
+              break;
+            default:
+              toast.error("Erro interno ao fazer login!");
+          }
         } else {
           router.push("/profile?view=infos");
           toast.success("Login bem-sucedido!");
