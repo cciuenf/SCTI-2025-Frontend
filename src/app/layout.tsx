@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body className={`${fontClass} antialiased min-h-screen bg-background`}>
         <SidebarProvider defaultOpen={false}>
           <SiteSidebar />
-          <SidebarTrigger className="fixed top-4 left-4 z-50 shadow-md bg-white rounded-full"/>
+          <SidebarTrigger className="fixed top-4 left-4 z-50 shadow-md bg-white rounded-full" />
           <Toaster
             position="bottom-right"
             richColors
@@ -24,9 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             closeButton
             duration={5000}
           />
-          <main className="overflow-x-hidden w-full">
-            {children}
-          </main>
+          <main className="overflow-x-hidden w-full">{children}</main>
         </SidebarProvider>
       </body>
     </html>
