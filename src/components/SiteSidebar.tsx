@@ -1,8 +1,6 @@
-import { handleLogout } from "@/actions/auth-actions";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -11,8 +9,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { getAuthTokens } from "@/lib/cookies";
-import { Calendar, Home, LayoutDashboard, User, LogOut } from "lucide-react";
+import { getAuthTokens, isEventCreator } from "@/lib/cookies";
+import { Calendar, Home, LayoutDashboard, User, FolderDot } from "lucide-react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -24,21 +22,30 @@ const items = {
       title: "Dashboard",
       url: "/dashboard",
       icon: LayoutDashboard,
+      only_admin: false,
+    },
+    {
+      title: "Eventos",
+      url: "/events",
+      icon: FolderDot,
+      only_admin: true,
     },
     {
       title: "Atividades",
       url: "/events/scti",
       icon: Calendar,
+      only_admin: false,
     },
   ],
 };
 
 export async function SiteSidebar() {
   const { accessToken, refreshToken } = await getAuthTokens();
+  const is_creator = await isEventCreator();
 
   return (
     <Sidebar>
-      <SidebarHeader>
+      <SidebarHeader className="items-center">
         <Link href="/" className="hover:opacity-90 duration-200">
           <Image src="/SCT.svg" width={200} height={150} alt="SCT logo" />
         </Link>
@@ -65,7 +72,7 @@ export async function SiteSidebar() {
               <SidebarGroupLabel>Minha SCTI</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {items.events.map((item) => (
+                  {items.events.map((item) => ((item.only_admin && is_creator) || !item.only_admin) && (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
                         <Link href={item.url}>

@@ -8,9 +8,7 @@ import { SidebarMenuButton } from "../ui/sidebar";
 import { clearAuthTokens, getAuthTokens } from "@/lib/cookies";
 import {useRouter} from "next/navigation";
 
-type Props = {};
-
-const LogoutButton = (props: Props) => {
+const LogoutButton = () => {
   const router = useRouter()
   const handleLogoutAction = async () => {
     const res = await handleLogout();
