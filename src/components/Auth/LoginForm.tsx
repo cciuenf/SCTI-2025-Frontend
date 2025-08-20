@@ -41,7 +41,7 @@ const formSchema = z.object({
   last_name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(8).max(20),
-  terms: z.boolean().refine((val) => val === true, "A checkbox precisa ser preenchida!"),
+  // terms: z.boolean().refine((val) => val === true, "A checkbox precisa ser preenchida!"),
 });
 
 const loginFormSchema = z.object({
@@ -70,7 +70,7 @@ export default function LoginForm({
       last_name: "",
       email: "",
       password: "",
-      terms: false,
+      // terms: false,
     },
   });
 
@@ -238,7 +238,7 @@ export default function LoginForm({
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={signForm.control}
               name="terms"
               render={({ field }) => (
@@ -253,7 +253,7 @@ export default function LoginForm({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <Button type="submit">Enviar</Button>
           </form>
         </Form>
