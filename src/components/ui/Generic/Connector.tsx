@@ -29,7 +29,7 @@ const Connector = ({ children, className = "", id }: Props) => {
       </div>
       <div className="w-full flex flex-col items-center absolute bottom-0 pointer-events-none">
         <svg 
-          className="transform scale-y-[-1] w-[300%] translate-x-[-0.98%]" 
+          className="transform scale-y-[-1] w-[300%] translate-x-[-0.98%] -mb-1" 
           xmlns="http://www.w3.org/2000/svg" 
           viewBox="0 0 1200 120" 
           preserveAspectRatio="none"

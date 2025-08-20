@@ -8,6 +8,9 @@ import { SiteSidebar } from "@/components/SiteSidebar";
 export const metadata: Metadata = {
   title: "SCTI - 2025",
   description: "Front-end da plataforma a ser usado na SCTI-2025",
+  icons: {
+    icon: "/SCT.svg",
+  },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -16,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body className={`${fontClass} antialiased min-h-screen bg-background`}>
         <SidebarProvider defaultOpen={false}>
           <SiteSidebar />
-          <SidebarTrigger className="fixed top-4 left-4 z-50 shadow-md bg-white rounded-full"/>
+          <SidebarTrigger className="fixed top-4 left-4 z-[60] shadow-md bg-white rounded-full"/>
           <Toaster
             position="top-right"
             richColors

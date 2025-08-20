@@ -147,4 +147,21 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  body::-webkit-scrollbar
+  {
+    @apply w-2;
+  }
+  
+  body::-webkit-scrollbar-track {
+    @apply bg-secondary;
+  }
+  
+  body::-webkit-scrollbar-thumb {
+    @apply bg-accent;
+  }
+
+  body[data-scroll-locked] {
+    @apply !mr-0 !overflow-auto;
+  }
 }
