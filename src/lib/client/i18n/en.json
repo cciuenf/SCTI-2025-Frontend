@@ -19,5 +19,8 @@
   "error unregistering from activity: user has already attended this activity":
     "O usuário já participou desta atividade",
   "deleted product": "Produto apagado",
-  "error processing purchase: payment method id is required": "Método de pagamento é obrigatório"
+  "error processing purchase: payment method id is required": "Método de pagamento é obrigatório",
+  "error starting pix purchase: product has expired": "O produto expirou",
+  "error updating product: product can't expire after event end date":
+    "O produto não pode expirar após a data de término do evento"
 }

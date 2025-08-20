@@ -97,7 +97,7 @@ const UserActivityInfoTable = ({
       onOpenChange={setOpen}
       trigger={null}
     >
-      <Table>
+      <Table className="h-full">
         <TableHeader>
           <TableRow>
             <TableHead>Nome</TableHead>

@@ -4,13 +4,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import CustomGenericForm, {
-  FieldConfig,
+  type FieldConfig,
 } from "../ui/Generic/CustomGenericForm";
 import { handleForgotPassword } from "@/actions/auth-actions";
 
-type Props = {};
 
-const ForgotPasswordForm = (props: Props) => {
+const ForgotPasswordForm = () => {
   const fields: FieldConfig<z.infer<typeof changePasswordSchema>>[] = [
     { name: "email", label: "Email" },
   ];
@@ -34,7 +33,7 @@ const ForgotPasswordForm = (props: Props) => {
         toast.info(`Te enviamos um email para que possa recuperar seu acesso!`);
         return;
       }
-    } catch (error) {
+    } catch {
       toast.error("Erro ao iniciar o processo de recuperação de acesso");
     }
   };

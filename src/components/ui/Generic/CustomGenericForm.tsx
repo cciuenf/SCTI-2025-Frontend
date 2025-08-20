@@ -26,19 +26,14 @@ type BooleanFieldPath<T extends FieldValues> = {
   [K in FieldPath<T>]: FieldPathValue<T, K> extends boolean ? K : never
 }[FieldPath<T>];
 
+export type FieldType = | "text" | "number" | "price" | "switch" 
+  | "select" | "multiple_select" | "datetime" | "password";
+
 export interface FieldConfig<T extends FieldValues> {
   name: FieldPath<T>;
   label: string;
   placeholder?: string;
-  type?:
-    | "text"
-    | "number"
-    | "price"
-    | "switch"
-    | "select"
-    | "multiple_select"
-    | "datetime"
-    | "password";
+  type?: FieldType
   options?: { label: string; value: string }[];
   disabledWhen?: {
     field: BooleanFieldPath<T>;

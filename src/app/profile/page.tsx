@@ -2,7 +2,7 @@ import ProfileTabs from "@/components/Profile/ProfileTabs";
 import ProfileInfos from "@/components/Profile/ProfileInfos";
 
 import { cookies } from "next/headers";
-import {
+import type {
   UserAccessTokenJwtPayload,
   UserRefreshTokenJwtPayload,
 } from "@/types/auth-interfaces";
@@ -14,7 +14,7 @@ type Props = {
   searchParams: { view: string };
 };
 
-const page = async ({ searchParams }: Props) => {
+const ProfilePage = async ({ searchParams }: Props) => {
   const params = await searchParams;
 
   const cookieStore = cookies();
@@ -46,4 +46,4 @@ const page = async ({ searchParams }: Props) => {
   );
 };
 
-export default page;
+export default ProfilePage;

@@ -33,7 +33,7 @@ export function SimpleDateTimePicker({ value, onChange, disabled, placeholder }:
   function handleTimeChange(type: "hour" | "minute" | "ampm", timeValue: string) {
     if (!dateValue || !onChange) return;
     
-    let newDate = new Date(dateValue);
+    const newDate = new Date(dateValue);
 
     if (type === "hour") {
       const hour = parseInt(timeValue, 10);

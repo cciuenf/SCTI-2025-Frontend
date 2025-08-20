@@ -1,6 +1,6 @@
 "use server";
 
-import {
+import type {
   AuthCredentialsI,
   RefreshTokenI,
   UserAccessTokenJwtPayload,
@@ -218,7 +218,7 @@ export async function handleVerifyToken(token: string) {
   }
 
   try {
-    const res = await fetchWrapper("verify-account", {
+    await fetchWrapper("verify-account", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -251,7 +251,7 @@ export async function handleResendVerifyToken() {
   }
 
   try {
-    const res = await fetchWrapper("resend-verification-code", {
+    await fetchWrapper("resend-verification-code", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -283,7 +283,7 @@ export async function handleChangeName(name: string, last_name: string) {
   }
 
   try {
-    const res = await fetchWrapper("change-name", {
+    await fetchWrapper("change-name", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -333,7 +333,7 @@ export async function handleForgotPassword(email: string) {
 
 export async function handleChangePassword(password: string, token: string) {
   try {
-    const res = await fetchWrapper(`change-password?token=${token}`, {
+    await fetchWrapper(`change-password?token=${token}`, {
       method: "POST",
       body: JSON.stringify({ new_password: password }),
     });

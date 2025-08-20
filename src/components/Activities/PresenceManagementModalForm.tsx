@@ -13,6 +13,7 @@ import {
 import { Select } from "../ui/select";
 import LoadingSpinner from "../Loading/LoadingSpinner";
 import { Button } from "../ui/button";
+import CameraComponent from "../CameraComponent";
 import type { ActionResult } from "@/actions/_utils";
 import { runWithToast } from "@/lib/client/run-with-toast";
 
@@ -26,8 +27,16 @@ interface Props {
 
 type Combined = UserBasicInfo & ActivityRegistrationI;
 
-const PresenceManagmentModalForm = ({ activityId, activityName, slug, open, setOpen }: Props) => {
-  const [usersRegistrations, setUsersRegistrations] = useState<Combined[]>([])
+const PresenceManagmentModalForm = ({
+  activityId,
+  activityName,
+  slug,
+  open,
+  setOpen,
+}: Props) => {
+  const [usersRegistrations, setUsersRegistrations] = useState<
+    (UserBasicInfo & ActivityRegistrationI)[]
+  >([]);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(true);
@@ -121,35 +130,39 @@ const PresenceManagmentModalForm = ({ activityId, activityName, slug, open, setO
       onOpenChange={setOpen}
       trigger={null}
     >
-    {isLoading ? <LoadingSpinner /> :
-      <div className="flex flex-col justify-center gap-5">
-        <Button type="button" variant="ghost">
-          Escanear Participante
-        </Button>
-        <Select
-          placeholder="Selecione o Participante"
-          options={usersRegistrations.map(reg => ({
-            label: `${reg.Name} ${reg.LastName}`, value: reg.user_id
-          }))} 
-          value={selectedUserId}
-          onValueChange={setSelectedUserId}
-        />
-        <Button 
-          type="button"
-          onClick={handlePresence} 
-          variant={hasAttended ? 'destructive' : 'default'} 
-          disabled={isSubmitting || !selectedUserId}
-        >
-          {isSubmitting && hasAttended 
-            ? "Removendo..."  : isSubmitting 
-            ? "Marcando..." : hasAttended 
-            ? "Remover Presença" : "Marcar Presença"
-        }
-        </Button>
-      </div>
-    }
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <div className="flex flex-col justify-center gap-5">
+          <CameraComponent
+            setSelectedUserId={setSelectedUserId}
+            userRegistrations={usersRegistrations}
+          />
+          <Select
+            placeholder="Selecione o Participante"
+            options={usersRegistrations.map((reg) => ({
+              label: `${reg.Name} ${reg.LastName}`,
+              value: reg.user_id,
+            }))}
+            value={selectedUserId}
+            onValueChange={setSelectedUserId}
+          />
+          <Button
+            type="button"
+            onClick={handlePresence}
+            variant={hasAttended ? "destructive" : "default"}
+            disabled={isSubmitting || !selectedUserId}
+          >
+            {isSubmitting && hasAttended 
+              ? "Removendo..."  : isSubmitting 
+              ? "Marcando..." : hasAttended   
+              ? "Remover Presença" : "Marcar Presença"
+            }
+          </Button>
+        </div>
+      )}
     </CustomGenericModal>
-  )
-}
+  );
+};
 
 export default PresenceManagmentModalForm;

@@ -13,6 +13,9 @@ import { toast } from "sonner";
 import ProductCard from "./ProductCard";
 import ProductBuyModalForm from "./ProductBuyModalForm";
 import { runWithToast } from "@/lib/client/run-with-toast";
+import useMercadoPago from "@/hooks/use-mercado-pago";
+import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
+import type { ProductBuyDataI } from "@/schemas/product-schema";
 
 interface ProductListSectionProps { 
   currentEvent: { id: string; slug: string };
@@ -26,6 +29,8 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
   const [allProducts, setAllProducts] = useState<ProductResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const { selectPaymentMethod } = useMercadoPago();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -74,6 +79,12 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
       prev.map(p => p.ID === updatedProduct.ID ? updatedProduct : p)
     );
   };
+
+  const handlePaymentSelector = async (pay: IPaymentFormData, buyableProduct: ProductBuyDataI) => {
+    const result = await selectPaymentMethod(pay, currentEvent.slug, selectedProduct, buyableProduct);
+    if (!result.id) handleProductPurchase(result.data as ProductPurchasesResponseI);    
+    return result;
+  }
 
   const handleProductPurchase = (purchasedProduct: ProductPurchasesResponseI) => {
     setAllProducts(prev =>
@@ -144,7 +155,7 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
         product={selectedProduct}
         open={isPurchaseModalOpen}
         setOpen={setIsPurchaseModalOpen}
-        onProductPurchase={handleProductPurchase}
+        handlePaymentSelector={handlePaymentSelector}
       />}
     </>
   );

@@ -5,6 +5,8 @@ import { fetchWrapper } from "@/lib/fetch";
 import type { ProductCreationDataI } from "@/schemas/product-schema";
 import type { 
   ProductBuyCredentialsI, 
+  ProductPixPurchaseResponseI, 
+  ProductPurchasesResourceResponseI, 
   ProductPurchasesResponseI, 
   ProductResponseI, 
   UserTokensResponseI 
@@ -46,35 +48,27 @@ export async function handleGetAllEventProducts(slug: string) {
 }
 
 export async function handleBuyProduct(data: ProductBuyCredentialsI, slug: string) {
-  return actionRequest<ProductBuyCredentialsI, { purchase: ProductPurchasesResponseI }>(
-    `/events/${slug}/purchase`, 
+  return actionRequest<ProductBuyCredentialsI, 
+    { 
+      purchase: ProductPurchasesResponseI 
+      purchase_resource: ProductPurchasesResourceResponseI
+    }>(`/events/${slug}/purchase`, 
     {
       method: "POST",
       body: data,
     }
   );
-  // const { accessToken, refreshToken } = await getAuthTokens();
+}
 
-  // try {
-  //   const res = await fetchWrapper<{purchase: ProductPurchasesResponseI}>(`/events/${slug}/purchase`, {
-  //     method: "POST",
-  //     body: JSON.stringify(data),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${accessToken}`,
-  //       Refresh: `Bearer ${refreshToken}`,
-  //     },
-  //   });
-  //   return { success: true, data: res.result.data };
-  // } catch (error) {
-  //   if (error instanceof FetchError) {
-  //     console.error("Erro ao comprar o produto", error.message);
-  //     return { success: false, message: error.message };
-  //   } else {
-  //     console.error("Erro desconhecido ao comprar o produto", error);
-  //     return { success: false, message: "Erro desconhecido ao tentar comprar produto!" };
-  //   }
-  // }
+export async function handleBuyProductPix(data: ProductBuyCredentialsI, slug: string) {
+  return actionRequest<ProductBuyCredentialsI, ProductPixPurchaseResponseI>
+  (
+    `/events/${slug}/forced-pix`, 
+    {
+      method: "POST",
+      body: data,
+    }
+  );
 }
 
 export async function handleGetAllUserProducts() {
