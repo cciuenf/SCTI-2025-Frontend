@@ -11,71 +11,26 @@ import { getAuthTokens, setAuthTokens } from "@/lib/cookies";
 import { headers } from "next/headers";
 import {UAParser} from "ua-parser-js";
 import jwt from "jsonwebtoken";
+import { actionRequest } from "./_utils";
+import type { LoginFormDataI, SignUpFormDataI } from "@/schemas/auth-schema";
 
-export async function handleLoginSubmit({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) {
-  try {
-    const res = await fetchWrapper<AuthCredentialsI>("login", {
-      method: "POST",
-      body: JSON.stringify({ email: email, password: password }),
-    });
-
-    await setAuthTokens(
-      res.result.data.access_token,
-      res.result.data.refresh_token
-    );
-    return { success: true };
-  } catch (err: unknown) {
-    if (err instanceof FetchError) {
-      return err.message, err.status;
-    } else {
-      console.error("Erro ao realizar o login: ", err);
-      return "Erro desconhecido ao realizar o login";
-    }
-  }
+export async function handleLoginSubmit({ email, password }: LoginFormDataI) {
+  const res = await actionRequest<LoginFormDataI, AuthCredentialsI>("/login", { 
+    withAuth: false,
+    method: "POST",
+    body: { email, password },
+  });
+  if (res.success && res.data) await setAuthTokens(res.data.access_token, res.data.refresh_token);
+  return res;
 }
 
-export async function handleSignUp({
-  name,
-  last_name,
-  email,
-  password,
-}: {
-  name: string;
-  last_name: string;
-  email: string;
-  password: string;
-}) {
-  try {
-    const res = await fetchWrapper<AuthCredentialsI>("register", {
-      method: "POST",
-      body: JSON.stringify({
-        name: name,
-        last_name: last_name,
-        email: email,
-        password: password,
-      }),
-    });
-
-    await setAuthTokens(
-      res.result.data.access_token,
-      res.result.data.refresh_token
-    );
-  } catch (err: unknown) {
-    if (err instanceof FetchError) {
-      console.error("Erro ao realizar o login: ", err.message);
-      return err.message;
-    } else {
-      console.error("Erro ao realizar o login: ", err);
-      return "Erro desconhecido ao realizar o login";
-    }
-  }
-
+export async function handleSignUp({ name, last_name, email, password }: SignUpFormDataI) {
+  const res = await actionRequest<SignUpFormDataI, AuthCredentialsI>("/register", { 
+    withAuth: false,
+    method: "POST",
+    body: { name, last_name, email, password },
+  });
+  if (res.success && res.data) await setAuthTokens(res.data.access_token, res.data.refresh_token);
   return await handleIsVerified();
 }
 

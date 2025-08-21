@@ -27,7 +27,7 @@ type BooleanFieldPath<T extends FieldValues> = {
 }[FieldPath<T>];
 
 export type FieldType = | "text" | "number" | "price" | "switch" 
-  | "select" | "multiple_select" | "datetime" | "password";
+  | "select" | "multiple_select" | "datetime" | "password" | "email";
 
 export interface FieldConfig<T extends FieldValues> {
   name: FieldPath<T>;
@@ -112,7 +112,7 @@ function CustomGenericForm<T extends FieldValues>({
           />
         ))}
 
-        <div className="grid grid-cols-2 gap-4 mt-4">
+        <div className={`grid gap-4 mt-4 w-full grid-cols-${onCancel ? 2 : 1}`}>
           {onCancel && (
             <Button
               type="button"

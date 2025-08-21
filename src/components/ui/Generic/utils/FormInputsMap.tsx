@@ -7,6 +7,7 @@ import type { SetStateAction } from "react";
 import type { FieldType } from "../CustomGenericForm";
 import type { ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form";
 import { Select } from "../../select";
+import { PasswordInput } from "./PasswordInput";
 
 type CommonProps<T extends FieldValues> = {
   field: ControllerRenderProps<T, FieldPath<T>>;
@@ -22,6 +23,9 @@ type Renderer = <T extends FieldValues>(props: CommonProps<T>) => React.ReactNod
 export const FormInputRenderMap = {
   text: ({ field, disabled, placeholder }) => (
     <Input {...field} placeholder={placeholder} disabled={disabled} />
+  ),
+  email: ({ field, disabled, placeholder }) => (
+    <Input {...field} type="email" placeholder={placeholder} disabled={disabled} />
   ),
   number: ({ field, disabled, placeholder }) => (
     <Input
@@ -85,6 +89,6 @@ export const FormInputRenderMap = {
     />
   ),
   password: ({ field, disabled, placeholder }) => (
-    <Input type="password" {...field} disabled={disabled} placeholder={placeholder}/>
-  ),
+    <PasswordInput field={field} placeholder={placeholder} disabled={disabled} />
+  )
 } satisfies Record<FieldType, Renderer>;
