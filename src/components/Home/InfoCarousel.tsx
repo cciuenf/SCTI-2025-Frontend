@@ -26,7 +26,7 @@ const InfoCarousel = () => {
   return (
     <Carousel 
       setApi={setApi}
-      className="relative w-full h-auto min-h-screen overflow-hidden"
+      className="relative z-50 w-full h-auto min-h-screen overflow-hidden bg-secondary"
       opts={{
         loop: true,
         align: 'center',

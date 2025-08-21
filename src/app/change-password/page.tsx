@@ -12,6 +12,7 @@ const ChangePasswordPage = async ({searchParams}: Props) => {
   return (
     <div className="h-screen flex items-center justify-center">
       <ChangePasswordForm token={token} />
+      <ChangePasswordForm token={token} />
     </div>
   );
 };

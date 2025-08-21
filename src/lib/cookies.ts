@@ -45,3 +45,8 @@ export async function getUserInfo() {
   ) as UserAccessTokenJwtPayload | null;
   return user_info;
 }
+
+export async function isEventCreator() {
+  const user_info = await getUserInfo();
+  return user_info?.is_super || user_info?.is_event_creator || false;
+}

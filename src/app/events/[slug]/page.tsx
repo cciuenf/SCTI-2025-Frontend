@@ -2,6 +2,7 @@ import { handleGetSlugCreatedEvent } from "@/actions/event-actions";
 import ActivityListSection from "@/components/Activities/ActivityListSection";
 import EventManagementActions from "@/components/Events/EventManagementActions";
 import ProductListSection from "@/components/Products/ProductListSection";
+import Connector from "@/components/ui/Generic/Connector";
 import { getUserInfo } from "@/lib/cookies";
 import { formatEventDateRange } from "@/lib/utils";
 import { Calendar, MapPin, Users } from "lucide-react";
@@ -22,7 +23,7 @@ const SlugEventPage = async (props: Props) => {
   if (!eventRes || !eventRes.data) redirect("/events");
   
   return (
-    <div className="flex flex-col mx-auto items-center justify-center mt-10">
+    <Connector className="flex flex-col mx-auto items-center justify-center !mt-20 text-center">
       <h1 className="xl:text-6xl text-4xl font-bold">{ eventRes?.data.Name }</h1>
       <div className="w-full flex mt-4 mb-6 justify-center items-center flex-col gap-2 xs:flex-row xs:gap-10 px-4 text-sm">
         <p className="flex items-center gap-2">
@@ -60,7 +61,7 @@ const SlugEventPage = async (props: Props) => {
           />
         }
       </div>
-    </div>
+    </Connector>
   );
 };
 
