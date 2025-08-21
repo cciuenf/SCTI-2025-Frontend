@@ -42,7 +42,6 @@ const useMercadoPago = () => {
         error: () => "Erro ao tentar gerar o produto",
       }
     );
-    console.log("Pix response:", res);
     return { data: res.data, id: res.data?.id || null };
   }
 
