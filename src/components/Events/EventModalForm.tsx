@@ -1,10 +1,13 @@
 "use client";
-import { EventResponseI } from "@/types/event-interfaces";
-import { EventCreationDataI, eventCreationSchema } from "@/schemas/event-schema";
+import type { EventResponseI } from "@/types/event-interfaces";
+import { type EventCreationDataI, eventCreationSchema } from "@/schemas/event-schema";
 import { toast } from "sonner";
-import CustomGenericForm, { FieldConfig } from "../ui/Generic/CustomGenericForm";
+import CustomGenericForm, { type FieldConfig } from "../ui/Generic/CustomGenericForm";
 import { handleCreateEvent, handleUpdateSlugCreatedEvents } from "@/actions/event-actions";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
+import { runWithToast } from "@/lib/client/run-with-toast";
+import { redirect, usePathname } from "next/navigation";
+import { addDays } from "date-fns";
 
 const EventModalForm: React.FC<{ 
   isCreating: boolean,
@@ -14,29 +17,44 @@ const EventModalForm: React.FC<{
   open: boolean,
   setOpen: (open: boolean) => void,
 }> = ({ isCreating, event, onEventCreate, onEventUpdate, open, setOpen }) => {
+  const pathName = usePathname();
 
   const handleSubmit = async (data: EventCreationDataI) => {
-    try {
-      if(isCreating) {
-        const result = await handleCreateEvent(data);
-        if (result?.success && result.data && onEventCreate) {
-          onEventCreate(result.data);
-          setOpen(false);
-          toast.success(`Evento criado com sucesso: ${result.data.Name}`, {
-            description: result.data.description
-          });
+    if(isCreating) {
+      const result = await runWithToast(
+        handleCreateEvent(data),
+        {
+          loading: "Criando evento...",
+          success: (res) =>
+            res.data
+              ? `Evento criado com sucesso: ${res.data.Name}`
+              : 'Evento criado!',
+          error: () => `Falha na criação do evento: ${data.name}`,
         }
-      } else if(event) {
-        const result = await handleUpdateSlugCreatedEvents(data, event.Slug);
-        if (result?.success && result.data && onEventUpdate) {
-          setOpen(false);
-          onEventUpdate(result.data);
-          toast.success(`Evento atualizado com sucesso: ${result.data.Name}`);
+      );
+      if(result.success && result.data && onEventCreate) {
+        onEventCreate(result.data);
+        setOpen(false);
+      }
+    } else if(event) {
+      const result = await runWithToast(
+        handleUpdateSlugCreatedEvents(data, event.Slug),
+        {
+          loading: 'Atualizando evento...',
+          success: (res) =>
+            res.data
+              ? `Evento atualizado com sucesso: ${res.data.Name}`
+              : 'Evento atualizado!',
+          error: () => `Falha na atualização do evento: ${data.name}`,
         }
-      } else toast.error("Evento Inválido");
-    } catch (error) {
-      toast.error(`Falha na atualização do evento: ${data.name}`);
-    }
+      );
+      if (result.success && result.data && onEventUpdate) {
+        onEventUpdate(result.data);
+        setOpen(false);
+        if(pathName === `/events/${event?.Slug.toLowerCase()}`) 
+          redirect('/events/' + result.data.Slug);
+      } 
+    } else toast.error("Evento Inválido");
   };
 
   const fields: FieldConfig<EventCreationDataI>[] = [
@@ -46,7 +64,7 @@ const EventModalForm: React.FC<{
     {name: "description", label: "Descrição", placeholder: "Coloque a descrição do evento"},
     { 
       name: "max_tokens_per_user", 
-      label: "Max Tokens Por User", 
+      label: "Máximo de Tokens por Usuário", 
       type: "number" as const, 
       placeholder: "Coloque o total de tokens por usuário"
     },
@@ -74,7 +92,7 @@ const EventModalForm: React.FC<{
             location: event?.location || "",
             description: event?.description || "",
             start_date: event?.start_date || new Date(),
-            end_date: event?.end_date || new Date(),
+            end_date: event?.end_date || addDays(new Date(), 7),
             is_blocked: event?.is_blocked || false,
             is_hidden: event?.is_hidden || false,
             max_tokens_per_user: event?.max_tokens_per_user || 0
@@ -82,6 +100,7 @@ const EventModalForm: React.FC<{
           onSubmit={handleSubmit}
           onCancel={() => setOpen(false)}
           submitLabel={isCreating ? "Criar" : "Editar"}
+          submittingLabel={isCreating ? "Criando..." : "Editando..."}
         />
       </CustomGenericModal>
     </div>

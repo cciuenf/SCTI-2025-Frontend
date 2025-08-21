@@ -9,9 +9,7 @@ import { Calendar, MapPin, Users } from "lucide-react";
 import { redirect } from "next/navigation";
 
 type Props = {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string }>;
 };
 
 const SlugEventPage = async (props: Props) => {
@@ -22,7 +20,8 @@ const SlugEventPage = async (props: Props) => {
   const isEventCreator = user_info?.is_event_creator || user_info?.is_super || false;
 
   const eventRes = await handleGetSlugCreatedEvent(slug);
-
+  if (!eventRes || !eventRes.data) redirect("/events");
+  
   return (
     <Connector className="flex flex-col mx-auto items-center justify-center !mt-20 text-center">
       <h1 className="xl:text-6xl text-4xl font-bold mt-20">{ eventRes?.data.Name }</h1>

@@ -9,9 +9,7 @@ import {
 } from "../ui/table";
 import { Skeleton } from "../ui/skeleton";
 
-type Props = {};
-
-const UserPurchasesSkeleton = (props: Props) => {
+const UserPurchasesSkeleton = () => {
   return (
     <div className="w-8/10">
       <Table>

@@ -4,11 +4,10 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RefObject, useRef } from "react";
+import { type RefObject, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,14 +15,12 @@ import {
   handleResendVerifyToken,
   handleVerifyToken,
 } from "@/actions/auth-actions";
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 
 type Props = {
-  setMustShowVerify?: Dispatch<SetStateAction<boolean>>;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setIsLoading?: Dispatch<SetStateAction<boolean>>;
   origin: "signup" | "profile";
 };
 
@@ -36,7 +33,7 @@ const verifyFormSchema = z.object({
   digit_6: z.string().max(1).min(1),
 });
 
-const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
+const VerifyForm = ({ setIsLoading, origin }: Props) => {
   const verifyForm = useForm<z.infer<typeof verifyFormSchema>>({
     resolver: zodResolver(verifyFormSchema),
     defaultValues: {
@@ -67,9 +64,9 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
     digit_6,
   }: z.infer<typeof verifyFormSchema>) => {
     const token = digit_1.concat(digit_2, digit_3, digit_4, digit_5, digit_6);
-    setIsLoading(true);
+    if(setIsLoading) setIsLoading(true);
     const res = await handleVerifyToken(token);
-    setIsLoading(false);
+    if(setIsLoading) setIsLoading(false);
 
     if (res.status == 200) {
       toast.success("Usuário verificado");

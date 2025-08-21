@@ -38,6 +38,14 @@ export interface ProductPurchasesResponseI {
   purchased_at: string,
 }
 
+export interface ProductPixPurchaseResponseI {
+  id: string,
+  payment_method: PaymentMeyhodI,
+  status: string,
+}
+
+export type PaymentResult = ProductPixPurchaseResponseI | ProductPurchasesResponseI;
+
 export interface ProductPurchasesResourceResponseI {
   id: string,
   transactions: TransactionResponseI,

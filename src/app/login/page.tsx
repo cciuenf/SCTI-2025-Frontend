@@ -3,18 +3,17 @@ import { handleLoginSubmit, handleSignUp } from "@/actions/auth-actions";
 import { useState } from "react";
 
 import LoginForm from "@/components/Auth/LoginForm";
-import VerifyForm from "@/components/VerifyForm";
 import { Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import ForgotPasswordForm from "@/components/Auth/ForgotPasswordForm";
+import VerifyForm from "@/components/VerifyForm";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLogin, setIsLogin] = useState<boolean>(true);
   const [mustShowVerify, setMustShowVerify] = useState<boolean>(false);
-  const [hasForgottedPassword, setHasForgottedPassword] =
-    useState<boolean>(false);
+  const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [hasForgottedPassword, setHasForgottedPassword] = useState<boolean>(false);
 
   if (isLoading) {
     return (
@@ -47,10 +46,9 @@ export default function Login() {
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center gap-3">
-      <div className="border-1 border-primary shadow-xs p-5 rounded-md flex flex-col items-center justify-around gap-3 w-[320px] h-[580px] md:w-[440px] lg:w-[480px]">
+      <div className="border-1 border-primary shadow-xs p-5 rounded-md flex flex-col items-center justify-around gap-3 min-w-[320px] h-[80vh] min-h-[580px] overflow-y-auto md:w-[440px] lg:w-[480px]">
         {mustShowVerify ? (
           <VerifyForm
-            setMustShowVerify={setMustShowVerify}
             setIsLoading={setIsLoading}
             origin="signup"
           />

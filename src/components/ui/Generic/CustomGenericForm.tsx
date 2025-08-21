@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Form,
   FormControl,
@@ -9,48 +9,61 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { useForm, DefaultValues } from "react-hook-form";
-import { ZodSchema } from "zod";
+import { useForm } from "react-hook-form";
+import type { 
+  SubmitHandler, 
+  UseFormReturn, 
+  DefaultValues, 
+  FieldValues, 
+  FieldPath, 
+  FieldPathValue 
+} from "react-hook-form";
+import type { ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInputRenderMap } from "./utils/FormInputsMap";
 
-export interface FieldConfig<T> {
-  name: keyof T;
+type BooleanFieldPath<T extends FieldValues> = {
+  [K in FieldPath<T>]: FieldPathValue<T, K> extends boolean ? K : never
+}[FieldPath<T>];
+
+export type FieldType = | "text" | "number" | "price" | "switch" 
+  | "select" | "multiple_select" | "datetime" | "password" | "email" | "checkbox";
+
+export interface FieldConfig<T extends FieldValues> {
+  name: FieldPath<T>;
   label: string;
   placeholder?: string;
-  type?:
-    | "text"
-    | "number"
-    | "price"
-    | "switch"
-    | "select"
-    | "multiple_select"
-    | "datetime"
-    | "password";
+  type?: FieldType
   options?: { label: string; value: string }[];
   disabledWhen?: {
-    field: keyof T;
+    field: BooleanFieldPath<T>;
     value: boolean;
   };
+  isLabelOnRight?: boolean;
+  labelClassName?: string;
+  itemClassName?: string;
+
 }
 
-interface GenericFormProps<T extends Record<string, any>> {
-  schema: ZodSchema<T>;
+interface GenericFormProps<T extends FieldValues> {
+  schema: ZodType<T>;
   fields: FieldConfig<T>[];
-  onSubmit: (data: T) => Promise<void>;
+  onSubmit: SubmitHandler<T>;
   onCancel?: () => void;
   submitLabel?: string;
+  submittingLabel?: string;
   cancelLabel?: string;
   defaultValues?: DefaultValues<T>;
-  form?: ReturnType<typeof useForm<T>>;
+  form?: UseFormReturn<T>;
 }
 
-function CustomGenericForm<T extends Record<string, any>>({
+function CustomGenericForm<T extends FieldValues>({
   schema,
   fields,
   onSubmit,
   onCancel,
   submitLabel = "Enviar",
+  submittingLabel = "Enviando",
   cancelLabel = "Cancelar",
   defaultValues,
   form: externalForm,
@@ -64,17 +77,14 @@ function CustomGenericForm<T extends Record<string, any>>({
 
   const handle = async (data: T) => {
     setIsLoading(true);
-    try {
-      await onSubmit(data);
-    } finally {
-      setIsLoading(false);
-    }
+    await onSubmit(data);
+    setIsLoading(false);
   };
 
   const isFieldDisabled = (field: FieldConfig<T>) => {
     if (!field.disabledWhen) return false;
     const { field: dependentField, value } = field.disabledWhen;
-    const watchedValue = form.watch(dependentField as any);
+    const watchedValue = form.watch(dependentField);
     return watchedValue === value;
   };
 
@@ -88,10 +98,10 @@ function CustomGenericForm<T extends Record<string, any>>({
           <FormField
             key={String(f.name)}
             control={form.control}
-            name={f.name as any}
+            name={f.name}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{f.label}</FormLabel>
+              <FormItem className={f.itemClassName}>
+                { !f.isLabelOnRight && <FormLabel className="w-4/5">{f.label}</FormLabel> }
                 <FormControl>
                   {FormInputRenderMap[f.type || "text"]({
                     field,
@@ -100,16 +110,19 @@ function CustomGenericForm<T extends Record<string, any>>({
                     options: f.options,
                   })}
                 </FormControl>
+                { f.isLabelOnRight && <FormLabel className={f.labelClassName}>{f.label}</FormLabel> }
+
                 <FormMessage />
               </FormItem>
             )}
           />
         ))}
 
-        <div className="flex justify-end gap-2 mt-4">
+        <div className={`grid gap-4 mt-4 w-full grid-cols-${onCancel ? 2 : 1}`}>
           {onCancel && (
             <Button
               type="button"
+              className="min-w-28"
               variant="outline"
               onClick={onCancel}
               disabled={isLoading}
@@ -117,8 +130,8 @@ function CustomGenericForm<T extends Record<string, any>>({
               {cancelLabel}
             </Button>
           )}
-          <Button type="submit" variant="yellow" disabled={isLoading}>
-            {isLoading ? "Enviando..." : submitLabel}
+          <Button type="submit" variant="yellow" className="min-w-28" disabled={isLoading}>
+            {isLoading ? submittingLabel : submitLabel}
           </Button>
         </div>
       </form>

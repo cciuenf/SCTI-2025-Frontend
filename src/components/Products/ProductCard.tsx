@@ -4,7 +4,7 @@ import { Badge } from "../ui/badge";
 import { cn, convertNumberToBRL, formatFullDate } from "@/lib/utils";
 import { Button } from "../ui/button";
 import ConfirmActionButton from "../ConfirmActionButton";
-import { ProductResponseI } from "@/types/product-interfaces";
+import type { ProductResponseI } from "@/types/product-interfaces";
 
 type Props = {
   data: ProductResponseI;

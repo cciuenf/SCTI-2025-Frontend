@@ -1,279 +1,171 @@
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useState } from "react";
-import { toast } from "sonner";
+import { type Dispatch, type SetStateAction } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
-import { Checkbox } from "../ui/checkbox";
+import { 
+  type LoginFormDataI, 
+  loginFormSchema, 
+  type SignUpFormDataI, 
+  type SignUpFormDataToSendI, 
+  signUpFormSchema 
+} from "@/schemas/auth-schema";
+import CustomGenericForm from "../ui/Generic/CustomGenericForm";
+import { runWithToast } from "@/lib/client/run-with-toast";
+import type { ActionResult } from "@/actions/_utils";
+import type { AuthCredentialsI } from "@/types/auth-interfaces";
 
 type LoginFormProps = {
   type: "Login" | "Sign Up";
-  handleLoginSubmit?: (values: {
-    email: string;
-    password: string;
-  }) => Promise<any>;
-
-  handleSignUpSubmit?: (values: {
-    name: string;
-    last_name: string;
-    email: string;
-    password: string;
-  }) => Promise<string | boolean>;
+  handleLoginSubmit?: (values: LoginFormDataI) => Promise<ActionResult<AuthCredentialsI>>;
+  handleSignUpSubmit?: (values: SignUpFormDataToSendI) => Promise<{success: boolean, data: null, message: string}>;
 
   setMustShowVerify?: Dispatch<SetStateAction<boolean>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
-const formSchema = z.object({
-  name: z.string().min(2),
-  last_name: z.string().min(2),
-  email: z.string().email(),
-  password: z.string().min(8).max(20),
-  terms: z
-    .boolean()
-    .refine((val) => val == true, "A checkbox precisa ser preenchida!"),
-});
-
-const loginFormSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8).max(20),
-});
 
 export default function LoginForm({
   type,
   handleLoginSubmit,
   handleSignUpSubmit,
-  setMustShowVerify,
   setIsLoading,
+  setMustShowVerify,
 }: LoginFormProps) {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
-  const loginForm = useForm<z.infer<typeof loginFormSchema>>({
-    resolver: zodResolver(loginFormSchema),
-    defaultValues: { email: "", password: "" },
-  });
 
-  const signForm = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      last_name: "",
-      email: "",
-      password: "",
-      terms: false,
-    },
-  });
-
-  const onSubmitSign = async (values: z.infer<typeof formSchema>) => {
+  const onSubmitSignUp = async (values: SignUpFormDataToSendI) => {
     if (!handleSignUpSubmit) return;
-
-    console.log(values.terms);
-
     setIsLoading(true);
-    const response = await handleSignUpSubmit(values);
-
-    if (typeof response === "string") {
-      toast.error(`Erro ao realizar a criação da conta`);
-      return;
-    } else {
-      toast.info("Código de verificação enviado para o e-mail cadastrado!");
-    }
+    await runWithToast(
+      handleSignUpSubmit(values),
+      {
+        loading: "Realizando o Cadastro...",
+        success: () => {
+          if(setMustShowVerify) setMustShowVerify(true);
+          return "Código de verificação enviado para o e-mail cadastrado!"
+        },
+        error: () => "Erro ao realizar a criação da conta"
+      }
+    )
     setIsLoading(false);
-
-    if (response === false && setMustShowVerify) setMustShowVerify(true);
   };
 
-  const onSubmitLogin = async (values: z.infer<typeof loginFormSchema>) => {
+  const onSubmitLogin = async (values: LoginFormDataI) => {
     if (handleLoginSubmit) {
       setIsLoading(true);
-      try {
-        const res = await handleLoginSubmit(values);
-
-        if (!res.success) {
-          const message = res.message.split(": ")[1];
-          switch (message) {
-            case "invalid password":
-              toast.error("Senha inválida!");
-              break;
-            case "record not found":
-              toast.error("Usuário não encontrado!");
-              break;
-            default:
-              toast.error("Erro interno ao fazer login!");
-          }
-        } else {
-          router.push("/profile?view=infos");
-          toast.success("Login bem-sucedido!");
+      await runWithToast(
+        handleLoginSubmit(values),
+        {
+          loading: "Realizando o Login...",
+          success: () => {
+            router.push("/profile?view=infos");
+            return "Login bem-sucedido!"
+          },
+          error: () => "Erro ao realizar o login"
         }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setTimeout(() => setIsLoading(false), 2000);
-      }
+      )
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="w-full">
       {type == "Login" ? (
-        <Form {...loginForm}>
-          <form
-            onSubmit={loginForm.handleSubmit(onSubmitLogin)}
-            className="flex flex-col gap-5 w-full items-center"
-          >
-            <FormField
-              control={loginForm.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Coloque seu email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={loginForm.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Senha</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Coloque sua senha"
-                        {...field}
-                      />
-                      <div
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-5 w-5 text-accent" />
-                        ) : (
-                          <Eye className="h-5 w-5 text-accent" />
-                        )}
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Enviar!</Button>
-          </form>
-        </Form>
+        <CustomGenericForm<LoginFormDataI> 
+          schema={loginFormSchema}
+          fields={[
+            {
+              name: "email",
+              label: "Email",
+              type: "email",
+              placeholder: "Coloque seu email",
+            },
+            {
+              name: "password",
+              label: "Senha",
+              type: "password",
+              placeholder: "Coloque sua senha",
+            },
+          ]}
+          defaultValues={{
+            email: "",
+            password: "",
+          }}
+          onSubmit={onSubmitLogin}
+          submitLabel="Realizar o Login"
+          submittingLabel="Logando..."
+        />
       ) : (
-        <Form {...signForm}>
-          <form
-            onSubmit={signForm.handleSubmit(onSubmitSign)}
-            className="flex flex-col gap-5 w-full items-center"
-          >
-            <FormField
-              control={signForm.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Coloque seu nome" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={signForm.control}
-              name="last_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Sobrenome</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Coloque seu sobrenome" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={signForm.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Coloque seu email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={signForm.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Senha</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Coloque sua senha"
-                        {...field}
-                      />
-                      <div
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-5 w-5 text-accent" />
-                        ) : (
-                          <Eye className="h-5 w-5 text-accent" />
-                        )}
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={signForm.control}
-              name="terms"
-              render={({ field }) => (
-                <FormItem className="flex gap-2 flex-wrap">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormLabel className="w-4/5">
-                    Eu estou ciente que meus dados serão compartilhados com os
-                    parceiros deste evento.
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Enviar</Button>
-          </form>
-        </Form>
+        <CustomGenericForm<SignUpFormDataI> 
+          schema={signUpFormSchema}
+          fields={[
+            {
+              name: "name",
+              label: "Nome",
+              type: "text",
+              placeholder: "Coloque seu nome",
+            },
+            {
+              name: "last_name",
+              label: "Sobrenome",
+              type: "text",
+              placeholder: "Coloque seu sobrenome",
+            },
+            {
+              name: "email",
+              label: "Email",
+              type: "email",
+              placeholder: "Coloque seu email",
+            },
+            {
+              name: "is_uenf",
+              label: "É aluno da UENF",
+              type: "switch",
+            },
+            {
+              name: "uenf_semester",
+              label: "Em que semestre você está?",
+              placeholder: "Selecione o Semestre",
+              type: "select",
+              options: [{label: "1º Semestre", value: "1"}, {label: "2 Semestre", value: "2"}],
+              disabledWhen: {
+                field: "is_uenf",
+                value: false
+              },
+            },
+            {
+              name: "password",
+              label: "Senha",
+              type: "password",
+              placeholder: "Coloque sua senha",
+            },
+            {
+              name: "confirm_password",
+              label: "Confirme sua senha",
+              type: "password",
+              placeholder: "Coloque sua senha",
+            },
+            {
+              name: "terms",
+              label: "Eu estou ciente que meus dados serão compartilhados com os parceiros deste evento.",
+              type: "checkbox",
+              isLabelOnRight: true,
+              labelClassName: "w-5/6",
+              itemClassName: "flex gap-2 flex-wrap"
+            }
+          ]}
+          defaultValues={{
+            name: "",
+            last_name: "",
+            email: "",
+            password: "",
+            confirm_password: "",
+            is_uenf: false,
+            uenf_semester: "1",
+            terms: false
+          }}
+          onSubmit={onSubmitSignUp}
+          submitLabel="Realizar o Cadastro"
+          submittingLabel="Cadastrando..."
+        />
       )}
     </div>
   );

@@ -4,7 +4,6 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -12,7 +11,6 @@ import {
 import { getAuthTokens, isEventCreator } from "@/lib/cookies";
 import { Calendar, Home, LayoutDashboard, User, FolderDot } from "lucide-react";
 
-import Image from "next/image";
 import Link from "next/link";
 import LogoutButton from "./Sidebar/LogoutButton";
 

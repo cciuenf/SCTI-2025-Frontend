@@ -2,8 +2,7 @@
 import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
 import { Payment, StatusScreen } from "@mercadopago/sdk-react";
 import type { ProductBuyDataI } from "@/schemas/product-schema";
-import { toast } from "sonner";
-import type { ProductPurchasesResponseI, ProductResponseI } from "@/types/product-interfaces";
+import type { PaymentResult, ProductResponseI } from "@/types/product-interfaces";
 import { customization } from "@/lib/paymentCustomization";
 import { useState } from "react";
 
@@ -18,20 +17,12 @@ interface Props {
   handlePaymentSelector: (
     pay: IPaymentFormData, 
     buyableProduct: ProductBuyDataI
-  ) => Promise<{state: boolean, data: ProductPurchasesResponseI | null, id: string | null }>;
+  ) => Promise<{data: PaymentResult | null, id: string | null }>;
 }
 
 export const ProductPaymentModalForm = (props: Props)  => {
   const [paymentId, setPaymentId] = useState<string | null>(null);
   
-  const onError = async (error: any) => {
-    try {
-      console.error(error);
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error);
-    }
-  };
   const handleSubmit = async (pay: IPaymentFormData) => {
     setPaymentId(null);
     const result = await props.handlePaymentSelector(pay, props.buyableProduct);
@@ -47,14 +38,12 @@ export const ProductPaymentModalForm = (props: Props)  => {
       <StatusScreen
         initialization={{paymentId: paymentId}}
         locale="pt-BR"
-        onError={onError}
       /> 
     :
       (<Payment
         initialization={{amount: props.price / 100}}
         customization={customization}
         onSubmit={handleSubmit}
-        onError={onError}
       />)
     )
   )

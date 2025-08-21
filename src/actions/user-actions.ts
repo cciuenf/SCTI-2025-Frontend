@@ -2,7 +2,7 @@
 
 import { getAuthTokens } from "@/lib/cookies";
 import { fetchWrapper } from "@/lib/fetch";
-import { UserBasicInfo } from "@/types/auth-interfaces";
+import type { UserBasicInfo } from "@/types/auth-interfaces";
 import { FetchError } from "@/types/utility-classes";
 
 export async function handleGetUsersInfo(data: {id_array: string[]}) {

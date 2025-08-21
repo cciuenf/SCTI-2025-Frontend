@@ -1,14 +1,15 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import type { Dispatch, SetStateAction} from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import QrScanner from "qr-scanner";
-import { ActivityRegistrationI } from "@/types/activity-interface";
-import { UserBasicInfo } from "@/types/auth-interfaces";
+import type { ActivityRegistrationI } from "@/types/activity-interface";
+import type { UserBasicInfo } from "@/types/auth-interfaces";
 
 interface Props {
   setSelectedUserId: Dispatch<SetStateAction<string>>;
@@ -21,10 +22,8 @@ export default function CameraComponent({
 }: Props) {
   const usersIdInActivity = userRegistrations?.map((m) => m.user_id);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isStreamActive, setIsStreamActive] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [qrScanner, setQrScanner] = useState<QrScanner | null>(null);
-  const [isScanning, setIsScanning] = useState<boolean>();
 
   const isMobile = useIsMobile();
 
@@ -56,26 +55,29 @@ export default function CameraComponent({
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
-        setIsStreamActive(true);
 
         initQrScanner();
       }
-    } catch (err: any) {
-      switch (err.name) {
-        case "NotAllowedError":
-          toast.error(
-            "Permissão de câmera negada. Permita o acesso e tente novamente."
-          );
-          break;
-        case "NotFoundError":
-          toast.error("Nenhuma câmera encontrada.");
-          break;
-        case "NotSupportedError":
-          toast.error("Câmera não suportada no navegador.");
-          break;
-        default:
-          toast.error("Erro ao acessar a câmera, verifique as permissões.");
-      }
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "name" in err) {
+        const errorName = (err as { name: string }).name;
+        switch (errorName) {
+          case "NotAllowedError":
+            toast.error(
+              "Permissão de câmera negada. Permita o acesso e tente novamente."
+            );
+            break;
+          case "NotFoundError":
+            toast.error("Nenhuma câmera encontrada.");
+            break;
+          case "NotSupportedError":
+            toast.error("Câmera não suportada no navegador.");
+            break;
+          default:
+            toast.error("Erro ao acessar a câmera, verifique as permissões.");
+        }
+      } else toast.error("Erro desconhecido ao acessar a câmera.");
+      
     }
   };
 
@@ -100,7 +102,6 @@ export default function CameraComponent({
           scanner
             .start()
             .then(() => {
-              setIsScanning(true);
               console.log("Scanner de QR code iniciado");
 
               Object.defineProperty(document, "hidden", {
@@ -118,14 +119,11 @@ export default function CameraComponent({
                 document.dispatchEvent(new Event("visibilitychange"));
               }, 100);
             })
-            .catch((error) => {
+            .catch(() => {
               toast.error("Erro ao iniciar o scanner de QR code");
-              // Fallback: tentar novamente com configurações mais básicas
               setTimeout(() => initBasicScanner(), 1000);
             });
-        } else {
-          toast.error("Nenhuma câmera foi encontrada no dispositivo");
-        }
+        } else toast.error("Nenhuma câmera foi encontrada no dispositivo");
       });
     }
   };
@@ -148,7 +146,6 @@ export default function CameraComponent({
       scanner
         .start()
         .then(() => {
-          setIsScanning(true);
           toast.info("Scanner iniciado em modo básico");
         })
         .catch((error) => {
@@ -165,7 +162,6 @@ export default function CameraComponent({
       qrScanner.stop();
       qrScanner.destroy();
       setQrScanner(null);
-      setIsScanning(false);
     }
 
     setIsDialogOpen(false);
@@ -189,7 +185,6 @@ export default function CameraComponent({
       qrScanner.stop();
       qrScanner.destroy();
       setQrScanner(null);
-      setIsScanning(false);
     }
 
     if (videoRef.current && videoRef.current.srcObject) {
@@ -198,7 +193,6 @@ export default function CameraComponent({
 
       tracks.forEach((track) => track.stop());
       videoRef.current.srcObject = null;
-      setIsStreamActive(false);
     }
   };
 

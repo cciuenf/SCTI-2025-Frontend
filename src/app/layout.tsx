@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
-import { fontClass } from "@/lib/fonts";
-import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { SiteSidebar } from "@/components/SiteSidebar";
+import { fontClass } from "@/lib/fonts";
+
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "SCTI - 2025",

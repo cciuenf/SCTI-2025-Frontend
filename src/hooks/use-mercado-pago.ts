@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
 import { handleBuyProduct, handleBuyProductPix } from "@/actions/product-actions";
-import { toast } from "sonner";
 import type { ProductResponseI } from "@/types/product-interfaces";
-import { ProductBuyDataI } from "@/schemas/product-schema";
+import type { ProductBuyDataI } from "@/schemas/product-schema";
+import { runWithToast } from "@/lib/client/run-with-toast";
 
 const useMercadoPago = () => {
   useEffect(() => {
@@ -17,8 +17,9 @@ const useMercadoPago = () => {
     product: ProductResponseI | undefined,
     buyableProduct: ProductBuyDataI,
   ) {
-    if(product === undefined) return { state: false, data: null, id: null, preferenceId: null };
-    if(pay.paymentType === "bank_transfer") return await performMercadoPagoPix(slug, product, buyableProduct);
+    if(product === undefined) return { data: null, id: null };
+    if(pay.paymentType === "bank_transfer") 
+      return await performMercadoPagoPix(slug, product, buyableProduct);
     return await performMercadoPagoTransaction(pay, slug, product, buyableProduct);
   }
 
@@ -27,23 +28,21 @@ const useMercadoPago = () => {
     product: ProductResponseI,
     buyableProduct: ProductBuyDataI
   ) {
-    try {
-      const result = await handleBuyProductPix(
+    const res = await runWithToast(
+      handleBuyProductPix(
         {
           ...buyableProduct, 
-          product_id: product.ID
+          product_id: product.ID,
         },
         slug
-      );
-      if (result?.success && result.data) {
-        toast.success(`Produto comprado com sucesso!`);
-        return { state: true, data: null, id: result.data.id };
+      ),
+      {
+        loading: 'Processando a compra...',
+        success: () => "QR Code gerado com sucesso!",
+        error: () => "Erro ao tentar gerar o produto",
       }
-    } catch (error) {
-      toast.error(`Erro ao comprar o produto: ${product.name}`);
-      console.error("Erro ao comprar o produto:", error);
-    }
-    return { state: false, data: null, id: null };
+    );
+    return { data: res.data, id: res.data?.id || null };
   }
 
   async function performMercadoPagoTransaction(
@@ -52,8 +51,8 @@ const useMercadoPago = () => {
     product: ProductResponseI,
     buyableProduct: ProductBuyDataI
   ) {
-    try {
-      const result = await handleBuyProduct(
+    const res = await runWithToast(
+      handleBuyProduct(
         {
           ...buyableProduct, 
           product_id: product.ID,
@@ -63,19 +62,14 @@ const useMercadoPago = () => {
           payment_method_type: pay.paymentType
         },
         slug
-      );
-      if (result?.success && result.data) {
-        toast.success(`Produto comprado com sucesso!`);
-        // const url = result.data.purchase_resource.transactions.payments[0].payment_method.ticket_url;
-        // const subArray = url.split("/");
-        // const id = subArray[subArray.indexOf("payments") + 1];
-        return { state: true, data: result.data.purchase, id: null };
+      ),
+      {
+        loading: 'Processando a compra...',
+        success: () => "Produto comprado com sucesso!",
+        error: () => "Erro ao tentar comprar o produto",
       }
-    } catch (error) {
-      toast.error(`Erro ao comprar o produto: ${product.name}`);
-      console.error("Erro ao comprar o produto:", error);
-    }
-    return { state: false, data: null, id: null };
+    );
+    return { data: res.data?.purchase || null, id: null };
   }
 
   return { selectPaymentMethod };

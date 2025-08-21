@@ -4,9 +4,7 @@ import { PenIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import ForgotPasswordForm from "../Auth/ForgotPasswordForm";
 
-type Props = {};
-
-const ChangePasswordModal = (props: Props) => {
+const ChangePasswordModal = () => {
   const [open, setOpen] = useState(false);
 
   return (

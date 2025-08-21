@@ -1,17 +1,17 @@
 import ChangePasswordForm from "@/components/Auth/ChangePasswordForm";
 import { redirect } from "next/navigation";
 
-type Props = {
-  searchParams?: { token?: string };
-};
+interface Props {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
 
-const ChangePasswordPage = ({ searchParams }: Props) => {
-  const token = searchParams?.token ?? "";
-
+const ChangePasswordPage = async ({searchParams}: Props) => {
+  const token = (await searchParams).token as string || "";
   if (!token || token.length < 50) redirect("/");
   
   return (
     <div className="h-screen flex items-center justify-center">
+      <ChangePasswordForm token={token} />
       <ChangePasswordForm token={token} />
     </div>
   );

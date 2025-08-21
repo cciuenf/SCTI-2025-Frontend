@@ -2,204 +2,81 @@
 
 import { getAuthTokens } from "@/lib/cookies";
 import { fetchWrapper } from "@/lib/fetch";
-import { ProductCreationDataI } from "@/schemas/product-schema";
-import { ProductBuyCredentialsI, ProductPurchasesResourceResponseI, ProductPurchasesResponseI, ProductResponseI, UserTokensResponseI } from "@/types/product-interfaces";
+import type { ProductCreationDataI } from "@/schemas/product-schema";
+import type { 
+  ProductBuyCredentialsI, 
+  ProductPixPurchaseResponseI, 
+  ProductPurchasesResourceResponseI, 
+  ProductPurchasesResponseI, 
+  ProductResponseI, 
+  UserTokensResponseI 
+} from "@/types/product-interfaces";
 import { FetchError } from "@/types/utility-classes";
+import { actionRequest } from "./_utils";
 
 
 export async function handleCreateProduct(data: ProductCreationDataI, slug: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
-  try {
-    const res = await fetchWrapper<ProductResponseI>(`/events/${slug}/product`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro na criação do produto", error.message);
-      return { status: error.status, success: false };
-    } else {
-      console.error("Erro na criação do produto", error);
-      return { message: "Erro desconhecido", success: false };
-    }
-  }
+  return actionRequest<ProductCreationDataI, ProductResponseI>(`/events/${slug}/product`, {
+    method: "POST",
+    body: data,
+  });
 }
 
-export async function handleUpdateProduct(data: Partial<ProductCreationDataI>, slug: string, product_id: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
-
-  try {
-    const res = await fetchWrapper<ProductResponseI>(`/events/${slug}/product`, {
+export async function handleUpdateProduct(
+  data: Partial<ProductCreationDataI>, 
+  slug: string, 
+  product_id: string
+) {
+  return actionRequest<{product: Partial<ProductCreationDataI>, product_id: string},
+    ProductResponseI>(`/events/${slug}/product`, 
+    {
       method: "PATCH",
-      body: JSON.stringify({product: data, product_id: product_id}),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao atualizar o produto", error.message);
-      return { success: false };
-    } else {
-      console.error("Erro desconhecido ao atualizar o produto", error);
-      return { success: false };
+      body: { product: data, product_id: product_id },
     }
-  }
+  );
 }
 
 export async function handleDeleteProduct(data: { product_id: string }, slug: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
-  try {
-    const res = await fetchWrapper<ProductResponseI>(`/events/${slug}/product`, {
-      method: "DELETE",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao excluir o produto", error.message);
-      return { success: false };
-    } else {
-      console.error("Erro desconhecido ao excluir o evento", error);
-      return { success: false };
-    }
-  }
+  return actionRequest<{ product_id: string }, ProductResponseI>(`/events/${slug}/product`, {
+    method: "DELETE",
+    body: data,
+  });
 }
 
 export async function handleGetAllEventProducts(slug: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
-  try {
-    const res = await fetchWrapper<ProductResponseI[]>(`/events/${slug}/products`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data, message: res.result.message };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao resgatar os produtos", error.message);
-      return { status: error.status, data: [], success: false };
-    } else {
-      console.error("Erro desconhecido ao resgatar os produtos", error);
-      return { message: "Erro desconhecido", data: [], success: false };
-    }
-  }
+  return actionRequest<null, ProductResponseI[]>(`/events/${slug}/products`);
 }
 
 export async function handleBuyProduct(data: ProductBuyCredentialsI, slug: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
-
-  try {
-    const res = await fetchWrapper<{
-      purchase: ProductPurchasesResponseI, 
+  return actionRequest<ProductBuyCredentialsI, 
+    { 
+      purchase: ProductPurchasesResponseI 
       purchase_resource: ProductPurchasesResourceResponseI
-    }>(`/events/${slug}/purchase`, {
+    }>(`/events/${slug}/purchase`, 
+    {
       method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao comprar o produto", error.message);
-      return { success: false, message: error.message };
-    } else {
-      console.error("Erro desconhecido ao comprar o produto", error);
-      return { success: false, message: "Erro desconhecido ao tentar comprar produto!" };
+      body: data,
     }
-  }
+  );
 }
 
 export async function handleBuyProductPix(data: ProductBuyCredentialsI, slug: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
-
-  try {
-    const res = await fetchWrapper<any>(`/events/${slug}/forced-pix`, {
+  return actionRequest<ProductBuyCredentialsI, ProductPixPurchaseResponseI>
+  (
+    `/events/${slug}/forced-pix`, 
+    {
       method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao comprar o produto via pix", error.message);
-      return { success: false, message: error.message };
-    } else {
-      console.error("Erro desconhecido ao comprar o produto via pix", error);
-      return { success: false, message: "Erro desconhecido ao tentar comprar produto via pix!" };
+      body: data,
     }
-  }
+  );
 }
 
 export async function handleGetAllUserProducts() {
-  const { accessToken, refreshToken } = await getAuthTokens();
-  try {
-    const res = await fetchWrapper<ProductResponseI[]>(`/user-products`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data, message: res.result.message };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao resgatar os produtos", error.message);
-      return { status: error.status, data: [], success: false };
-    } else {
-      console.error("Erro desconhecido ao resgatar os produtos", error);
-      return { message: "Erro desconhecido", data: [], success: false };
-    }
-  }
+  return actionRequest<null, ProductResponseI[]>("/user-products");
 }
 
 export async function handleGetAllUserProductsPurchases() {
-  const { accessToken, refreshToken } = await getAuthTokens();
-  try {
-    const res = await fetchWrapper<ProductPurchasesResponseI[]>(`/user-purchases`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data, message: res.result.message };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao resgatar as compras", error.message);
-      return { status: error.status, data: [], success: false };
-    } else {
-      console.error("Erro desconhecido ao resgatar as compras", error);
-      return { message: "Erro desconhecido", data: [], success: false };
-    }
-  }
+  return actionRequest<null, ProductPurchasesResponseI[]>("/user-purchases");
 }
 
 export async function handleGetAllUserTokens() {

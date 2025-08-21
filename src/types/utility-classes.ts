@@ -1,4 +1,4 @@
-import { ErrorResponseI } from "./utility-interfaces";
+import type { ErrorResponseI } from "./utility-interfaces";
 
 export class FetchError extends Error {
   errorR: ErrorResponseI | null

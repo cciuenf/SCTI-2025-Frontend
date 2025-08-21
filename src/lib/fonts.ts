@@ -1,11 +1,6 @@
-import { Inter, Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { cn } from "@/lib/utils";
-
-// const inter = Inter({
-//   weight: ["400", "500", "600"],
-//   subsets: ["latin"]
-// })
 
 const spartan = localFont({
   src: "./fonts/LeagueSpartan.ttf",

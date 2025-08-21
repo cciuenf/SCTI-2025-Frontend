@@ -1,6 +1,7 @@
 "use client";
 import Autoplay from "embla-carousel-autoplay"
-import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "../ui/carousel"
+import type { CarouselApi} from "../ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel"
 import Fade from "embla-carousel-fade"
 import { Button } from "../ui/button"
 import Image from "next/image"

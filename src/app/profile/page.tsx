@@ -2,7 +2,7 @@ import ProfileTabs from "@/components/Profile/ProfileTabs";
 import ProfileInfos from "@/components/Profile/ProfileInfos";
 
 import { cookies } from "next/headers";
-import {
+import type {
   UserAccessTokenJwtPayload,
   UserRefreshTokenJwtPayload,
 } from "@/types/auth-interfaces";
@@ -11,11 +11,11 @@ import { handleGetUserDeviceInfos } from "@/actions/auth-actions";
 import Connector from "@/components/ui/Generic/Connector";
 
 type Props = {
-  searchParams: { view: string };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 };
 
-const page = async ({ searchParams }: Props) => {
-  const params = await searchParams;
+const ProfilePage = async ({ searchParams }: Props) => {
+  const view = (await searchParams).view as string || "infos";
 
   const cookieStore = cookies();
   const access_token = (await cookieStore).get("access_token")?.value;
@@ -38,7 +38,7 @@ const page = async ({ searchParams }: Props) => {
         <ProfileInfos
           user_access_info={user_access_info}
           user_refresh_info={user_refresh_info}
-          currentView={params.view}
+          currentView={view}
           deviceInfos={deviceInfos.data}
         />
       </div>
@@ -46,4 +46,4 @@ const page = async ({ searchParams }: Props) => {
   );
 };
 
-export default page;
+export default ProfilePage;

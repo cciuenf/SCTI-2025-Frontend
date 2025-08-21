@@ -148,26 +148,26 @@
     @apply bg-background text-foreground;
   }
 
-  body.scrollbar-unvisible::-webkit-scrollbar {
+  .scrollbar-unvisible::-webkit-scrollbar {
     @apply w-0 duration-200;
   }
 
 
-  body::-webkit-scrollbar {
+  ::-webkit-scrollbar {
     @apply w-2;
     @apply duration-200;
   }
 
-  body::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     @apply bg-secondary;
     @apply transition-colors;
   }
 
-  body::-webkit-scrollbar-thumb {
+  ::-webkit-scrollbar-thumb {
     @apply bg-accent;
   }
 
-  body[data-scroll-locked] {
+  [data-scroll-locked] {
     @apply !mr-0 !overflow-auto;
   }
 }

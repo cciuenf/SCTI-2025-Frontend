@@ -4,7 +4,7 @@ import { cn, formatEventTimeRange } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { formatEventDateRange } from "@/lib/utils";
 import ConfirmActionButton from "../ConfirmActionButton";
-import { ActivityResponseI } from "@/types/activity-interface";
+import type { ActivityResponseI } from "@/types/activity-interface";
 
 type Props = {
   data: ActivityResponseI;
@@ -120,7 +120,7 @@ const ActivityCard = ({
           </div>
         </div>
 
-        <h2 className="font-bold text-lg mb-0">{data.name}</h2>
+        <h2 className="w-full font-bold text-lg truncate" title={data.name}>{data.name}</h2>
 
         <div className="flex justify-between items-center">
           <Calendar className="text-accent h-4 w-4 mr-2.5" />

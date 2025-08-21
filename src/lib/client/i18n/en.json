@@ -1,0 +1,35 @@
+{
+  "error registering to event: user already registered to this event":
+    "O usuário já está registrado neste evento",
+  "error unregistering from event: user is not registered to this event":
+    "O usuário não está registrado neste evento",
+  "unregistered from event": "Desregistrado do evento",
+  "registered to event": "Registrado no evento",
+  "deleted activity": "Atividade apagada",
+  "user must be registered to the event first":
+    "O usuário deve estar registrado no evento primeiro",
+  "registered to activity successfully": "Registrado na atividade com sucesso",
+  "registered to standalone activity successfully":
+    "Registrado na atividade independente com sucesso",
+  "unregistered from activity successfully": "Desregistrado da atividade com sucesso",
+  "unregistered from standalone activity successfully":
+    "Desregistrado da atividade independente com sucesso",
+  "error creating activity: activity must be scheduled within event timeframe":
+    "A atividade deve ser agendada dentro do período do evento",
+  "error updating activity: activity must be scheduled within event timeframe":
+    "A atividade deve ser agendada dentro do período do evento",
+  "attendance marked successfully": "Presença marcada com sucesso",
+  "attendance removed successfully": "Presença removida com sucesso",
+  "error unregistering from activity: user has already attended this activity":
+    "O usuário já participou desta atividade",
+  "deleted product": "Produto apagado",
+  "error processing purchase: payment method id is required": "Método de pagamento é obrigatório",
+  "error starting pix purchase: product has expired": "O produto expirou",
+  "error updating product: product can't expire after event end date":
+    "O produto não pode expirar após a data de término do evento",
+  "error registering to activity: user has another activity registered at the same time that is not palestra":
+    "O usuário já tem outra atividade registrada no mesmo horário que não é palestra",
+  "refresh token revoked successfully": "Permissão de Login revogado com sucesso",
+  "error registering user: user already exists": "Usuário já existe",
+  "error registering to activity: user must be registered to the event first": "O usuário precisa estar registrado no evento"
+}

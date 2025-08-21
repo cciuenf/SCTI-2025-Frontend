@@ -5,9 +5,10 @@ import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useUserEvents } from "@/contexts/UserEventsProvider";
 import LoadingSpinner from "../Loading/LoadingSpinner";
-import { EventResponseI } from "@/types/event-interfaces";
+import type { EventResponseI } from "@/types/event-interfaces";
 import EventModalForm from "./EventModalForm";
 import { useState } from "react";
+import { redirect } from "next/navigation";
 
 interface Props {
   isEventCreator: boolean;
@@ -16,10 +17,18 @@ interface Props {
 
 const EventManagementActions = ({ isEventCreator, event }: Props) => {
   const [isEditEventModalOpen, setIsEventModalOpen] = useState(false);
-  const { myEvents, allEvents, handleRegister, handleUnregister, loading, handleEventUpdate } = useUserEvents();
+  const [isLoadingRegisterState, setIsLoadingRegisterState] = useState(false);
+  const { 
+    myEvents, 
+    allEvents, 
+    handleRegister, 
+    handleUnregister, 
+    isLoading, 
+    handleEventUpdate 
+  } = useUserEvents();
   const updatedEvent = allEvents.find(e => e.Slug === event.Slug) || event;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="w-full max-w-5xl mt-6">
         <LoadingSpinner />
@@ -29,10 +38,13 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
 
   const isSubscribed = myEvents.find(e => e.Slug === updatedEvent.Slug);
 
-  const handleRegisterState = async (e: React.MouseEvent) => {
+  const handleRegisterState = async () => {
     if (!handleRegister || !handleUnregister) return;
+    setIsLoadingRegisterState(true);
     if (isSubscribed) await handleUnregister(updatedEvent.Slug);
     else await handleRegister(updatedEvent.Slug);
+    setIsLoadingRegisterState(false);
+    redirect('/events/' + updatedEvent.Slug);
   };
 
   return(
@@ -61,6 +73,7 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
             : "bg-accent text-secondary hover:text-accent hover:bg-secondary"
         )}
         title={isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
+        disabled={isLoadingRegisterState}
       >
         {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
       </Button>
