@@ -139,7 +139,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -166,7 +166,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -193,7 +193,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -220,7 +220,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -247,7 +247,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -274,7 +274,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -284,11 +284,17 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
           </div>
           <Button ref={verifyRef}>Verificar</Button>
           {origin == "signup" ? (
-            <Button type="button" variant={"outline"} onClick={() => verifyAfter()}>
+            <Button
+              type="button"
+              variant={"outline"}
+              onClick={() => verifyAfter()}
+            >
               Deixar para depois
             </Button>
           ) : (
-            <Button type="button" onClick={resendVerifyToken}>Reenviar Código</Button>
+            <Button type="button" onClick={resendVerifyToken}>
+              Reenviar Código
+            </Button>
           )}
         </form>
       </Form>

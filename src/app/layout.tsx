@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "SCTI - 2025",
   description: "Front-end da plataforma a ser usado na SCTI-2025",
   icons: {
-    icon: "/SCT.svg",
+    icon: "/SCTI.png",
   },
 };
 
@@ -19,17 +19,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body className={`${fontClass} antialiased min-h-screen bg-background`}>
         <SidebarProvider defaultOpen={false}>
           <SiteSidebar />
-          <SidebarTrigger className="fixed top-4 left-4 z-[60] shadow-md bg-white rounded-full"/>
+          <SidebarTrigger className="fixed top-4 left-4 z-[60] shadow-md bg-white rounded-full" />
           <Toaster
-            position="top-right"
+            position="bottom-right"
             richColors
             theme="light"
             closeButton
             duration={5000}
           />
-          <main className="overflow-x-hidden w-full">
-            {children}
-          </main>
+          <main className="overflow-x-hidden w-full">{children}</main>
         </SidebarProvider>
       </body>
     </html>

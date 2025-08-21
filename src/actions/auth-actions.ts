@@ -29,10 +29,12 @@ export async function handleLoginSubmit({
       res.result.data.access_token,
       res.result.data.refresh_token
     );
-    return { success: true };
+    console.log()
+    return { success: true, message: res.result.message };
   } catch (err: unknown) {
     if (err instanceof FetchError) {
-      return err.message, err.status;
+      console.error(err.message)
+      return {success: false, message: err.message}
     } else {
       console.error("Erro ao realizar o login: ", err);
       return "Erro desconhecido ao realizar o login";
@@ -68,7 +70,7 @@ export async function handleSignUp({
     );
   } catch (err: unknown) {
     if (err instanceof FetchError) {
-      console.error("Erro ao realizar o login: ", err.message);
+      console.error("Erro ao criar conta: ", err.message);
       return err.message;
     } else {
       console.error("Erro ao realizar o login: ", err);

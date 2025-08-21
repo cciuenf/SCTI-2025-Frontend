@@ -41,7 +41,9 @@ const formSchema = z.object({
   last_name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(8).max(20),
-  // terms: z.boolean().refine((val) => val === true, "A checkbox precisa ser preenchida!"),
+  terms: z
+    .boolean()
+    .refine((val) => val == true, "A checkbox precisa ser preenchida!"),
 });
 
 const loginFormSchema = z.object({
@@ -70,12 +72,14 @@ export default function LoginForm({
       last_name: "",
       email: "",
       password: "",
-      // terms: false,
+      terms: false,
     },
   });
 
   const onSubmitSign = async (values: z.infer<typeof formSchema>) => {
     if (!handleSignUpSubmit) return;
+
+    console.log(values.terms);
 
     setIsLoading(true);
     const response = await handleSignUpSubmit(values);
@@ -96,17 +100,27 @@ export default function LoginForm({
       setIsLoading(true);
       try {
         const res = await handleLoginSubmit(values);
+
         if (!res.success) {
-          toast.error("Erro ao realizar login");
+          const message = res.message.split(": ")[1];
+          switch (message) {
+            case "invalid password":
+              toast.error("Senha inválida!");
+              break;
+            case "record not found":
+              toast.error("Usuário não encontrado!");
+              break;
+            default:
+              toast.error("Erro interno ao fazer login!");
+          }
         } else {
           router.push("/profile?view=infos");
           toast.success("Login bem-sucedido!");
-          setIsLoading(false);
         }
       } catch (error) {
         console.error(error);
       } finally {
-        setIsLoading(false);
+        setTimeout(() => setIsLoading(false), 2000);
       }
     }
   };
@@ -238,13 +252,16 @@ export default function LoginForm({
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={signForm.control}
               name="terms"
               render={({ field }) => (
                 <FormItem className="flex gap-2 flex-wrap">
                   <FormControl>
-                    <Checkbox id="terms" />
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
                   </FormControl>
                   <FormLabel className="w-4/5">
                     Eu estou ciente que meus dados serão compartilhados com os
@@ -253,7 +270,7 @@ export default function LoginForm({
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
             <Button type="submit">Enviar</Button>
           </form>
         </Form>

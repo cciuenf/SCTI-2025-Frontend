@@ -45,11 +45,6 @@ export async function SiteSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="items-center">
-        <Link href="/" className="hover:opacity-90 duration-200">
-          <Image src="/SCT.svg" width={200} height={150} alt="SCT logo" />
-        </Link>
-      </SidebarHeader>
       <SidebarContent className="justify-between">
         <div>
           <SidebarGroup>
