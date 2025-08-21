@@ -102,7 +102,7 @@ export default function LoginForm({
         const res = await handleLoginSubmit(values);
 
         if (!res.success) {
-          const message = res.message.split(": ")[1]
+          const message = res.message.split(": ")[1];
           switch (message) {
             case "invalid password":
               toast.error("Senha inválida!");
@@ -116,12 +116,11 @@ export default function LoginForm({
         } else {
           router.push("/profile?view=infos");
           toast.success("Login bem-sucedido!");
-          setIsLoading(false);
         }
       } catch (error) {
         console.error(error);
       } finally {
-        setIsLoading(false);
+        setTimeout(() => setIsLoading(false), 2000);
       }
     }
   };

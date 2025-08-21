@@ -16,25 +16,39 @@ export default function Login() {
   const [hasForgottedPassword, setHasForgottedPassword] =
     useState<boolean>(false);
 
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <Loader2 className="animate-spin w-15 h-15 text-yellow-300" />
+      </div>
+    );
+  }
+
+  if (hasForgottedPassword) {
+    return (
+      <div className="w-full h-screen flex flex-col justify-center items-center gap-3">
+        <div className="border-1 border-primary shadow-xs p-5 rounded-md flex flex-col items-center justify-around gap-3 w-[320px] h-[580px] md:w-[440px] lg:w-[480px]">
+          <h2 className="text-2xl md:text-3xl lg:text-3xl">Recuperar Senha</h2>
+          <p className="text-sm md:text-base lg:text-base">
+            Parece que você se esqueceu da sua senha, para recuperá-la, coloque
+            seu endereço de e-mail no campo abaixo:
+          </p>
+          <ForgotPasswordForm />
+          <p
+            className="cursor-pointer underline"
+            onClick={() => setHasForgottedPassword(false)}
+          >
+            Voltar para a tela de login
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center gap-3">
       <div className="border-1 border-primary shadow-xs p-5 rounded-md flex flex-col items-center justify-around gap-3 w-[320px] h-[580px] md:w-[440px] lg:w-[480px]">
-        {hasForgottedPassword ? (
-          <>
-            <h2 className="text-2xl md:text-3xl lg:text-3xl">Recuperar Senha</h2>
-            <p className="text-sm md:text-base lg:text-base">
-              Parece que você se esqueceu da sua senha, para recuperá-la,
-              coloque seu endereço de e-mail no campo abaixo:
-            </p>
-            <ForgotPasswordForm/>
-            <p
-              className="cursor-pointer underline"
-              onClick={() => setHasForgottedPassword(false)}
-            >
-              Voltar para a tela de login
-            </p>
-          </>
-        ) : mustShowVerify ? (
+        {mustShowVerify ? (
           <VerifyForm
             setMustShowVerify={setMustShowVerify}
             setIsLoading={setIsLoading}
@@ -63,11 +77,11 @@ export default function Login() {
                 <h2>Inscreva-se</h2>
               </div>
             </div>
-            {isLoading ? (
-              <Loader2 className="animate-spin w-10 h-10 text-yellow-300" />
-            ) : isLogin ? (
+            {isLogin ? (
               <>
-                <h2 className="text-2xl md:text-3xl lg:text-3xl">Faça seu Login!</h2>
+                <h2 className="text-2xl md:text-3xl lg:text-3xl">
+                  Faça seu Login!
+                </h2>
                 <LoginForm
                   key="login-form"
                   type={"Login"}
@@ -84,7 +98,9 @@ export default function Login() {
               </>
             ) : (
               <>
-                <h2 className="text-2xl md:text-3xl lg:text-3xl">Crie sua conta!</h2>
+                <h2 className="text-2xl md:text-3xl lg:text-3xl">
+                  Crie sua conta!
+                </h2>
 
                 <LoginForm
                   type={"Sign Up"}

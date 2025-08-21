@@ -25,7 +25,7 @@ const SlugEventPage = async (props: Props) => {
 
   return (
     <Connector className="flex flex-col mx-auto items-center justify-center !mt-20 text-center">
-      <h1 className="xl:text-6xl text-4xl font-bold">{ eventRes?.data.Name }</h1>
+      <h1 className="xl:text-6xl text-4xl font-bold mt-20">{ eventRes?.data.Name }</h1>
       <div className="w-full flex mt-4 mb-6 justify-center items-center flex-col gap-2 xs:flex-row xs:gap-10 px-4 text-sm">
         <p className="flex items-center gap-2">
           <Calendar className="text-accent" size={16} />
