@@ -39,59 +39,14 @@ export async function handleLogout() {
 }
 
 export async function handleGetRefreshTokens() {
-  try {
-    const { accessToken, refreshToken } = await getAuthTokens();
-    const res = await fetchWrapper<RefreshTokenI[]>("refresh-tokens", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return {
-      success: true,
-      data: res.result.data,
-      message: res.result.message,
-    };
-  } catch (err: unknown) {
-    if (err instanceof FetchError) {
-      console.error("Erro ao resgatar os tokens: ", err.message);
-      return { success: false, data: [], message: err.message };
-    } else {
-      console.error("Erro ao resgatar os tokens: ", err);
-      return {
-        success: false,
-        data: [],
-        message: "Erro desconhecido ao resgatar os tokens",
-      };
-    }
-  }
+  return await actionRequest<null, RefreshTokenI[]>("/refresh-tokens");
 }
 
 export async function handleRevokeToken(token: string) {
-  try {
-    const { accessToken, refreshToken } = await getAuthTokens();
-    const res = await fetchWrapper("revoke-refresh-token", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-      body: JSON.stringify({ refresh_token: token }),
-    });
-    return res.result;
-  } catch (err: unknown) {
-    if (err instanceof FetchError) {
-      console.error("Erro ao resgatar os tokens: ", err.message);
-      return { success: false, message: "Não foi possível remover o token" };
-    } else {
-      console.error("Erro ao resgatar os tokens: ", err);
-      return {
-        success: false,
-        message: "Erro desconhecido ao resgatar os tokens",
-      };
-    }
-  }
+  return await actionRequest<{ refresh_token: string }, null>("/revoke-refresh-token", { 
+    method: "POST", 
+    body: { refresh_token: token }
+  });
 }
 
 export async function handleVerifyTokens(): Promise<{

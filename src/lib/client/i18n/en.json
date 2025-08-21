@@ -28,5 +28,6 @@
   "error updating product: product can't expire after event end date":
     "O produto não pode expirar após a data de término do evento",
   "error registering to activity: user has another activity registered at the same time that is not palestra":
-    "O usuário já tem outra atividade registrada no mesmo horário que não é palestra"
+    "O usuário já tem outra atividade registrada no mesmo horário que não é palestra",
+  "refresh token revoked successfully": "Permissão de Login revogado com sucesso"
 }
