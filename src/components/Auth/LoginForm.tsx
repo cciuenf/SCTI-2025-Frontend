@@ -1,27 +1,21 @@
 import { type Dispatch, type SetStateAction } from "react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { 
   type LoginFormDataI, 
   loginFormSchema, 
   type SignUpFormDataI, 
+  type SignUpFormDataToSendI, 
   signUpFormSchema 
 } from "@/schemas/auth-schema";
 import CustomGenericForm from "../ui/Generic/CustomGenericForm";
+import { runWithToast } from "@/lib/client/run-with-toast";
+import type { ActionResult } from "@/actions/_utils";
+import type { AuthCredentialsI } from "@/types/auth-interfaces";
 
 type LoginFormProps = {
   type: "Login" | "Sign Up";
-  handleLoginSubmit?: (values: {
-    email: string;
-    password: string;
-  }) => Promise<{ success: boolean; [key: string]: unknown }>;
-
-  handleSignUpSubmit?: (values: {
-    name: string;
-    last_name: string;
-    email: string;
-    password: string;
-  }) => Promise<string | boolean>;
+  handleLoginSubmit?: (values: LoginFormDataI) => Promise<ActionResult<AuthCredentialsI>>;
+  handleSignUpSubmit?: (values: SignUpFormDataToSendI) => Promise<{success: boolean, data: null, message: string}>;
 
   setMustShowVerify?: Dispatch<SetStateAction<boolean>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
@@ -32,45 +26,43 @@ export default function LoginForm({
   type,
   handleLoginSubmit,
   handleSignUpSubmit,
-  setMustShowVerify,
   setIsLoading,
+  setMustShowVerify,
 }: LoginFormProps) {
   const router = useRouter();
 
-  const onSubmitSignUp = async (values: SignUpFormDataI) => {
+  const onSubmitSignUp = async (values: SignUpFormDataToSendI) => {
     if (!handleSignUpSubmit) return;
-
     setIsLoading(true);
-    const response = await handleSignUpSubmit(values);
-
-    if (typeof response === "string") {
-      toast.error(`Erro ao realizar a criação da conta`);
-      return;
-    } else {
-      toast.info("Código de verificação enviado para o e-mail cadastrado!");
-    }
+    await runWithToast(
+      handleSignUpSubmit(values),
+      {
+        loading: "Realizando o Cadastro...",
+        success: () => {
+          if(setMustShowVerify) setMustShowVerify(true);
+          return "Código de verificação enviado para o e-mail cadastrado!"
+        },
+        error: () => "Erro ao realizar a criação da conta"
+      }
+    )
     setIsLoading(false);
-
-    if (response === false && setMustShowVerify) setMustShowVerify(true);
   };
 
   const onSubmitLogin = async (values: LoginFormDataI) => {
     if (handleLoginSubmit) {
       setIsLoading(true);
-      try {
-        const res = await handleLoginSubmit(values);
-        if (!res.success) {
-          toast.error("Erro ao realizar login");
-        } else {
-          router.push("/profile?view=infos");
-          toast.success("Login bem-sucedido!");
-          setIsLoading(false);
+      await runWithToast(
+        handleLoginSubmit(values),
+        {
+          loading: "Realizando o Login...",
+          success: () => {
+            router.push("/profile?view=infos");
+            return "Login bem-sucedido!"
+          },
+          error: () => "Erro ao realizar o login"
         }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
+      )
+      setIsLoading(false);
     }
   };
 
@@ -124,17 +116,51 @@ export default function LoginForm({
               placeholder: "Coloque seu email",
             },
             {
+              name: "is_uenf",
+              label: "É aluno da UENF",
+              type: "switch",
+            },
+            {
+              name: "uenf_semester",
+              label: "Em que semestre você está?",
+              placeholder: "Selecione o Semestre",
+              type: "select",
+              options: [{label: "1º Semestre", value: "1"}, {label: "2 Semestre", value: "2"}],
+              disabledWhen: {
+                field: "is_uenf",
+                value: false
+              },
+            },
+            {
               name: "password",
               label: "Senha",
               type: "password",
               placeholder: "Coloque sua senha",
             },
+            {
+              name: "confirm_password",
+              label: "Confirme sua senha",
+              type: "password",
+              placeholder: "Coloque sua senha",
+            },
+            {
+              name: "terms",
+              label: "Eu estou ciente que meus dados serão compartilhados com os parceiros deste evento.",
+              type: "checkbox",
+              isLabelOnRight: true,
+              labelClassName: "w-5/6",
+              itemClassName: "flex gap-2 flex-wrap"
+            }
           ]}
           defaultValues={{
             name: "",
             last_name: "",
             email: "",
             password: "",
+            confirm_password: "",
+            is_uenf: false,
+            uenf_semester: "1",
+            terms: false
           }}
           onSubmit={onSubmitSignUp}
           submitLabel="Realizar o Cadastro"

@@ -12,7 +12,7 @@ import { headers } from "next/headers";
 import {UAParser} from "ua-parser-js";
 import jwt from "jsonwebtoken";
 import { actionRequest } from "./_utils";
-import type { LoginFormDataI, SignUpFormDataI } from "@/schemas/auth-schema";
+import type { LoginFormDataI, SignUpFormDataToSendI } from "@/schemas/auth-schema";
 
 export async function handleLoginSubmit({ email, password }: LoginFormDataI) {
   const res = await actionRequest<LoginFormDataI, AuthCredentialsI>("/login", { 
@@ -24,14 +24,15 @@ export async function handleLoginSubmit({ email, password }: LoginFormDataI) {
   return res;
 }
 
-export async function handleSignUp({ name, last_name, email, password }: SignUpFormDataI) {
-  const res = await actionRequest<SignUpFormDataI, AuthCredentialsI>("/register", { 
+export async function handleSignUp({ name, last_name, email, password, is_uenf, uenf_semester }: SignUpFormDataToSendI) {
+  const res = await actionRequest<SignUpFormDataToSendI, AuthCredentialsI>("/register", { 
     withAuth: false,
     method: "POST",
-    body: { name, last_name, email, password },
+    body: { name, last_name, email, password, is_uenf, uenf_semester: parseInt(uenf_semester as string) },
   });
   if (res.success && res.data) await setAuthTokens(res.data.access_token, res.data.refresh_token);
-  return await handleIsVerified();
+  const is_verified = await handleIsVerified();
+  return {success: res.success && typeof is_verified !== "string", data: null, message: res.message}
 }
 
 export async function handleLogout() {

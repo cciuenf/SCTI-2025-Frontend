@@ -27,7 +27,7 @@ type BooleanFieldPath<T extends FieldValues> = {
 }[FieldPath<T>];
 
 export type FieldType = | "text" | "number" | "price" | "switch" 
-  | "select" | "multiple_select" | "datetime" | "password" | "email";
+  | "select" | "multiple_select" | "datetime" | "password" | "email" | "checkbox";
 
 export interface FieldConfig<T extends FieldValues> {
   name: FieldPath<T>;
@@ -39,6 +39,10 @@ export interface FieldConfig<T extends FieldValues> {
     field: BooleanFieldPath<T>;
     value: boolean;
   };
+  isLabelOnRight?: boolean;
+  labelClassName?: string;
+  itemClassName?: string;
+
 }
 
 interface GenericFormProps<T extends FieldValues> {
@@ -96,8 +100,8 @@ function CustomGenericForm<T extends FieldValues>({
             control={form.control}
             name={f.name}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{f.label}</FormLabel>
+              <FormItem className={f.itemClassName}>
+                { !f.isLabelOnRight && <FormLabel className="w-4/5">{f.label}</FormLabel> }
                 <FormControl>
                   {FormInputRenderMap[f.type || "text"]({
                     field,
@@ -106,6 +110,8 @@ function CustomGenericForm<T extends FieldValues>({
                     options: f.options,
                   })}
                 </FormControl>
+                { f.isLabelOnRight && <FormLabel className={f.labelClassName}>{f.label}</FormLabel> }
+
                 <FormMessage />
               </FormItem>
             )}

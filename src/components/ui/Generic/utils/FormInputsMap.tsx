@@ -8,6 +8,7 @@ import type { FieldType } from "../CustomGenericForm";
 import type { ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form";
 import { Select } from "../../select";
 import { PasswordInput } from "./PasswordInput";
+import { Checkbox } from "../../checkbox";
 
 type CommonProps<T extends FieldValues> = {
   field: ControllerRenderProps<T, FieldPath<T>>;
@@ -39,6 +40,13 @@ export const FormInputRenderMap = {
   ),
   switch: ({ field, disabled }) => (
     <Switch
+      checked={field.value}
+      onCheckedChange={disabled ? undefined : field.onChange}
+      disabled={disabled}
+    />
+  ),
+  checkbox: ({ field, disabled }) => (
+    <Checkbox
       checked={field.value}
       onCheckedChange={disabled ? undefined : field.onChange}
       disabled={disabled}

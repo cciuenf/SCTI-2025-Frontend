@@ -4,7 +4,6 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -12,7 +11,6 @@ import {
 import { getAuthTokens, isEventCreator } from "@/lib/cookies";
 import { Calendar, Home, LayoutDashboard, User, FolderDot } from "lucide-react";
 
-import Image from "next/image";
 import Link from "next/link";
 import LogoutButton from "./Sidebar/LogoutButton";
 
@@ -45,11 +43,6 @@ export async function SiteSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="items-center">
-        <Link href="/" className="hover:opacity-90 duration-200">
-          <Image src="/SCT.svg" width={200} height={150} alt="SCT logo" />
-        </Link>
-      </SidebarHeader>
       <SidebarContent className="justify-between">
         <div>
           <SidebarGroup>
