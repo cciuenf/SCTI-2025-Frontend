@@ -1,9 +1,8 @@
 "use client";
 import React from "react";
 import { Button } from "../ui/button";
-import { MailCheckIcon, LogOut, PenIcon, Monitor } from "lucide-react";
+import { MailCheckIcon, LogOut} from "lucide-react";
 
-import ProductListSection from "../Products/ProductListSection";
 import {
   Dialog,
   DialogContent,
@@ -11,8 +10,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import { handleGetRefreshTokens, handleLogout } from "@/actions/auth-actions";
-import {
+import { handleLogout } from "@/actions/auth-actions";
+import type {
   UserAccessTokenJwtPayload,
   UserRefreshTokenJwtPayload,
 } from "@/types/auth-interfaces";
@@ -20,13 +19,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { clearAuthTokens, getAuthTokens } from "@/lib/cookies";
+import { clearAuthTokens } from "@/lib/cookies";
 import UserPurchases from "../UserPurchases";
 import VerifyForm from "../VerifyForm";
 import ChangeNameModalForm from "./ChangeNameModalForm";
-import UserDataView from "./UserDataView";
 import UserLogins from "./UserLogins";
 import ChangePasswordModal from "./ChangePasswordModal";
+import { runWithToast } from "@/lib/client/run-with-toast";
+import UserProducts from "../UserProducts";
 
 type Props = {
   currentView: string;
@@ -43,10 +43,7 @@ const ProfileInfos = ({
   user_refresh_info,
   deviceInfos,
 }: Props) => {
-  const [mustShowVerify, setMustShowVerify] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [accessTokenData, setAccessTokenData] =
-    useState<UserAccessTokenJwtPayload | null>();
+  const [accessTokenData, setAccessTokenData] = useState<UserAccessTokenJwtPayload | null>();
 
   const router = useRouter();
 
@@ -62,17 +59,18 @@ const ProfileInfos = ({
   }
 
   const handleLogoutSubmit = async () => {
-    const res = await handleLogout();
-    await clearAuthTokens();
-    const { accessToken, refreshToken } = await getAuthTokens();
-
-    if (res.success && !accessToken && !refreshToken) {
-      router.push("/");
-      toast.success("Usuario deslogado com sucesso!");
-      return;
+    const res = await runWithToast(
+      handleLogout(),
+      {
+        loading: "Encerrando sessão...",
+        success: () => "Sessão encerrada com sucesso!",
+        error: () => "Erro ao encerrar sessão!",
+      }
+    );
+    if(res.success) {
+      await clearAuthTokens();
+      router.push("/");      
     }
-    toast.error("Erro ao deslogar usuário!");
-    return;
   };
 
   return (
@@ -102,8 +100,6 @@ const ProfileInfos = ({
                   <DialogContent>
                     <DialogTitle></DialogTitle>
                     <VerifyForm
-                      setMustShowVerify={setMustShowVerify}
-                      setIsLoading={setIsLoading}
                       origin="profile"
                     />
                   </DialogContent>
@@ -138,7 +134,6 @@ const ProfileInfos = ({
             </div>
           </div>
         </>
-        // <UserDataView/>
       )}
       {currentView == "products" && (
         <>
@@ -146,13 +141,7 @@ const ProfileInfos = ({
           <p className="text-sm md:text-base font-light">
             Visualize todos os seus produtos
           </p>
-          <ProductListSection
-            currentEvent={{
-              id: "eb5af25f-2368-4503-a160-5a117a771b5a",
-              slug: "SCTI",
-            }}
-            isEventCreator={accessTokenData.is_event_creator}
-          />
+          <UserProducts />
         </>
       )}
 

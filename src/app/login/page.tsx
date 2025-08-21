@@ -3,7 +3,6 @@ import { handleLoginSubmit, handleSignUp } from "@/actions/auth-actions";
 import { useState } from "react";
 
 import LoginForm from "@/components/Auth/LoginForm";
-import VerifyForm from "@/components/VerifyForm";
 import { Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -12,9 +11,7 @@ import ForgotPasswordForm from "@/components/Auth/ForgotPasswordForm";
 export default function Login() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
-  const [mustShowVerify, setMustShowVerify] = useState<boolean>(false);
-  const [hasForgottedPassword, setHasForgottedPassword] =
-    useState<boolean>(false);
+  const [hasForgottedPassword, setHasForgottedPassword] = useState<boolean>(false);
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center gap-3">
@@ -34,12 +31,6 @@ export default function Login() {
               Voltar para a tela de login
             </p>
           </>
-        ) : mustShowVerify ? (
-          <VerifyForm
-            setMustShowVerify={setMustShowVerify}
-            setIsLoading={setIsLoading}
-            origin="signup"
-          />
         ) : (
           <>
             <div className="w-full flex items-center justify-around border-1 border-foreground">
@@ -89,7 +80,6 @@ export default function Login() {
                 <LoginForm
                   type={"Sign Up"}
                   handleSignUpSubmit={handleSignUp}
-                  setMustShowVerify={setMustShowVerify}
                   setIsLoading={setIsLoading}
                 />
               </>

@@ -3,16 +3,17 @@ import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import { PenIcon } from "lucide-react";
 import { Button } from "../ui/button";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import type { Dispatch, SetStateAction} from "react";
+import { useState } from "react";
 import CustomGenericForm, {
-  FieldConfig,
+  type FieldConfig,
 } from "../ui/Generic/CustomGenericForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import { z } from "zod";
 import { handleChangeName } from "@/actions/auth-actions";
-import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
+import type { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
+import { runWithToast } from "@/lib/client/run-with-toast";
 
 type Props = {
   accessData: UserAccessTokenJwtPayload;
@@ -51,22 +52,22 @@ const ChangeNameModalForm = ({ accessData, setAccessData }: Props) => {
     new_name: string;
     new_last_name: string;
   }) => {
-    try {
-      const result = await handleChangeName(new_name, new_last_name);
-
-      if (result?.status == 200) {
-        const newAccessTokenData = {
-          ...accessData,
-          name: new_name,
-          last_name: new_last_name,
-        };
-        setAccessData(newAccessTokenData);
-        toast.success(`Nome alterado com sucesso!`);
-        setOpen(false);
-        return;
+    const res = await runWithToast(
+      handleChangeName(new_name, new_last_name),
+      {
+        loading: "Alterando nome...",
+        success: () => "Nome alterado com sucesso!",
+        error: () => "Erro ao alterar nome!",
       }
-    } catch (error) {
-      toast.error("Erro ao alterar nome!");
+    )
+    if(res.success) {
+      const newAccessTokenData = {
+        ...accessData,
+        name: new_name,
+        last_name: new_last_name,
+      };
+      setAccessData(newAccessTokenData);
+      setOpen(false);
     }
   };
 

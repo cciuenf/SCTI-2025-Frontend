@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { SponsorInfoI } from "@/types/utility-interfaces";
+import type { SponsorInfoI } from "@/types/utility-interfaces";
 import Image from "next/image";
 import { useEffect, useMemo, useRef } from 'react';
 

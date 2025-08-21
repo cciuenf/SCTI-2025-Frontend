@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Sponsor from "./Sponsor";
-import { SponsorInfoI } from "@/types/utility-interfaces";
+import type { SponsorInfoI } from "@/types/utility-interfaces";
 
 interface Props {
   scale?: string;

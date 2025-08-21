@@ -72,49 +72,11 @@ export async function handleBuyProductPix(data: ProductBuyCredentialsI, slug: st
 }
 
 export async function handleGetAllUserProducts() {
-  const { accessToken, refreshToken } = await getAuthTokens();
-  try {
-    const res = await fetchWrapper<ProductResponseI[]>(`/user-products`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data, message: res.result.message };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao resgatar os produtos", error.message);
-      return { status: error.status, data: [], success: false };
-    } else {
-      console.error("Erro desconhecido ao resgatar os produtos", error);
-      return { message: "Erro desconhecido", data: [], success: false };
-    }
-  }
+  return actionRequest<null, ProductResponseI[]>("/user-products");
 }
 
 export async function handleGetAllUserProductsPurchases() {
-  const { accessToken, refreshToken } = await getAuthTokens();
-  try {
-    const res = await fetchWrapper<ProductPurchasesResponseI[]>(`/user-purchases`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { success: true, data: res.result.data, message: res.result.message };
-  } catch (error) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao resgatar as compras", error.message);
-      return { status: error.status, data: [], success: false };
-    } else {
-      console.error("Erro desconhecido ao resgatar as compras", error);
-      return { message: "Erro desconhecido", data: [], success: false };
-    }
-  }
+  return actionRequest<null, ProductPurchasesResponseI[]>("/user-purchases");
 }
 
 export async function handleGetAllUserTokens() {

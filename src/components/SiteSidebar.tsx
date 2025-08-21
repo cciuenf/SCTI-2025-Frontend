@@ -1,8 +1,6 @@
-import { handleLogout } from "@/actions/auth-actions";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -12,7 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { getAuthTokens } from "@/lib/cookies";
-import { Calendar, Home, LayoutDashboard, User, LogOut } from "lucide-react";
+import { Calendar, Home, LayoutDashboard, User } from "lucide-react";
 
 import Image from "next/image";
 import Link from "next/link";

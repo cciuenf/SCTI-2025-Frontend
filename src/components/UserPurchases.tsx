@@ -5,7 +5,7 @@ import {
   handleGetAllUserProducts,
 } from "@/actions/product-actions";
 import { format } from "date-fns";
-import {
+import type {
   ProductPurchasesResponseI,
   ProductResponseI,
 } from "@/types/product-interfaces";
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { convertNumberToBRL } from "@/lib/utils";
 import UserPurchasesSkeleton from "./Profile/UserPurchasesSkeleton";
+import { toast } from "sonner";
 
 interface PurchaseWithProduct extends ProductPurchasesResponseI {
   product?: ProductResponseI;
@@ -48,10 +49,10 @@ export default function UserPurchases() {
 
         if (purchasesRes.success && productsRes.success) {
           const productsMap = new Map(
-            productsRes.data.map((product) => [product.ID, product])
+            (productsRes.data || []).map((product) => [product.ID, product])
           );
 
-          const purchasesWithProducts = purchasesRes.data.map((purchase) => ({
+          const purchasesWithProducts = (purchasesRes.data || []).map((purchase) => ({
             ...purchase,
             product: productsMap.get(purchase.product_id),
           }));
@@ -81,9 +82,11 @@ export default function UserPurchases() {
             }
           );
           setOverviewData(overview);
+          toast.success("Compras carregadas com sucesso!");
         }
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
+        toast.error("Erro ao carregar compras do usuário.");
       } finally {
         setLoading(false);
       }

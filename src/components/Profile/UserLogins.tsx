@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { UserRefreshTokenJwtPayload } from "@/types/auth-interfaces";
+import type { UserRefreshTokenJwtPayload } from "@/types/auth-interfaces";
 import { Monitor } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "../ui/button";
@@ -12,9 +12,7 @@ import jwt from "jsonwebtoken";
 import { toast } from "sonner";
 import UserLoginsSkeleton from "./UserLoginsSkeleton";
 
-type Props = {};
-
-const UserLogins = (props: Props) => {
+const UserLogins = () => {
   const [userLogins, setUserLogins] = useState<
     { token: string; payload: UserRefreshTokenJwtPayload | null }[] | undefined
   >();

@@ -1,9 +1,7 @@
 import React from "react";
 import { Skeleton } from "../ui/skeleton";
 
-type Props = {};
-
-const ActivitiesDashboardListSkeleton = (props: Props) => {
+const ActivitiesDashboardListSkeleton = () => {
   return (
     <div className="w-full lg:w-3/5 lg:mx-auto">
       <div className="flex justify-between items-center basis-1/3 text-base sm:text-xl border-l-1 border-muted-foreground/20 pl-2 mb-3">

@@ -8,9 +8,7 @@ import { Calendar, MapPin, Users } from "lucide-react";
 import { redirect } from "next/navigation";
 
 type Props = {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string }>;
 };
 
 const SlugEventPage = async (props: Props) => {
