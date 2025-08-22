@@ -68,3 +68,8 @@ export function getActivityLevel(level: string) {
       return "Avançado";
   }
 }
+
+export function getActivityRequirements(reqs: string) {
+  const arr = reqs.trim().split(",").sort();
+  return arr;
+}

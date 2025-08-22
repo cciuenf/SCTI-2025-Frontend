@@ -12,6 +12,10 @@ export const activityCreationSchema = z
       .string()
       .min(10, "Descrição precisa de pelo menos 10 caracteres"),
     level: z.string(),
+    requirements: z
+      .string()
+      .min(1, "Especifique melhor os requisitos.")
+      .or(z.literal("")),
     start_time: z.date().or(z.string()),
     end_time: z.date().or(z.string()),
     has_fee: z.boolean(),

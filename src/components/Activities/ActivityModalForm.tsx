@@ -63,7 +63,11 @@ const ActivityModalForm: React.FC<{
         { label: "Avançado", value: "hard" },
       ],
     },
-
+    {
+      name: "requirements",
+      label: "Requisitos",
+      placeholder: 'Coloque os requisitos separados por ","',
+    },
     {
       name: "has_unlimited_capacity",
       label: "Há vagas ilimitadas?",
@@ -147,6 +151,8 @@ const ActivityModalForm: React.FC<{
             speaker: "",
             location: "",
             type: "",
+            level: "none",
+            requirements: "",
             has_unlimited_capacity: false,
             max_capacity: 0,
             has_fee: false,

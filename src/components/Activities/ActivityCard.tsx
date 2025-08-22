@@ -10,11 +10,17 @@ import {
   Users,
 } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { cn, formatEventTimeRange, getActivityLevel } from "@/lib/utils";
+import {
+  cn,
+  formatEventTimeRange,
+  getActivityLevel,
+  getActivityRequirements,
+} from "@/lib/utils";
 import { Button } from "../ui/button";
 import { formatEventDateRange } from "@/lib/utils";
 import ConfirmActionButton from "../ConfirmActionButton";
 import type { ActivityResponseI } from "@/types/activity-interface";
+import { lightFormat } from "date-fns";
 
 type Props = {
   data: ActivityResponseI;
@@ -67,7 +73,7 @@ const ActivityCard = ({
         "px-1 py-3 transition-all hover:scale-105"
       )}
     >
-      <div className="w-full flex flex-col justify-around items-start gap-3.5 px-2">
+      <div className="w-full flex flex-col justify-between items-start gap-3.5 px-2 h-full">
         <div className="w-full flex justify-between">
           <Badge
             className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
@@ -190,8 +196,20 @@ const ActivityCard = ({
         <h3 className="h-9 w-full text-ellipsis overflow-hidden text-left opacity-90 text-sm">
           {data.description || "Não Informado"}
         </h3>
+        {data.requirements && (
+          <>
+            <h3 className="text-sm">Requisitos:</h3>
+            <ul className="flex w-full flex-wrap items-center gap-2 list-disc list-inside marker:text-accent">
+            {getActivityRequirements(data.requirements).map((req, i) => (
+              <li className="text-xs" key={`${req}${Math.random() * i}`}>
+                {req}
+              </li>
+            ))}
+           </ul>
+          </>
+        )}
         <div className="flex w-full h-12 overflow-x-auto overflow-y-hidden gap-3 items-center px-2">
-          { data.level !== "none" && (
+          {data.level !== "none" && (
             <Badge
               className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
               title={data.level}
