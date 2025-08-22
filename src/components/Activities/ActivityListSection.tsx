@@ -11,13 +11,15 @@ import type { ActivityResponseI } from "@/types/activity-interface";
 import { useEffect, useState } from "react";
 import ActivityModalForm from "./ActivityModalForm";
 import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { Coins, Plus } from "lucide-react";
 import CardSkeleton from "../Loading/CardSkeleton";
 import { toast } from "sonner";
 import ActivityCard from "./ActivityCard";
 import UserActivityInfoTable from "./UserActivityInfoTable";
 import PresenceManagmentModalForm from "./PresenceManagementModalForm";
 import { runWithToast } from "@/lib/client/run-with-toast";
+import { handleGetAllUserTokens } from "@/actions/product-actions";
+import type { UserTokensResponseI } from "@/types/product-interfaces";
 
 interface ActivityListSectionProps {
   user_id: string;
@@ -31,6 +33,7 @@ export default function ActivityListSection({
   isEventCreator,
 }: ActivityListSectionProps) {
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
+  const [userTokens, setUserTokens] = useState<UserTokensResponseI[]>([])
   const [isUsersModalOpen, setIsUsersModalOpen] = useState(false);
   const [isPresenceModalOpen, setIsPresenceModalOpen] = useState(false);
   const [searchUsersRegistrations, setSearchUsersRegistrations] = useState(false);
@@ -41,6 +44,19 @@ export default function ActivityListSection({
   const [currentView, setCurrentView] = useState<string>("all");
 
   useEffect(() => {
+    const fetchUserTokens = async () => {
+      await runWithToast(
+        handleGetAllUserTokens(),
+        {
+          loading: "Carregando seus Tokens",
+          success: (res) => {
+            setUserTokens(res.data || []);
+            return "Tokens carregados com sucesso!"
+          },
+          error: () => "Falha ao carregar seus tokens"
+        }
+      )
+    };
     const fetchActivities = async () => {
       const id = toast.loading('Carregando Atividades...');
       setIsLoading(true);
@@ -57,6 +73,7 @@ export default function ActivityListSection({
       else toast.error('Falha ao carregar alguma das atividades', { id });
       setIsLoading(false);
     };
+    fetchUserTokens();
     fetchActivities();
   }, [currentEvent.slug]);
 
@@ -135,6 +152,15 @@ export default function ActivityListSection({
       const activity = allActivities.find((a) => a.ID === data.ID);
       if (activity && !myActivities.some((a) => a.ID === data.ID))
         setMyActivities((prev) => [...prev, activity]);
+      if(activity?.has_fee) {
+        setUserTokens((prev) => {
+          const availableToken = prev.find((t) => !t.is_used);
+          if(!availableToken) return prev;
+          return prev.map((t) => t.id === availableToken.id ? {
+            ...t, is_used: true, used_for_id: data.ID
+          }: t)
+        })
+      }
     }
   };
 
@@ -147,11 +173,32 @@ export default function ActivityListSection({
         error: () => "Erro ao cancelar inscrição na atividade",
       }
     );
-    if (res.success) setMyActivities((prev) => prev.filter((a) => a.ID !== data.ID));
+    if (res.success) {
+      setMyActivities((prev) => prev.filter((a) => a.ID !== data.ID));
+      if(data.has_fee) {
+        setUserTokens((prev) => 
+          prev.map((t) => t.used_for_id === data.ID ? {
+            ...t, is_used: false,  used_for_id: ""
+          }: t)
+        )
+      }
+    }
   };
 
   return (
     <>
+      <div 
+        className={cn(
+          "fixed top-2 right-2 w-32 h-8 px-4 py-2 rounded-full z-[160]",
+          "flex justify-center items-center shadow-lg font-bold text-sm",
+          "bg-gradient-to-r from-yellow-500 to-accent text-white",
+          "truncate"
+        )}
+        title={userTokens.filter(t => !t.is_used).length + " Tokens"}
+      >
+        <Coins className="w-4 h-4 mr-2"/>
+        {userTokens.filter((t) => !t.is_used).length} Tokens
+      </div>
       <div
         className={cn(
           "flex items-center justify-around relative",

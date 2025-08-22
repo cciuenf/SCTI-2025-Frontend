@@ -43,5 +43,7 @@
     "Usuário deve estar registrado no evento para ser promovido",
   "promoted user": "Usuário promovido a administrador do evento",
   "demoted user": "Usuário rebaixado a participante do evento",
-  "error registering to activity: activity has already ended": "O período de inscrição da atividade já encerrou!"
+  "error registering to activity: activity has already ended": "O período de inscrição da atividade já encerrou!",
+  "error registering to activity: this activity requires a token or payment": "Essa atividade necessita de tokens ou pagamento",
+  "error registering to activity: user does not have any available tokens": "Você não possui nenhum token disponível"
 }
