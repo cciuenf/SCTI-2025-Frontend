@@ -4,8 +4,10 @@ import type { EventResponseI } from "@/types/event-interfaces";
 import { toast } from "sonner";
 import { 
   handleDeleteSlugCreatedEvents, 
+  handleDemoteUserInEvent, 
   handleGetEvents, 
   handleGetUserSubscribedEvents, 
+  handlePromoteUserInEvent, 
   handleRegisterFromEvent, 
   handleUnresgiterFromEvent 
 } from "@/actions/event-actions";
@@ -21,6 +23,7 @@ interface UserEventsContextData {
   handleEventDelete: (slug: string) => Promise<void>;
   handleRegister: (slug: string) => Promise<void>;
   handleUnregister: (slug: string) => Promise<void>;
+  handleUserEventRole: (slug: string, email: string, willPromote: boolean) => Promise<void>;
 }
 
 const UserEventsContext = createContext<UserEventsContextData | undefined>(undefined);
@@ -113,6 +116,17 @@ export const UserEventsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   }, [allEvents]);
 
+  const handleUserEventRole = useCallback(async (slug: string, email: string, willPromote: boolean) => {
+    await runWithToast(
+      willPromote ? handlePromoteUserInEvent(slug, email) : handleDemoteUserInEvent(slug, email),
+      {
+        loading: `Alterando o papel do usuário no evento: ${slug}...`,
+        success: () => willPromote ? 'Usuário promovido com sucesso!' : 'Usuário rebaixado com sucesso!',
+        error: () => `Erro ao alterar o papel do usuário no evento: ${slug}`,
+      }
+    );
+  }, []);
+
   return (
     <UserEventsContext.Provider value={{
       allEvents,
@@ -124,6 +138,7 @@ export const UserEventsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       handleEventDelete,
       handleRegister,
       handleUnregister,
+      handleUserEventRole
     }}>
       {children}
     </UserEventsContext.Provider>
