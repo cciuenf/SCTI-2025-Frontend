@@ -35,7 +35,11 @@ const ActivityModalForm: React.FC<{
 }) => {
   const fields: FieldConfig<ActivityCreationDataI>[] = [
     { name: "name", label: "Nome", placeholder: "Nome do Evento" },
-    { name: "speaker", label: "Speaker", placeholder: "Informe o palestrante" },
+    {
+      name: "speaker",
+      label: "Apresentador",
+      placeholder: "Informe o apresentador",
+    },
     {
       name: "location",
       label: "Localização",

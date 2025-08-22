@@ -3,7 +3,7 @@ import { z } from "zod";
 export const activityCreationSchema = z
   .object({
     name: z.string().min(2, "Nome precisa de pelo menos 2 caracteres"),
-    speaker: z.string().min(2, "Speaker precisa de pelo menos 2 caracteres"),
+    speaker: z.string().min(2, "Apresentador precisa de pelo menos 2 caracteres"),
     location: z
       .string()
       .min(2, "Localização precisa de pelo menos 2 caracteres"),
