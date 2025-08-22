@@ -127,7 +127,7 @@ export default function UserPurchases() {
                 {format(p.purchased_at, "dd/MM/yyyy HH:mm")}
               </TableCell>
               <TableCell>{p.is_gift ? p.gifted_to_email : `X`} </TableCell>
-              <TableCell>{p.is_delivered ? `Pago` : `Pendente`} </TableCell>
+              <TableCell>{p.is_delivered ? `Entregue` : `Pendente`} </TableCell>
             </TableRow>
           ))}
         </TableBody>

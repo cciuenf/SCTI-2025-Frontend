@@ -261,7 +261,7 @@ const ActivityCard = ({
               className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
               title={data.type}
             >
-              {data.type}
+              {data.type.charAt(0).toUpperCase() + data.type.substring(1)}
             </Badge>
           )}
         </div>
