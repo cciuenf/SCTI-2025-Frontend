@@ -8,14 +8,13 @@ import CustomGenericForm, {
 import { handleForgotPassword } from "@/actions/auth-actions";
 import { runWithToast } from "@/lib/client/run-with-toast";
 
-
 const ForgotPasswordForm = () => {
   const fields: FieldConfig<z.infer<typeof changePasswordSchema>>[] = [
     { name: "email", label: "Email" },
   ];
 
   const changePasswordSchema = z.object({
-    email: z.string().email(),
+    email: z.string().email({ message: "Precisa ser um email válido" }),
   });
 
   const form = useForm<z.infer<typeof changePasswordSchema>>({
@@ -26,14 +25,12 @@ const ForgotPasswordForm = () => {
   });
 
   const handleOnSubmit = async ({ email }: { email: string }) => {
-    await runWithToast(
-      handleForgotPassword(email),
-      {
-        loading: "Enviando email para recuperação de acesso...",
-        success: () => "Te enviamos um email para que possa recuperar seu acesso!",
-        error: () => "Erro ao iniciar o processo de recuperação de acesso",
-      }
-    )
+    await runWithToast(handleForgotPassword(email), {
+      loading: "Enviando email para recuperação de acesso...",
+      success: () =>
+        "Te enviamos um email para que possa recuperar seu acesso!",
+      error: () => "Erro ao iniciar o processo de recuperação de acesso",
+    });
   };
 
   return (

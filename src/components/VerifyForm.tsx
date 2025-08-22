@@ -1,10 +1,5 @@
 "use client";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type RefObject, useRef } from "react";
@@ -25,12 +20,12 @@ type Props = {
 };
 
 const verifyFormSchema = z.object({
-  digit_1: z.string().max(1).min(1),
-  digit_2: z.string().max(1).min(1),
-  digit_3: z.string().max(1).min(1),
-  digit_4: z.string().max(1).min(1),
-  digit_5: z.string().max(1).min(1),
-  digit_6: z.string().max(1).min(1),
+  digit_1: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_2: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_3: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_4: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_5: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_6: z.string().max(1).min(1, "Precisa ser preenchido"),
 });
 
 const VerifyForm = ({ setIsLoading, origin }: Props) => {
@@ -64,9 +59,9 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
     digit_6,
   }: z.infer<typeof verifyFormSchema>) => {
     const token = digit_1.concat(digit_2, digit_3, digit_4, digit_5, digit_6);
-    if(setIsLoading) setIsLoading(true);
+    if (setIsLoading) setIsLoading(true);
     const res = await handleVerifyToken(token);
-    if(setIsLoading) setIsLoading(false);
+    if (setIsLoading) setIsLoading(false);
 
     if (res.status == 200) {
       toast.success("Usuário verificado");

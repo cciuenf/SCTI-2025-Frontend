@@ -4,6 +4,8 @@ export interface ActivityResponseI {
   speaker: string,
   type: string;
   description: string,
+  requirements: string,
+  level: string,
   location: string,
   has_fee: boolean,
   event_id: string,

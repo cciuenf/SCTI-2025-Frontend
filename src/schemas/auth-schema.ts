@@ -1,25 +1,40 @@
 import { z } from "zod";
 
-export const signUpFormSchema = z.object({
-  name: z.string().min(2),
-  last_name: z.string().min(2),
-  email: z.string().email(),
-  password: z.string().min(8).max(20),
-  confirm_password: z.string().min(8).max(20),
-  is_uenf: z.boolean(),
-  uenf_semester: z.string().or(z.number()),
-  terms: z.boolean().refine((val) => val === true, "A checkbox precisa ser preenchida!"),
-}).refine((data) => data.password === data.confirm_password, {
-  message: "As senhas não conferem",
-  path: ["confirm_password"]
-});
+export const signUpFormSchema = z
+  .object({
+    name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
+    last_name: z
+      .string()
+      .min(2, "O sobrenome deve ter pelo menos 2 caracteres"),
+    email: z.string().email({ message: "Email inválido" }),
+    password: z
+      .string()
+      .min(8, "A senha deve ter pelo menos 8 caracteres")
+      .max(20, "A senha deve ter no máximo 20 caracteres"),
+    confirm_password: z.string().min(8).max(20),
+    is_uenf: z.boolean(),
+    uenf_semester: z.string().or(z.number()),
+    terms: z
+      .boolean()
+      .refine((val) => val === true, "A checkbox precisa ser preenchida!"),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "As senhas não conferem",
+    path: ["confirm_password"],
+  });
 
 export type SignUpFormDataI = z.infer<typeof signUpFormSchema>;
-export type SignUpFormDataToSendI = Omit<SignUpFormDataI, "terms" | "confirm_password">;
+export type SignUpFormDataToSendI = Omit<
+  SignUpFormDataI,
+  "terms" | "confirm_password"
+>;
 
 export const loginFormSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8).max(20),
+  email: z.string().email({ message: "Email inválido" }),
+  password: z
+    .string()
+    .min(8, "A senha deve ter pelo menos 8 caracteres")
+    .max(20, "A senha deve ter no máximo 20 caracteres"),
 });
 
 export type LoginFormDataI = z.infer<typeof loginFormSchema>;

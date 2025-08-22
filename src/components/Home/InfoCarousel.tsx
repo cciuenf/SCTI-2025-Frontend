@@ -40,7 +40,7 @@ const InfoCarousel = () => {
       <div className="absolute bg-secondary/80 inset-0 z-10 flex flex-col items-center justify-between">
         <div className="text-center flex flex-col items-center font-medium">
           <Image
-            src="/SCTI.png"
+            src="/img/home/SCTI.png"
             alt="Logo SCT"
             width={250}
             height={250}

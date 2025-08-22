@@ -60,7 +60,7 @@ const AutoScrollSponsors = ({ scale = "scale-[100%]", speed = 2, delay = 500, sp
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="flex justify-center gap-4 min-w-max px-4 py-2 md:mr-4">
+      <div className="flex justify-center gap-8 min-w-max px-4 py-2 md:mr-4">
         {sponsors.map((sponsor, i) => (
           <Sponsor scale={scale} info={sponsor} key={i}/>
         ))}

@@ -2,7 +2,6 @@ import InfoCarousel from "@/components/Home/InfoCarousel";
 import Connector from "@/components/ui/Generic/Connector";
 import { handleGetAllEventActivities } from "@/actions/activity-actions";
 import ActivityCard from "@/components/Activities/ActivityCard";
-import Sponsor from "@/components/Home/Sponsor";
 import AutoScrollSponsors from "@/components/Home/AutoScrollSponsors";
 import ScrollManager from "@/components/ScrollManager";
 
@@ -43,29 +42,10 @@ export default async function HomePage() {
           do SCT 2025. Conheça os parceiros que acreditam no potencial dos
           estudantes universitários.
         </p>
-        <h3 className="text-2xl font-bold underline mb-4">
-          Patrocinador Platina
-        </h3>
-        <Sponsor
-          scale="scale-[100%]"
-          info={{ text: "Alura", level: "Platina" }}
-        />
-        <h3 className="text-2xl font-bold underline mt-8 mb-2">
-          Patrocinador Safira
-        </h3>
         <div className="w-full overflow-auto">
           <AutoScrollSponsors
             scale="scale-[90%]"
-            sponsors={[{ text: "RocketSeat", level: "Safira" }]}
-          />
-        </div>
-        <h3 className="text-2xl font-bold underline mt-8 mb-2">
-          Patrocinador Silício
-        </h3>
-        <div className="w-full overflow-auto">
-          <AutoScrollSponsors
-            scale="scale-[90%]"
-            sponsors={[{ text: "Lucas Siqueira", level: "Silício" }]}
+            sponsors={[{ text: "Alura", imagePath: "alura-light.svg" }, {text: "Código de Ouro", imagePath: "/img/sponsors/codigoouro.png"}]}
           />
         </div>
       </Connector>
