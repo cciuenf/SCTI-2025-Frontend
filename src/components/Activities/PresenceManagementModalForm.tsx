@@ -141,7 +141,7 @@ const PresenceManagmentModalForm = ({
           <Select
             placeholder="Selecione o Participante"
             options={usersRegistrations.map((reg) => ({
-              label: `${reg.Name} ${reg.LastName}`,
+              label: `${reg.Name} ${reg.last_name}`,
               value: reg.user_id,
             }))}
             value={selectedUserId}
