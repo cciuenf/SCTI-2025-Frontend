@@ -20,7 +20,6 @@ const Sponsor = ({
   scale = "scale-[100%]",
   info: {
     text = "Empresa X",
-    level = "Diamante",
     imagePath = "/SCTI.png",
   }
 }: Props) => {
@@ -84,7 +83,7 @@ const Sponsor = ({
         ))}
       </svg>
       <div className={cn(
-        `absolute w-56 h-56 rounded-full border-4 border-secondary`,
+        `absolute w-56 h-56 rounded-full border-4 border-secondary bg-secondary`,
         "-translate-1/2 left-1/2 top-1/2 overflow-hidden",
         "flex flex-col justify-center items-center gap-5"
       )}>
@@ -95,9 +94,6 @@ const Sponsor = ({
           height={200}
           className="w-32 h-auto"
         />
-        <p className="bg-secondary text-primary py-2 w-full">
-          Apoiador {level}
-        </p>
       </div>
     </div>
   )

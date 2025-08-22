@@ -158,6 +158,18 @@
     @apply duration-200;
   }
 
+  ::-webkit-scrollbar:horizontal {
+    @apply w-1 h-1 rounded-md;
+  }
+
+  ::-webkit-scrollbar-track:horizontal {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb:horizontal {
+    @apply bg-secondary rounded-md w-2;
+  }
+
   ::-webkit-scrollbar-track {
     @apply bg-secondary;
     @apply transition-colors;
