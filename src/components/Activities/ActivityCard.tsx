@@ -208,7 +208,7 @@ const ActivityCard = ({
            </ul>
           </>
         )}
-        <div className="flex w-full h-12 overflow-x-auto overflow-y-hidden gap-3 items-center px-2">
+        <div className="flex w-9/10 h-12 overflow-x-auto overflow-y-hidden gap-3 items-center px-2 mx-auto">
           {data.level !== "none" && (
             <Badge
               className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
