@@ -8,7 +8,7 @@ import LoadingSpinner from "../Loading/LoadingSpinner";
 import type { EventResponseI } from "@/types/event-interfaces";
 import EventModalForm from "./EventModalForm";
 import { useState } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface Props {
   isEventCreator: boolean;
@@ -18,15 +18,16 @@ interface Props {
 const EventManagementActions = ({ isEventCreator, event }: Props) => {
   const [isEditEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isLoadingRegisterState, setIsLoadingRegisterState] = useState(false);
-  const { 
-    myEvents, 
-    allEvents, 
-    handleRegister, 
-    handleUnregister, 
-    isLoading, 
-    handleEventUpdate 
+  const {
+    myEvents,
+    allEvents,
+    handleRegister,
+    handleUnregister,
+    isLoading,
+    handleEventUpdate,
   } = useUserEvents();
-  const updatedEvent = allEvents.find(e => e.Slug === event.Slug) || event;
+  const updatedEvent = allEvents.find((e) => e.Slug === event.Slug) || event;
+  const router = useRouter();
 
   if (isLoading) {
     return (
@@ -36,25 +37,28 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
     );
   }
 
-  const isSubscribed = myEvents.find(e => e.Slug === updatedEvent.Slug);
+  const isSubscribed = myEvents.find((e) => e.Slug === updatedEvent.Slug);
 
   const handleRegisterState = async () => {
     if (!handleRegister || !handleUnregister) return;
     setIsLoadingRegisterState(true);
-    if (isSubscribed) await handleUnregister(updatedEvent.Slug);
-    else await handleRegister(updatedEvent.Slug);
+    if (isSubscribed) {
+      await handleUnregister(updatedEvent.Slug);
+    } else {
+      await handleRegister(updatedEvent.Slug);
+    }
     setIsLoadingRegisterState(false);
-    redirect('/events/' + updatedEvent.Slug);
+    router.push(`/events/${updatedEvent}`);
   };
 
-  return(
+  return (
     <>
       {isEventCreator && (
         <>
           <Button
             onClick={() => setIsEventModalOpen(true)}
             className={cn(
-              "min-w-[140px] flex items-center justify-center gap-1 p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 font-medium", 
+              "min-w-[140px] flex items-center justify-center gap-1 p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 font-medium",
               "bg-accent text-secondary hover:text-accent hover:bg-secondary"
             )}
             title="Editar"
@@ -77,7 +81,7 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
       >
         {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
       </Button>
-      <EventModalForm 
+      <EventModalForm
         event={updatedEvent}
         isCreating={false}
         open={isEditEventModalOpen}
@@ -85,7 +89,7 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
         onEventUpdate={handleEventUpdate}
       />
     </>
-  )
-}
+  );
+};
 
 export default EventManagementActions;

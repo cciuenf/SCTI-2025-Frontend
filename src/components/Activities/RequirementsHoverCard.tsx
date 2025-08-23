@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import { HoverCard, HoverCardTrigger } from "../ui/hover-card";
 import { InfoIcon } from "lucide-react";
