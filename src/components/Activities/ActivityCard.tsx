@@ -14,12 +14,12 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { formatEventDateRange } from "@/lib/utils";
 import ConfirmActionButton from "../ConfirmActionButton";
-import type { ActivityResponseI } from "@/types/activity-interface";
+import type { ActivityResponseI, ActivityWithSlotResponseI } from "@/types/activity-interface";
 import LevelBadge from "./LevelBadge";
 import RequirementsHoverCard from "./RequirementsHoverCard";
 
 type Props = {
-  data: ActivityResponseI;
+  data: ActivityWithSlotResponseI;
   isEventCreator: boolean;
   isSubscribed: boolean;
   onPresenceManagerOpen?: (data: ActivityResponseI) => void | null;
@@ -48,8 +48,8 @@ const ActivityCard = ({
     e.preventDefault();
     e.stopPropagation();
     if (!onRegister || !onUnregister) return;
-    if (isSubscribed) await onUnregister(data);
-    else await onRegister(data);
+    if (isSubscribed) await onUnregister(data.activity);
+    else await onRegister(data.activity);
   };
 
   const handleEdit = (e: React.MouseEvent) => {
@@ -59,7 +59,7 @@ const ActivityCard = ({
   };
 
   const handleDelete = async () => {
-    if (onDelete) await onDelete(data.ID);
+    if (onDelete) await onDelete(data.activity.ID);
   };
 
   return (
@@ -67,33 +67,38 @@ const ActivityCard = ({
       className={cn(
         "not-md:min-w-80 min-w-auto flex flex-col justify-left items-center bg-white rounded-lg shadow-md",
         "px-1 py-3 transition-all hover:scale-105",
-        data.has_fee && "bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 "
+        data.activity.has_fee && "bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 "
       )}
     >
       <div className="w-full flex flex-col justify-between items-start gap-3.5 px-2 h-full">
         <div className="w-full flex justify-between px-0.5">
           <div className="flex gap-2">
+            {data.activity.has_fee && 
+              <div className="w-6 h-6 rounded-full bg-orange-500 text-white p-1">
+                <Coins className="w-full h-full"/>
+              </div>
+            }
             <Badge
               className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
-              title={data.type && data.type}
+              title={data.activity.type && data.activity.type}
             >
-              {data.type && (data.type.charAt(0).toUpperCase() + data.type.substring(1)) }
+              {data.activity.type && (data.activity.type.charAt(0).toUpperCase() + data.activity.type.substring(1)) }
             </Badge>
-            <LevelBadge level={data.level} />
-            {!data.has_fee && <Badge
+            <LevelBadge level={data.activity.level} />
+            {!data.activity.has_fee && <Badge
               className="bg-green-500 text-white truncate overflow-hidden whitespace-nowrap"
             >
               Gratuito
             </Badge>}
           </div>
-          {data.requirements && (
-            <RequirementsHoverCard data={data.requirements} />
+          {data.activity.requirements && (
+            <RequirementsHoverCard data={data.activity.requirements} />
           )}
         </div>
 
-        <h2 className="w-full h-14 px-3 flex items-center" title={data.name}>
+        <h2 className="w-full h-14 px-3 flex items-center" title={data.activity.name}>
           <span className="w-full text-lg font-bold text-center line-clamp-2 break-words">
-            {data.name}
+            {data.activity.name}
           </span>
         </h2>
 
@@ -101,34 +106,36 @@ const ActivityCard = ({
           <Calendar className="text-accent h-4 w-4 mr-2.5" />
           <h3 className="opacity-90 text-sm">
             {formatEventDateRange(
-              new Date(data.start_time),
-              new Date(data.end_time)
+              new Date(data.activity.start_time),
+              new Date(data.activity.end_time)
             )}
           </h3>
         </div>
         <div className="flex justify-between items-center">
           <Speaker className="text-accent h-4 w-4 mr-2.5" />
-          <h3 className="opacity-90 text-sm">{data.speaker}</h3>
+          <h3 className="opacity-90 text-sm">{data.activity.speaker}</h3>
         </div>
         <div className="flex justify-between items-center">
           <MapPin className="text-accent h-4 w-4 mr-2.5" />
           <h3 className="opacity-90 text-sm">
-            {data.location || "Não Informado"}
+            {data.activity.location || "Não Informado"}
           </h3>
         </div>
         <div className="flex justify-between items-center">
           <Users className="text-accent h-4 w-4 mr-2.5" />
           <h3 className="opacity-90 text-sm">
-            {data.has_unlimited_capacity ? "Infinito" : data.max_capacity }
+            {data.activity.has_unlimited_capacity ? "Vagas Ilimitadas" : 
+              `${data.available_slots.current_occupancy} / ${data.available_slots.total_capacity} vagas`
+            }
           </h3>
         </div>
 
         <h3 className="h-24 w-full overflow-y-auto text-left opacity-90 text-sm ">
-          {data.description || "Não Informado"}
+          {data.activity.description || "Não Informado"}
         </h3>
-        {(data.is_blocked || data.is_hidden) && (
+        {(data.activity.is_blocked || data.activity.is_hidden) && (
           <div className="flex w-9/10 h-12 overflow-x-auto overflow-y-hidden gap-3 items-center px-2 mx-auto">
-            {data.is_blocked && (
+            {data.activity.is_blocked && (
               <Badge
                 className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
                 title="Bloqueado"
@@ -136,7 +143,7 @@ const ActivityCard = ({
                 Bloqueado
               </Badge>
             )}
-            {data.is_hidden && (
+            {data.activity.is_hidden && (
               <Badge
                 className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
                 title="Oculto"
@@ -160,7 +167,7 @@ const ActivityCard = ({
                   "hover:text-accent hover:scale-125"
                 )}
                 onClick={() =>
-                  onPresenceManagerOpen && onPresenceManagerOpen(data)
+                  onPresenceManagerOpen && onPresenceManagerOpen(data.activity)
                 }
               />
             </span>
@@ -171,7 +178,7 @@ const ActivityCard = ({
                   "hover:text-accent hover:scale-125"
                 )}
                 onClick={() =>
-                  onViewUsersOpen && onViewUsersOpen(false, data)
+                  onViewUsersOpen && onViewUsersOpen(false, data.activity)
                 }
               />
             </span>
@@ -185,7 +192,7 @@ const ActivityCard = ({
                   "w-5 h-5 cursor-pointer transition-transform duration-200",
                   "hover:text-accent hover:scale-125"
                 )}
-                onClick={() => onViewUsersOpen && onViewUsersOpen(true, data)}
+                onClick={() => onViewUsersOpen && onViewUsersOpen(true, data.activity)}
               />
             </span>
             <span title="Editar" role="img" aria-label="Editar">
@@ -221,14 +228,15 @@ const ActivityCard = ({
               "w-full py-1 rounded-sm shadow-md cursor-pointer duration-300 transition-colors",
               isSubscribed
                 ? "bg-red-500 text-white font-medium hover:text-red-500 hover:bg-white border border-red-500"
-                : "bg-orange-500 text-white font-medium hover:text-accent hover:bg-secondary"
+                : "bg-accent text-secondary font-medium hover:text-accent hover:bg-secondary",
+              data.activity.has_fee && "bg-orange-500 text-white"
             )}
           >
             {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
-            {data.has_fee && !isSubscribed && (
-              <span className="inline-flex items-center gap-1 ml-2">
+            {data.activity.has_fee && !isSubscribed && (
+              <>
                 <Coins className="w-4 h-4" /> 1 Token
-              </span>
+              </>
             )}
           </Button>
         )}

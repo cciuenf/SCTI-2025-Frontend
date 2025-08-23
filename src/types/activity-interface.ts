@@ -20,6 +20,20 @@ export interface ActivityResponseI {
   end_time: string,
 }
 
+interface AvailableSlotsI {
+  id: string,
+  total_capacity: number,
+  current_occupancy: number,
+  available_slots: number,
+  has_unlimited_slots: boolean,
+  is_full: boolean,
+}
+
+export interface ActivityWithSlotResponseI {
+  activity: ActivityResponseI,
+  available_slots: AvailableSlotsI
+}
+
 export interface ActivityRegistrationI {
   activity_id: string,
   user_id: string,

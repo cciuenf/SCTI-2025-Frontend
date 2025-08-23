@@ -7,7 +7,7 @@ import {
   handleRegisterFromActivity,
   handleUnregisterFromActivity,
 } from "@/actions/activity-actions";
-import type { ActivityResponseI } from "@/types/activity-interface";
+import type { ActivityResponseI, ActivityWithSlotResponseI } from "@/types/activity-interface";
 import { useEffect, useState } from "react";
 import ActivityModalForm from "./ActivityModalForm";
 import { cn } from "@/lib/utils";
@@ -38,46 +38,63 @@ export default function ActivityListSection({
   const [isPresenceModalOpen, setIsPresenceModalOpen] = useState(false);
   const [searchUsersRegistrations, setSearchUsersRegistrations] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityResponseI>();
-  const [myActivities, setMyActivities] = useState<ActivityResponseI[]>([]);
-  const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
+  const [myActivities, setMyActivities] = useState<ActivityWithSlotResponseI[]>([]);
+  const [allActivities, setAllActivities] = useState<ActivityWithSlotResponseI[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentView, setCurrentView] = useState<string>("all");
 
-  useEffect(() => {
-    const fetchUserTokens = async () => {
-      await runWithToast(
-        handleGetAllUserTokens(),
-        {
-          loading: "Carregando seus Tokens",
-          success: (res) => {
-            setUserTokens(res.data || []);
-            return "Tokens carregados com sucesso!"
-          },
-          error: () => "Falha ao carregar seus tokens"
-        }
-      )
-    };
-    const fetchActivities = async () => {
-      const id = toast.loading('Carregando Atividades...');
-      setIsLoading(true);
-      const [allActivitiesData, myActivitiesData] = await Promise.all([
-        handleGetAllEventActivities(currentEvent.slug),
-        handleGetUserEventActivities(currentEvent.slug),
-      ]);
-      setAllActivities(allActivitiesData.data || []);
-      setMyActivities(myActivitiesData.data || []);
-      if (allActivitiesData.success && myActivitiesData.success)
-        toast.success('Atividades carregadas com sucesso!', { id });
-      else if(!allActivitiesData.success && !myActivitiesData.success)
-        toast.error("Erro ao carregar as atividades", { id });
-      else toast.error('Falha ao carregar alguma das atividades', { id });
-      setIsLoading(false);
-    };
-    fetchUserTokens();
-    fetchActivities();
-  }, [currentEvent.slug]);
+useEffect(() => {
+  const fetchUserTokens = async () => {
+    await runWithToast(handleGetAllUserTokens(), {
+      loading: "Carregando seus Tokens",
+      success: (res) => {
+        setUserTokens(res.data || []);
+        return "Tokens carregados com sucesso!";
+      },
+      error: () => "Falha ao carregar seus tokens",
+    });
+  };
 
-  const currentData = currentView === "all" ? allActivities : myActivities;
+  const fetchActivities = async () => {
+    const id = toast.loading("Carregando Atividades...");
+    setIsLoading(true);
+
+    const [allActivitiesData, myActivitiesData] = await Promise.all([
+      handleGetAllEventActivities(currentEvent.slug),
+      handleGetUserEventActivities(currentEvent.slug),
+    ]);
+
+    const all: ActivityWithSlotResponseI[] = allActivitiesData.data || [];
+    setAllActivities(all);
+
+    const allById = new Map<string, ActivityWithSlotResponseI>(
+      all.map((item) => [item.activity.ID, item])
+    );
+
+    const myRaw: ActivityResponseI[] = myActivitiesData.data || [];
+    const my: ActivityWithSlotResponseI[] = myRaw
+      .map((a) => allById.get(a.ID))
+      .filter((v): v is ActivityWithSlotResponseI => Boolean(v));
+
+    setMyActivities(my);
+
+    if (allActivitiesData.success && myActivitiesData.success) {
+      toast.success("Atividades carregadas com sucesso!", { id });
+    } else if (!allActivitiesData.success && !myActivitiesData.success) {
+      toast.error("Erro ao carregar as atividades", { id });
+    } else {
+      toast.error("Falha ao carregar alguma das atividades", { id });
+    }
+
+    setIsLoading(false);
+  };
+
+  fetchUserTokens();
+  fetchActivities();
+}, [currentEvent.slug, setAllActivities, setMyActivities]);
+
+// Agora currentData sempre tem slots e ocupação
+const currentData = currentView === "all" ? allActivities : myActivities;
 
   if (isLoading) {
     return (
@@ -110,16 +127,63 @@ export default function ActivityListSection({
     setSearchUsersRegistrations(is_registrations);
   };
 
+  const wrapWithEmptySlots = (a: ActivityResponseI): ActivityWithSlotResponseI => ({
+    activity: a,
+    available_slots: { // Update on the next fetch
+      id: "",
+      total_capacity: a.has_unlimited_capacity ? 0 : a.max_capacity ?? 0,
+      current_occupancy: 0,
+      available_slots: a.has_unlimited_capacity ? Number.MAX_SAFE_INTEGER : (a.max_capacity ?? 0),
+      has_unlimited_slots: a.has_unlimited_capacity,
+      is_full: false,
+    },
+  });
+
+  const adjustAvailability = (
+    list: ActivityWithSlotResponseI[],
+    activityId: string,
+    delta: number
+  ) => {
+    return list.map((item) => {
+      if (item.activity.ID !== activityId) return item;
+
+      const slots = item.available_slots;
+
+      // ilimitado: não muda nada
+      if (slots.has_unlimited_slots) return item;
+
+      const total = Math.max(0, slots.total_capacity ?? 0);
+      const nextCurrent = Math.min(Math.max(0, (slots.current_occupancy ?? 0) + delta), total);
+      const nextAvailable = Math.max(0, total - nextCurrent);
+      const nextIsFull = total > 0 && nextCurrent >= total;
+
+      return {
+        ...item,
+        available_slots: {
+          ...slots,
+          current_occupancy: nextCurrent,
+          available_slots: nextAvailable,
+          is_full: nextIsFull,
+        },
+      };
+    });
+  };
+
+
   const handleActivityCreate = (newActivity: ActivityResponseI) => {
-    setAllActivities((prev) => [...prev, newActivity]);
+    setAllActivities((prev) => [...prev, wrapWithEmptySlots(newActivity)]);
   };
 
   const handleActivityUpdate = (updatedActivity: ActivityResponseI) => {
     setAllActivities((prev) =>
-      prev.map((a) => (a.ID === updatedActivity.ID ? updatedActivity : a))
+      prev.map((item) =>
+        item.activity.ID === updatedActivity.ID ? { ...item, activity: updatedActivity } : item
+      )
     );
     setMyActivities((prev) =>
-      prev.map((a) => (a.ID === updatedActivity.ID ? updatedActivity : a))
+      prev.map((item) =>
+        item.activity.ID === updatedActivity.ID ? { ...item, activity: updatedActivity } : item
+      )
     );
   };
 
@@ -133,8 +197,8 @@ export default function ActivityListSection({
       }
     );
     if (res.success) {
-      setAllActivities((prev) => prev.filter((a) => a.ID !== activity_id));
-      setMyActivities((prev) => prev.filter((a) => a.ID !== activity_id));
+      setAllActivities((prev) => prev.filter((a) => a.activity.ID !== activity_id));
+      setMyActivities((prev) => prev.filter((a) => a.activity.ID !== activity_id));
     }
   };
 
@@ -149,10 +213,15 @@ export default function ActivityListSection({
     );
 
     if (res.success) {
-      const activity = allActivities.find((a) => a.ID === data.ID);
-      if (activity && !myActivities.some((a) => a.ID === data.ID))
-        setMyActivities((prev) => [...prev, activity]);
-      if(activity?.has_fee) {
+      const fromAll = allActivities.find((a) => a.activity.ID === data.ID);
+      setMyActivities((prev) => {
+        if (!fromAll || prev.some((a) => a.activity.ID === data.ID)) return prev;
+        return [...prev, fromAll];
+      });
+      setAllActivities((prev) => adjustAvailability(prev, data.ID, +1));
+      setMyActivities((prev) => adjustAvailability(prev, data.ID, +1));
+
+      if(fromAll?.activity.has_fee) {
         setUserTokens((prev) => {
           const availableToken = prev.find((t) => !t.is_used);
           if(!availableToken) return prev;
@@ -174,7 +243,9 @@ export default function ActivityListSection({
       }
     );
     if (res.success) {
-      setMyActivities((prev) => prev.filter((a) => a.ID !== data.ID));
+      setAllActivities((prev) => adjustAvailability(prev, data.ID, -1));
+      setMyActivities((prev) => adjustAvailability(prev, data.ID, -1));
+      setMyActivities((prev) => prev.filter((a) => a.activity.ID !== data.ID));
       if(data.has_fee) {
         setUserTokens((prev) =>
           prev.map((t) => t.used_for_id === data.ID ? {
@@ -249,22 +320,25 @@ export default function ActivityListSection({
       {currentData.length !== 0 ? (
         <div className="w-full max-w-6xl my-6">
           <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {currentData.map((activity) => (
-              <ActivityCard
-                key={activity.ID}
-                data={activity}
-                isEventCreator={isEventCreator}
-                isSubscribed={myActivities.some((a) => a.ID === activity.ID)}
-                onRegister={handleRegister}
-                onUnregister={handleUnregister}
-                onUpdateFormOpen={() =>
-                  isEventCreator ? openCreationActivityModal(activity) : null
-                }
-                onDelete={handleActivityDelete}
-                onViewUsersOpen={openUsersActivityModal}
-                onPresenceManagerOpen={openPresenceActivityModal}
-              />
-            ))}
+            {currentData.map((wrapper) => {
+              const act = wrapper.activity;
+              return (
+                <ActivityCard
+                  key={act.ID}
+                  data={wrapper}
+                  isEventCreator={isEventCreator}
+                  isSubscribed={myActivities.some((a) => a.activity.ID === act.ID)}
+                  onRegister={handleRegister}
+                  onUnregister={handleUnregister}
+                  onUpdateFormOpen={() =>
+                    isEventCreator ? openCreationActivityModal(act) : null
+                  }
+                  onDelete={handleActivityDelete}
+                  onViewUsersOpen={openUsersActivityModal}
+                  onPresenceManagerOpen={openPresenceActivityModal}
+                />
+              );
+            })}
           </div>
         </div>
       ) : (

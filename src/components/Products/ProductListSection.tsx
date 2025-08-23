@@ -51,7 +51,7 @@ export default function ProductListSection({
         handleGetAllEventActivities(currentEvent.slug),
         handleGetAllEventProducts(currentEvent.slug),
       ]);
-      setAllActivities(allActivitiesData.data || []);
+      setAllActivities(allActivitiesData.data?.map(item => item.activity) || []);
       setAllProducts(allProductsData.data || []);
       if (allActivitiesData.success && allProductsData.success)
         toast.success("Produtos carregados com sucesso!", { id });

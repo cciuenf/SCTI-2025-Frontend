@@ -1,7 +1,11 @@
 "use server";
 
 import type { ActivityCreationDataI } from "@/schemas/activity-schema";
-import type { ActivityRegistrationI, ActivityResponseI } from "@/types/activity-interface";
+import type { 
+  ActivityRegistrationI, 
+  ActivityResponseI, 
+  ActivityWithSlotResponseI 
+} from "@/types/activity-interface";
 import { actionRequest } from "./_utils";
 
 export async function handleGetUserEventActivities(slug: string) {
@@ -9,7 +13,7 @@ export async function handleGetUserEventActivities(slug: string) {
 }
 
 export async function handleGetAllEventActivities(slug: string) {
-  return actionRequest<null, ActivityResponseI[]>(`/events/${slug}/activities`, { 
+  return actionRequest<null, ActivityWithSlotResponseI[]>(`/events/${slug}/activities`, { 
     withAuth: false 
   });
 }

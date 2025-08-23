@@ -34,7 +34,7 @@ export default async function HomePage() {
       );
     return unified;
   };
-  const resultActivities = await handleGetAllEventActivities("scti");
+  const resultActivities = (await handleGetAllEventActivities("scti")).data;
   const allSupporters = (await getAllSupporter()).filter(
     item => item.product_id === process.env.SUPPORTER_PRODUCT_ID
   );
@@ -50,10 +50,10 @@ export default async function HomePage() {
           atividades práticas nas mais diversas áreas da ciência e tecnologia.
         </p>
         <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-2 w-full px-32">
-          {resultActivities.data && resultActivities.data.length > 0 ? (
-            resultActivities.data.map((card) => (
+          {resultActivities && resultActivities.length > 0 ? (
+            resultActivities.map((card) => (
               <ActivityCard
-                key={card.ID}
+                key={card.activity.ID}
                 data={card}
                 isEventCreator={false}
                 isSubscribed={false}
