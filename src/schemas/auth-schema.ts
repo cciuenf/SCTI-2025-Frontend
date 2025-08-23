@@ -9,9 +9,8 @@ export const signUpFormSchema = z
     email: z.string().email({ message: "Email inválido" }),
     password: z
       .string()
-      .min(8, "A senha deve ter pelo menos 8 caracteres")
-      .max(20, "A senha deve ter no máximo 20 caracteres"),
-    confirm_password: z.string().min(8).max(20),
+      .min(6, "A senha deve ter pelo menos 6 caracteres"),
+    confirm_password: z.string().min(6),
     is_uenf: z.boolean(),
     uenf_semester: z.string().or(z.number()),
     terms: z
@@ -33,8 +32,7 @@ export const loginFormSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
   password: z
     .string()
-    .min(8, "A senha deve ter pelo menos 8 caracteres")
-    .max(20, "A senha deve ter no máximo 20 caracteres"),
+    .min(6, "A senha deve ter pelo menos 6 caracteres"),
 });
 
 export type LoginFormDataI = z.infer<typeof loginFormSchema>;

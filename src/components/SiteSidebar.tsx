@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { getAuthTokens, isEventCreator } from "@/lib/cookies";
+import { getAuthTokens, getUserInfo, isEventCreator } from "@/lib/cookies";
 import { Calendar, Home, LayoutDashboard, User, FolderDot } from "lucide-react";
 
 import Link from "next/link";
@@ -40,6 +40,7 @@ const items = {
 export async function SiteSidebar() {
   const { accessToken, refreshToken } = await getAuthTokens();
   const is_creator = await isEventCreator();
+  const user = await getUserInfo();
 
   return (
     <Sidebar>
@@ -90,7 +91,7 @@ export async function SiteSidebar() {
                   <SidebarMenuButton asChild>
                     <Link href="/profile?view=infos">
                       <User />
-                      <span>Perfil</span>
+                      <span className="truncate">{user?.name} {user?.last_name}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

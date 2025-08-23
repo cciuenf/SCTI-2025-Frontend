@@ -43,7 +43,7 @@ export default async function HomePage() {
     <div className="flex flex-col items-center font-spartan mx-auto">
       <ScrollManager />
       <InfoCarousel />
-      <Connector className="text-center flex flex-col items-center w-screen !mt-20">
+      <Connector id="info" className="text-center flex flex-col items-center w-screen !mt-20">
         <h2 className="text-4xl font-bold">Atividades da Semana</h2>
         <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
           Descubra nossa programação completa com palestras, workshops e
