@@ -16,6 +16,7 @@ import { runWithToast } from "@/lib/client/run-with-toast";
 import useMercadoPago from "@/hooks/use-mercado-pago";
 import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
 import type { ProductBuyDataI } from "@/schemas/product-schema";
+import { useRouter } from "next/navigation";
 
 interface ProductListSectionProps { 
   currentEvent: { id: string; slug: string };
@@ -29,6 +30,7 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
   const [allProducts, setAllProducts] = useState<ProductResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter(); 
 
   const { selectPaymentMethod } = useMercadoPago();
 
@@ -154,7 +156,10 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
         slug={currentEvent.slug}
         product={selectedProduct}
         open={isPurchaseModalOpen}
-        setOpen={setIsPurchaseModalOpen}
+        setOpen={(open) => {
+          setIsPurchaseModalOpen(open);
+          if(!open) router.refresh();
+        }}
         handlePaymentSelector={handlePaymentSelector}
       />}
     </>

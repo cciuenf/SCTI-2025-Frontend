@@ -43,6 +43,7 @@ export interface ProductPixPurchaseResponseI {
   id: string,
   payment_method: PaymentMeyhodI,
   status: string,
+  callback_url?: string;
 }
 
 export type PaymentResult = ProductPixPurchaseResponseI | ProductPurchasesResponseI;
