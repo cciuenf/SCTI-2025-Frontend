@@ -1,15 +1,17 @@
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 
 export interface ServerClientInfoI {
   ip: string;
   userAgent: string;
+  sessionId: string;
 }
 
 export async function getClientInfoFromHeaders(): Promise<ServerClientInfoI> {
-  const headersList = await headers();
-  
+  const h = await headers();
+  const c = await cookies();
   return {
-    ip: headersList.get('x-client-ip') || 'unknown',
-    userAgent: headersList.get('x-client-user-agent') || 'unknown',
+    sessionId: h.get("x-client-session") ?? c.get("client_session_id")?.value ?? "unknown",
+    ip: h.get("x-client-ip") ?? "unknown",
+    userAgent: h.get("x-client-user-agent") ?? "unknown",
   };
 }

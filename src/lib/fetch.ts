@@ -30,7 +30,7 @@ export async function fetchWrapper<T = unknown>(
     const access_token = res.headers.get("X-New-Access-Token");
     const refresh_token = res.headers.get("X-New-Refresh-Token");
 
-    setAuthTokens(access_token, refresh_token);
+    await setAuthTokens(access_token, refresh_token);
 
     const result = (await res.json()) as SuccessResponse<T> | ErrorResponseI;
 

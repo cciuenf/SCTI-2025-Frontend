@@ -1,8 +1,10 @@
 'use server';
 
-import { getAuthTokens } from "@/lib/cookies";
+import { clearAuthTokens, getAuthTokens } from "@/lib/cookies";
 import { fetchWrapper } from "@/lib/fetch";
 import { FetchError } from "@/types/utility-classes";
+import { handleVerifyTokens } from "./auth-actions";
+import { redirect } from "next/navigation";
 
 // is the same as SuccessResponse, but i used a new to difference them
 export type ActionResult<T> = {
@@ -16,6 +18,7 @@ type RequestInitLite<B> = {
   body?: B; // json body stringify
   headers?: Record<string, string>;
   withAuth?: boolean;
+  verify?: boolean
 };
 
 function safeStringify(data: unknown) {
@@ -26,17 +29,34 @@ function safeStringify(data: unknown) {
   }
 }
 
+async function verifyWithRetry(retries = 2) {
+  for (let i = 0; i < retries; i++) {
+    const result = await handleVerifyTokens();
+    if(result.success) return true;
+  }
+  return false;
+}
+
 export async function actionRequest<B, T>(
   path: string,
   init: RequestInitLite<B> = {}
 ): Promise<ActionResult<T>> {
   const method = init.method ?? 'GET';
   const withAuth = init.withAuth ?? true;
+  const willVerify = init.verify ?? true;
 
-const headers: Record<string, string> = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(init.headers ?? {}),
   };
+
+  if(willVerify && withAuth) {
+    const isValid = await verifyWithRetry();
+    if(!isValid) {
+      await clearAuthTokens();
+      redirect("/");
+    }
+  }
 
   if (withAuth) {
     const { accessToken, refreshToken } = await getAuthTokens();
