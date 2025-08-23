@@ -3,23 +3,18 @@ import {
   MapPin,
   Edit3,
   Trash2,
-  Clock,
   Speaker,
   CheckCircle,
   Eye,
   Users,
 } from "lucide-react";
 import { Badge } from "../ui/badge";
-import {
-  cn,
-  formatEventTimeRange,
-  getActivityLevel,
-  getActivityRequirements,
-} from "@/lib/utils";
+import { cn, getActivityRequirements } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { formatEventDateRange } from "@/lib/utils";
 import ConfirmActionButton from "../ConfirmActionButton";
 import type { ActivityResponseI } from "@/types/activity-interface";
+import LevelBadge from "./LevelBadge";
 
 type Props = {
   data: ActivityResponseI;
@@ -82,14 +77,7 @@ const ActivityCard = ({
             >
               {data.type && data.type}
             </Badge>
-            {data.level !== "none" && (
-              <Badge
-                className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
-                title={data.level}
-              >
-                {getActivityLevel(data.level)}
-              </Badge>
-            )}
+            <LevelBadge level={data.level} />
           </div>
           <div className="flex justify-between items-center">
             <MapPin className="text-accent h-4 w-4 mr-2.5" />

@@ -56,19 +56,6 @@ export function formatEventTimeRange(start_date: Date, end_date: Date) {
   return "Horários em dias diferentes";
 }
 
-export function getActivityLevel(level: string) {
-  switch (level) {
-    case "easy":
-      return "Iniciante";
-
-    case "medium":
-      return "Intermediário";
-
-    case "hard":
-      return "Avançado";
-  }
-}
-
 export function getActivityRequirements(reqs: string) {
   const arr = reqs.trim().split(",").sort();
   return arr;
