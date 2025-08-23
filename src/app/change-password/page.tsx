@@ -8,10 +8,9 @@ interface Props {
 const ChangePasswordPage = async ({searchParams}: Props) => {
   const token = (await searchParams).token as string || "";
   if (!token || token.length < 50) redirect("/");
-  
+
   return (
     <div className="h-screen flex items-center justify-center">
-      <ChangePasswordForm token={token} />
       <ChangePasswordForm token={token} />
     </div>
   );

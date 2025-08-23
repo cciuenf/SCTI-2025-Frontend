@@ -13,6 +13,7 @@ import {
 import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { translateMessage } from "@/lib/client/i18n/enToPt";
 
 type Props = {
   setIsLoading?: Dispatch<SetStateAction<boolean>>;
@@ -104,6 +105,36 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
     }
   };
 
+  const handlePasteFromClipboard = async () => {
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+      const digits = clipboardText.replace(/\D/g, "").slice(0, 6);
+
+      if (digits.length === 6) {
+        verifyForm.setValue("digit_1", digits[0]);
+        verifyForm.setValue("digit_2", digits[1]);
+        verifyForm.setValue("digit_3", digits[2]);
+        verifyForm.setValue("digit_4", digits[3]);
+        verifyForm.setValue("digit_5", digits[4]);
+        verifyForm.setValue("digit_6", digits[5]);
+        verifyRef.current?.focus();
+      } else {
+        toast.error(
+          "O conteúdo da área de transferência não parece ser um código válido."
+        );
+      }
+    } catch (error) {
+      if (error instanceof Error && error.name === "NotAllowedError") {
+        console.error("Falha ao ler a área de transferência: ");
+        toast.error(
+          "Permissão para acessar a área de transferência foi negada."
+        );
+      } else {
+        toast.error(`Não foi possível colar o conteúdo.`);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col justify-around items-center gap-3 max-w-md w-full h-60 p-3 rounded-md">
       <Form {...verifyForm}>
@@ -130,6 +161,9 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
                         "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground rounded-md py-6"
                       }
@@ -157,6 +191,9 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
                         "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
@@ -184,6 +221,9 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
                         "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
@@ -211,6 +251,9 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
                         "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
@@ -238,6 +281,9 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
                         "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
@@ -265,6 +311,9 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
                         "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
@@ -274,7 +323,19 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
               )}
             />
           </div>
-          <Button ref={verifyRef}>Verificar</Button>
+          <div className="w-full flex justify-around items-center">
+            <Button ref={verifyRef} variant={"yellow"}>
+              Verificar Conta
+            </Button>
+            <Button
+              variant={"yellow"}
+              className="w-30"
+              type="button"
+              onClick={handlePasteFromClipboard}
+            >
+              Colar
+            </Button>
+          </div>
           {origin == "signup" ? (
             <Button
               type="button"
@@ -284,7 +345,11 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
               Deixar para depois
             </Button>
           ) : (
-            <Button type="button" onClick={resendVerifyToken}>
+            <Button
+              type="button"
+              variant={"yellow"}
+              onClick={resendVerifyToken}
+            >
               Reenviar Código
             </Button>
           )}

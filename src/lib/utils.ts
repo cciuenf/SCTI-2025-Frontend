@@ -27,7 +27,7 @@ export function formatEventDateRange(start_date: Date, end_date: Date) {
   const sameYear = isSameYear(start_date, end_date);
 
   if (sameDay)
-    return format(start_date, "dd 'de' MMMM, yyyy", { locale: ptBR });
+    return format(start_date, "dd 'de' MMMM, HH:mm", { locale: ptBR });
   if (sameMonth && sameYear)
     return `${format(start_date, "dd", { locale: ptBR })}-${format(
       end_date,
@@ -44,19 +44,6 @@ export function formatEventTimeRange(start_date: Date, end_date: Date) {
   if (isSameDay(start_date, end_date))
     return `${format(start_date, "HH:mm")} - ${format(end_date, "HH:mm")}`;
   return "Horários em dias diferentes";
-}
-
-export function getActivityLevel(level: string) {
-  switch (level) {
-    case "easy":
-      return "Iniciante";
-
-    case "medium":
-      return "Intermediário";
-
-    case "hard":
-      return "Avançado";
-  }
 }
 
 export function getActivityRequirements(reqs: string) {
