@@ -15,6 +15,7 @@ import { formatEventDateRange } from "@/lib/utils";
 import ConfirmActionButton from "../ConfirmActionButton";
 import type { ActivityResponseI } from "@/types/activity-interface";
 import LevelBadge from "./LevelBadge";
+import RequirementsHoverCard from "./RequirementsHoverCard";
 
 type Props = {
   data: ActivityResponseI;
@@ -79,15 +80,12 @@ const ActivityCard = ({
             </Badge>
             <LevelBadge level={data.level} />
           </div>
-          <div className="flex justify-between items-center">
-            <MapPin className="text-accent h-4 w-4 mr-2.5" />
-            <h3 className="opacity-90 text-sm">
-              {data.location || "Não Informado"}
-            </h3>
-          </div>
+          {data.requirements && (
+            <RequirementsHoverCard data={data.requirements} />
+          )}
         </div>
 
-        <h2 className="w-full font-bold text-lg truncate" title={data.name}>
+        <h2 className="w-full font-bold text-lg !truncate" title={data.name}>
           {data.name}
         </h2>
 
@@ -104,22 +102,16 @@ const ActivityCard = ({
           <Speaker className="text-accent h-4 w-4 mr-2.5" />
           <h3 className="opacity-90 text-sm">{data.speaker}</h3>
         </div>
+        <div className="flex justify-between items-center">
+          <MapPin className="text-accent h-4 w-4 mr-2.5" />
+          <h3 className="opacity-90 text-sm">
+            {data.location || "Não Informado"}
+          </h3>
+        </div>
 
-        <h3 className="h-9 w-full text-ellipsis overflow-hidden text-left opacity-90 text-sm">
+        <h3 className="h-12 w-full overflow-ellipsis text-left opacity-90 text-sm">
           {data.description || "Não Informado"}
         </h3>
-        {data.requirements && (
-          <>
-            <h3 className="text-sm">Requisitos:</h3>
-            <ul className="flex w-full flex-wrap items-center gap-2 list-disc list-inside marker:text-accent">
-              {getActivityRequirements(data.requirements).map((req, i) => (
-                <li className="text-xs" key={`${req}${Math.random() * i}`}>
-                  {req}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
         <div className="flex w-9/10 h-12 overflow-x-auto overflow-y-hidden gap-3 items-center px-2 mx-auto">
           {data.has_fee && (
             <Badge
