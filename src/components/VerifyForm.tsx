@@ -13,7 +13,6 @@ import {
 import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { translateMessage } from "@/lib/client/i18n/enToPt";
 
 type Props = {
   setIsLoading?: Dispatch<SetStateAction<boolean>>;
