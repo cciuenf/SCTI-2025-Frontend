@@ -32,6 +32,7 @@ type Props = {
   currentView: string;
   user_access_info: UserAccessTokenJwtPayload | null;
   user_refresh_info: UserRefreshTokenJwtPayload | null;
+  refresh_token: string;
   deviceInfos:
     | { os: string | undefined; browser: string | undefined }
     | { os: undefined; browser: undefined };
@@ -41,6 +42,7 @@ const ProfileInfos = ({
   currentView,
   user_access_info,
   user_refresh_info,
+  refresh_token,
   deviceInfos,
 }: Props) => {
   const [accessTokenData, setAccessTokenData] = useState<UserAccessTokenJwtPayload | null>();
@@ -165,7 +167,7 @@ const ProfileInfos = ({
           <p className="text-sm md:text-base font-light">
             Monitore os acessos à sua conta
           </p>
-          <UserLogins />
+          <UserLogins refresh_token={refresh_token} />
         </>
       )}
     </div>
