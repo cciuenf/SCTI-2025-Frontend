@@ -97,7 +97,7 @@ const ActivityCard = ({
         </div>
 
         <h2 className="w-full h-14 px-3 flex items-center" title={data.activity.name}>
-          <span className="w-full text-lg font-bold text-center line-clamp-2 break-words">
+          <span className="w-full text-lg font-bold text-left line-clamp-2 break-words">
             {data.activity.name}
           </span>
         </h2>
