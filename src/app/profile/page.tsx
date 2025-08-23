@@ -38,6 +38,7 @@ const ProfilePage = async ({ searchParams }: Props) => {
         <ProfileInfos
           user_access_info={user_access_info}
           user_refresh_info={user_refresh_info}
+          refresh_token={refresh_token || ""}
           currentView={view}
           deviceInfos={deviceInfos.data}
         />

@@ -8,7 +8,13 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "SCTI - 2025",
-  description: "Front-end da plataforma a ser usado na SCTI-2025",
+  description: "Semana da Ciência e Tecnologia da Informação da UENF — palestras, minicursos, hackathon e inovação em Campos dos Goytacazes.",
+  openGraph: {
+    title: "SCTI - 2025",
+    description: "Semana da Ciência e Tecnologia da Informação da UENF — palestras, minicursos, hackathon e inovação em Campos dos Goytacazes.",
+    siteName: "SCTI",
+    locale: "pt_BR"
+  },
   icons: {
     icon: "/logo.png",
   },

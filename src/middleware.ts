@@ -1,7 +1,5 @@
-import { handleVerifyTokens } from "@/actions/auth-actions";
 import { type NextRequest, NextResponse } from "next/server";
 import { clearAuthTokens, getAuthTokens } from "./lib/cookies";
-import { isAccessTokenExpired } from "./lib/utils";
 
 export async function middleware(request: NextRequest) {
   const clientIP = getClientIP(request);
@@ -16,26 +14,14 @@ export async function middleware(request: NextRequest) {
     const { accessToken, refreshToken } = await getAuthTokens();
     if(!accessToken || !refreshToken) {
       await clearAuthTokens();
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL('/', request.url));
     }
-    
-    if(isAccessTokenExpired(accessToken)) return response;
-    
-    try {
-      const verify = await handleVerifyTokens();
-      if(verify.status === 200) return response;
-      await clearAuthTokens();
-    } catch {
-      await clearAuthTokens();
-    } finally { 
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-    
+    return response;
   }
   return response;
 }
   
-export const config = { }  
+export const config = { matcher: ["/:path*"] }  
 
 function getClientIP(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for');

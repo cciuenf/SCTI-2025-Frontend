@@ -15,6 +15,7 @@ export interface ProductResponseI {
   description: string,
   price_int: number,
   quantity: number,
+  token_quantity?: number;
   is_physical_item: boolean,
   is_public: boolean,
   is_blocked: boolean,
@@ -38,10 +39,21 @@ export interface ProductPurchasesResponseI {
   purchased_at: string,
 }
 
+export interface UserProductPurchasesResponseI {
+  id: string,
+  user_id: string;
+  product_id: string,
+  purchase_id: string,
+  quantity: number,
+  received_as_gift: boolean,
+  gifted_from_id: string,
+}
+
 export interface ProductPixPurchaseResponseI {
   id: string,
   payment_method: PaymentMeyhodI,
   status: string,
+  callback_url?: string;
 }
 
 export type PaymentResult = ProductPixPurchaseResponseI | ProductPurchasesResponseI;

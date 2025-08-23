@@ -1,5 +1,5 @@
 "use client";
-import { Calendar, Edit3, Trash2, Store } from "lucide-react";
+import { Calendar, Edit3, Trash2, Store, Coins } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn, convertNumberToBRL, formatFullDate } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -139,7 +139,7 @@ const ProductCard = ({
             className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
             title="Token de Atividade"
           >
-            Token de Atividade
+            <Coins /> +{data.token_quantity || 0}
           </Badge>}
         </div>
         <h2 className="font-bold text-secondary text-xl">

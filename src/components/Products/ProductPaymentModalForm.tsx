@@ -5,6 +5,7 @@ import type { ProductBuyDataI } from "@/schemas/product-schema";
 import type { PaymentResult, ProductResponseI } from "@/types/product-interfaces";
 import { customization } from "@/lib/paymentCustomization";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   product: ProductResponseI;
@@ -22,14 +23,16 @@ interface Props {
 
 export const ProductPaymentModalForm = (props: Props)  => {
   const [paymentId, setPaymentId] = useState<string | null>(null);
+  const router = useRouter();
   
   const handleSubmit = async (pay: IPaymentFormData) => {
     setPaymentId(null);
     const result = await props.handlePaymentSelector(pay, props.buyableProduct);
-    if(result.id) setPaymentId(result.id);
+    if(result.id != null) setPaymentId(result.id);
     else {
       props.onOpenChange(false);
       props.onBuyableChange(null);
+      router.refresh();
     }
   }
    

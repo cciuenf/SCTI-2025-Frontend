@@ -7,6 +7,7 @@ import type {
   ProductPurchasesResourceResponseI, 
   ProductPurchasesResponseI, 
   ProductResponseI, 
+  UserProductPurchasesResponseI, 
   UserTokensResponseI 
 } from "@/types/product-interfaces";
 import { actionRequest } from "./_utils";
@@ -78,4 +79,10 @@ export async function handleGetAllUserProductsPurchases() {
 
 export async function handleGetAllUserTokens() {
   return actionRequest<null, UserTokensResponseI[]>("/user-tokens");
+}
+
+export async function handleGetAllPurchasedProducts() {
+  return actionRequest<null, UserProductPurchasesResponseI[]>("/all-user-products-relation", {
+    withAuth: false,
+  });
 }

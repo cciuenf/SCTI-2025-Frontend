@@ -22,6 +22,7 @@ import { runWithToast } from "@/lib/client/run-with-toast";
 import useMercadoPago from "@/hooks/use-mercado-pago";
 import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
 import type { ProductBuyDataI } from "@/schemas/product-schema";
+import { useRouter } from "next/navigation";
 
 interface ProductListSectionProps {
   currentEvent: { id: string; slug: string };
@@ -38,6 +39,7 @@ export default function ProductListSection({
   const [allProducts, setAllProducts] = useState<ProductResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter(); 
 
   const { selectPaymentMethod } = useMercadoPago();
 
@@ -89,18 +91,14 @@ export default function ProductListSection({
     );
   };
 
-  const handlePaymentSelector = async (
-    pay: IPaymentFormData,
-    buyableProduct: ProductBuyDataI
-  ) => {
+  const handlePaymentSelector = async (pay: IPaymentFormData, buyableProduct: ProductBuyDataI) => {
     const result = await selectPaymentMethod(
-      pay,
-      currentEvent.slug,
-      selectedProduct,
+      pay, 
+      currentEvent.slug, 
+      selectedProduct, 
       buyableProduct
     );
-    if (!result.id)
-      handleProductPurchase(result.data as ProductPurchasesResponseI);
+    if (result.data != null && "product_id" in result.data) handleProductPurchase(result.data);    
     return result;
   };
 
@@ -182,15 +180,17 @@ export default function ProductListSection({
         onProductCreate={handleProductCreate}
         onProductUpdate={handleProductUpdate}
       />
-      {selectedProduct && (
-        <ProductBuyModalForm
-          slug={currentEvent.slug}
-          product={selectedProduct}
-          open={isPurchaseModalOpen}
-          setOpen={setIsPurchaseModalOpen}
-          handlePaymentSelector={handlePaymentSelector}
-        />
-      )}
+
+      {selectedProduct && <ProductBuyModalForm
+        slug={currentEvent.slug}
+        product={selectedProduct}
+        open={isPurchaseModalOpen}
+        setOpen={(open) => {
+          setIsPurchaseModalOpen(open);
+          if(!open) router.refresh();
+        }}
+        handlePaymentSelector={handlePaymentSelector}
+      />}
     </>
   );
 }

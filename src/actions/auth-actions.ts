@@ -50,32 +50,8 @@ export async function handleRevokeToken(token: string) {
   });
 }
 
-export async function handleVerifyTokens(): Promise<{
-  status: number;
-  message: string;
-}> {
-  try {
-    const { accessToken, refreshToken } = await getAuthTokens();
-    const res = await fetchWrapper("verify-tokens", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { status: res.status, message: "Você está autenticado!" };
-  } catch (err: unknown) {
-    if (err instanceof FetchError) {
-      console.error("Erro ao verificar autenticação: ", err.message);
-      return { status: err.status, message: err.message };
-    } else {
-      console.error("Erro ao verificar autenticação: ", err);
-      return {
-        status: 500,
-        message: "Erro desconhecido ao verificar autenticação",
-      };
-    }
-  }
+export async function handleVerifyTokens() {
+  return actionRequest<null, null>("secure-verify-tokens", { method: "POST", verify: false });
 }
 
 export async function handleIsVerified(): Promise<boolean | string> {

@@ -51,5 +51,9 @@
   "password reset email sent": "E-mail de redefinição de senha enviado",
   "logged out successfully": "Logout realizado com sucesso",
   "registration already exists: failed to register to activity: user already registered to this activity":
-    "O usuário já está inscrito nesta atividade"
+    "O usuário já está inscrito nesta atividade",
+  "refresh token not found or revoked": "Você não tem permissão de acesso",
+  "error starting pix purchase: not enough quantity available, want {n} have {n}":
+    "Quantidade insuficiente disponível, desejado {n}, disponível {n}",
+  "error starting pix purchase: user is not registered to this event": "O usuário não é registrado no evento"
 }
