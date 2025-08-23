@@ -26,7 +26,7 @@ export const ProductPaymentModalForm = (props: Props)  => {
   const handleSubmit = async (pay: IPaymentFormData) => {
     setPaymentId(null);
     const result = await props.handlePaymentSelector(pay, props.buyableProduct);
-    if(result.id) setPaymentId(result.id);
+    if(result.id != null) setPaymentId(result.id);
     else {
       props.onOpenChange(false);
       props.onBuyableChange(null);

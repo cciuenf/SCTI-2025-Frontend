@@ -15,6 +15,7 @@ export interface ProductResponseI {
   description: string,
   price_int: number,
   quantity: number,
+  token_quantity?: number;
   is_physical_item: boolean,
   is_public: boolean,
   is_blocked: boolean,

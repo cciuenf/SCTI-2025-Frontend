@@ -82,7 +82,7 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
 
   const handlePaymentSelector = async (pay: IPaymentFormData, buyableProduct: ProductBuyDataI) => {
     const result = await selectPaymentMethod(pay, currentEvent.slug, selectedProduct, buyableProduct);
-    if (!result.id) handleProductPurchase(result.data as ProductPurchasesResponseI);    
+    if (result.data != null && "product_id" in result.data) handleProductPurchase(result.data);    
     return result;
   }
 
