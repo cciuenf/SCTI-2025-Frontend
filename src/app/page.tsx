@@ -2,7 +2,6 @@ import InfoCarousel from "@/components/Home/InfoCarousel";
 import Connector from "@/components/ui/Generic/Connector";
 import { handleGetAllEventActivities } from "@/actions/activity-actions";
 import ActivityCard from "@/components/Activities/ActivityCard";
-import Sponsor from "@/components/Home/Sponsor";
 import AutoScrollSponsors from "@/components/Home/AutoScrollSponsors";
 import ScrollManager from "@/components/ScrollManager";
 

@@ -20,7 +20,6 @@ import { Button } from "../ui/button";
 import { formatEventDateRange } from "@/lib/utils";
 import ConfirmActionButton from "../ConfirmActionButton";
 import type { ActivityResponseI } from "@/types/activity-interface";
-import { lightFormat } from "date-fns";
 
 type Props = {
   data: ActivityResponseI;
@@ -70,7 +69,8 @@ const ActivityCard = ({
     <div
       className={cn(
         "not-md:min-w-80 min-w-auto flex flex-col justify-left items-center bg-white rounded-lg shadow-md",
-        "px-1 py-3 transition-all hover:scale-105"
+        "px-1 py-3 transition-all hover:scale-105",
+        data.has_fee && "bg-gray-50"
       )}
     >
       <div className="w-full flex flex-col justify-between items-start gap-3.5 px-2 h-full">
@@ -262,7 +262,7 @@ const ActivityCard = ({
               className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
               title={data.type}
             >
-              {data.type}
+              {data.type.charAt(0).toUpperCase() + data.type.substring(1)}
             </Badge>
           )}
         </div>
@@ -276,7 +276,7 @@ const ActivityCard = ({
                 : "bg-accent text-secondary font-medium hover:text-accent hover:bg-secondary"
             )}
           >
-            {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
+            {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"} {data.has_fee && !isSubscribed && "(1 Token)"}
           </Button>
         )}
       </div>

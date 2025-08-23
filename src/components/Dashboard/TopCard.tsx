@@ -37,7 +37,7 @@ const TopCard = ({ type, data }: Props) => {
           }));
 
           const total: number = purchasesWithProducts.reduce((acc, p) => {
-            if (p.is_delivered && p.product) {
+            if (p.product) {
               acc = acc + p.product?.price_int;
             }
 
