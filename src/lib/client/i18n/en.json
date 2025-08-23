@@ -55,5 +55,6 @@
   "refresh token not found or revoked": "Você não tem permissão de acesso",
   "error starting pix purchase: not enough quantity available, want {n} have {n}":
     "Quantidade insuficiente disponível, desejado {n}, disponível {n}",
-  "error starting pix purchase: user is not registered to this event": "O usuário não é registrado no evento"
+  "error starting pix purchase: user is not registered to this event": "O usuário não é registrado no evento",
+  "error unregistering from activity: this activity requires a token or payment": "Essa atividade necessita de token ou pagamento"
 }
