@@ -39,6 +39,16 @@ export interface ProductPurchasesResponseI {
   purchased_at: string,
 }
 
+export interface UserProductPurchasesResponseI {
+  id: string,
+  user_id: string;
+  product_id: string,
+  purchase_id: string,
+  quantity: number,
+  received_as_gift: boolean,
+  gifted_from_id: string,
+}
+
 export interface ProductPixPurchaseResponseI {
   id: string,
   payment_method: PaymentMeyhodI,
