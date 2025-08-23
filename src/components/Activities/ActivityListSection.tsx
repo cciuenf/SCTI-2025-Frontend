@@ -68,7 +68,7 @@ export default function ActivityListSection({
       setMyActivities(myActivitiesData.data || []);
       if (allActivitiesData.success && myActivitiesData.success)
         toast.success('Atividades carregadas com sucesso!', { id });
-      else if(!allActivitiesData.success && !myActivitiesData.success) 
+      else if(!allActivitiesData.success && !myActivitiesData.success)
         toast.error("Erro ao carregar as atividades", { id });
       else toast.error('Falha ao carregar alguma das atividades', { id });
       setIsLoading(false);
@@ -81,7 +81,7 @@ export default function ActivityListSection({
 
   if (isLoading) {
     return (
-      <div className="w-full max-w-5xl mt-6">
+      <div className="w-full max-w-6xl mt-6">
         <div className="flex w-full gap-2 mb-6">
           <div className="flex-1 bg-white rounded-lg shadow-md h-10 flex items-center justify-center animate-pulse" />
           <div className="flex-1 bg-white rounded-lg shadow-md h-10 flex items-center justify-center animate-pulse" />
@@ -176,7 +176,7 @@ export default function ActivityListSection({
     if (res.success) {
       setMyActivities((prev) => prev.filter((a) => a.ID !== data.ID));
       if(data.has_fee) {
-        setUserTokens((prev) => 
+        setUserTokens((prev) =>
           prev.map((t) => t.used_for_id === data.ID ? {
             ...t, is_used: false,  used_for_id: ""
           }: t)
@@ -187,7 +187,7 @@ export default function ActivityListSection({
 
   return (
     <>
-      <div 
+      <div
         className={cn(
           "fixed top-2 right-2 w-32 h-8 px-4 py-2 rounded-full z-[160]",
           "flex justify-center items-center shadow-lg font-bold text-sm",
@@ -247,7 +247,7 @@ export default function ActivityListSection({
       </div>
 
       {currentData.length !== 0 ? (
-        <div className="w-full max-w-5xl my-6">
+        <div className="w-full max-w-6xl my-6">
           <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4">
             {currentData.map((activity) => (
               <ActivityCard

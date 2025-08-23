@@ -74,89 +74,28 @@ const ActivityCard = ({
       )}
     >
       <div className="w-full flex flex-col justify-between items-start gap-3.5 px-2 h-full">
-        <div className="w-full flex justify-between">
-          <Badge
-            className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
-            title={
-              data.is_standalone ? data.standalone_slug.toUpperCase() : "Evento"
-            }
-          >
-            {data.is_standalone ? data.standalone_slug.toUpperCase() : "Evento"}
-          </Badge>
-          <div className="flex items-center gap-3">
-            {isEventCreator && (
-              <>
-                <span
-                  title="Marcar Presença"
-                  role="img"
-                  aria-label="Marcar Presença"
-                >
-                  <CheckCircle
-                    className={cn(
-                      "w-5 h-5 cursor-pointer transition-transform duration-200",
-                      "hover:text-accent hover:scale-125"
-                    )}
-                    onClick={() =>
-                      onPresenceManagerOpen && onPresenceManagerOpen(data)
-                    }
-                  />
-                </span>
-                <span
-                  title="Ver Presenças"
-                  role="img"
-                  aria-label="Ver Presenças"
-                >
-                  <Eye
-                    className={cn(
-                      "w-5 h-5 cursor-pointer transition-transform duration-200",
-                      "hover:text-accent hover:scale-125"
-                    )}
-                    onClick={() =>
-                      onViewUsersOpen && onViewUsersOpen(false, data)
-                    }
-                  />
-                </span>
-                <span
-                  title="Ver Inscrições"
-                  role="img"
-                  aria-label="Ver Inscrições"
-                >
-                  <Users
-                    className={cn(
-                      "w-5 h-5 cursor-pointer transition-transform duration-200",
-                      "hover:text-accent hover:scale-125"
-                    )}
-                    onClick={() =>
-                      onViewUsersOpen && onViewUsersOpen(true, data)
-                    }
-                  />
-                </span>
-                <span title="Editar" role="img" aria-label="Editar">
-                  <Edit3
-                    className={cn(
-                      "w-5 h-5 cursor-pointer transition-transform duration-200",
-                      "hover:text-accent hover:scale-125"
-                    )}
-                    onClick={handleEdit}
-                  />
-                </span>
-                <ConfirmActionButton
-                  trigger={(onClick) => (
-                    <span title="Deletar" role="img" aria-label="Deletar">
-                      <Trash2
-                        className={cn(
-                          "w-5 h-5 cursor-pointer transition-transform duration-200",
-                          "hover:text-red-500 hover:scale-125"
-                        )}
-                        onClick={onClick}
-                      />
-                    </span>
-                  )}
-                  message="Tem certeza que deseja apagar essa atividade?"
-                  onConfirm={handleDelete}
-                />
-              </>
+        <div className="w-full flex justify-between px-0.5">
+          <div className="flex gap-2">
+            <Badge
+              className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
+              title={data.type && data.type}
+            >
+              {data.type && data.type}
+            </Badge>
+            {data.level !== "none" && (
+              <Badge
+                className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
+                title={data.level}
+              >
+                {getActivityLevel(data.level)}
+              </Badge>
             )}
+          </div>
+          <div className="flex justify-between items-center">
+            <MapPin className="text-accent h-4 w-4 mr-2.5" />
+            <h3 className="opacity-90 text-sm">
+              {data.location || "Não Informado"}
+            </h3>
           </div>
         </div>
 
@@ -174,23 +113,8 @@ const ActivityCard = ({
           </h3>
         </div>
         <div className="flex justify-between items-center">
-          <Clock className="text-accent h-4 w-4 mr-2.5" />
-          <h3 className="opacity-90 text-sm">
-            {formatEventTimeRange(
-              new Date(data.start_time),
-              new Date(data.end_time)
-            )}
-          </h3>
-        </div>
-        <div className="flex justify-between items-center">
           <Speaker className="text-accent h-4 w-4 mr-2.5" />
           <h3 className="opacity-90 text-sm">{data.speaker}</h3>
-        </div>
-        <div className="flex justify-between items-center">
-          <MapPin className="text-accent h-4 w-4 mr-2.5" />
-          <h3 className="opacity-90 text-sm">
-            {data.location || "Não Informado"}
-          </h3>
         </div>
 
         <h3 className="h-9 w-full text-ellipsis overflow-hidden text-left opacity-90 text-sm">
@@ -200,23 +124,15 @@ const ActivityCard = ({
           <>
             <h3 className="text-sm">Requisitos:</h3>
             <ul className="flex w-full flex-wrap items-center gap-2 list-disc list-inside marker:text-accent">
-            {getActivityRequirements(data.requirements).map((req, i) => (
-              <li className="text-xs" key={`${req}${Math.random() * i}`}>
-                {req}
-              </li>
-            ))}
-           </ul>
+              {getActivityRequirements(data.requirements).map((req, i) => (
+                <li className="text-xs" key={`${req}${Math.random() * i}`}>
+                  {req}
+                </li>
+              ))}
+            </ul>
           </>
         )}
         <div className="flex w-9/10 h-12 overflow-x-auto overflow-y-hidden gap-3 items-center px-2 mx-auto">
-          {data.level !== "none" && (
-            <Badge
-              className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
-              title={data.level}
-            >
-              {getActivityLevel(data.level)}
-            </Badge>
-          )}
           {data.has_fee && (
             <Badge
               className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
@@ -231,14 +147,6 @@ const ActivityCard = ({
               title="Bloqueado"
             >
               Bloqueado
-            </Badge>
-          )}
-          {data.is_mandatory && (
-            <Badge
-              className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
-              title="Obrigatório"
-            >
-              Obrigatório
             </Badge>
           )}
           {data.is_hidden && (
@@ -257,13 +165,75 @@ const ActivityCard = ({
               Independente
             </Badge>
           )}
-          {data.type && (
-            <Badge
-              className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
-              title={data.type}
-            >
-              {data.type.charAt(0).toUpperCase() + data.type.substring(1)}
-            </Badge>
+        </div>
+
+        <div className="flex w-3/5 items-center justify-around mx-auto">
+          {isEventCreator && (
+            <>
+              <span
+                title="Marcar Presença"
+                role="img"
+                aria-label="Marcar Presença"
+              >
+                <CheckCircle
+                  className={cn(
+                    "w-5 h-5 cursor-pointer transition-transform duration-200",
+                    "hover:text-accent hover:scale-125"
+                  )}
+                  onClick={() =>
+                    onPresenceManagerOpen && onPresenceManagerOpen(data)
+                  }
+                />
+              </span>
+              <span title="Ver Presenças" role="img" aria-label="Ver Presenças">
+                <Eye
+                  className={cn(
+                    "w-5 h-5 cursor-pointer transition-transform duration-200",
+                    "hover:text-accent hover:scale-125"
+                  )}
+                  onClick={() =>
+                    onViewUsersOpen && onViewUsersOpen(false, data)
+                  }
+                />
+              </span>
+              <span
+                title="Ver Inscrições"
+                role="img"
+                aria-label="Ver Inscrições"
+              >
+                <Users
+                  className={cn(
+                    "w-5 h-5 cursor-pointer transition-transform duration-200",
+                    "hover:text-accent hover:scale-125"
+                  )}
+                  onClick={() => onViewUsersOpen && onViewUsersOpen(true, data)}
+                />
+              </span>
+              <span title="Editar" role="img" aria-label="Editar">
+                <Edit3
+                  className={cn(
+                    "w-5 h-5 cursor-pointer transition-transform duration-200",
+                    "hover:text-accent hover:scale-125"
+                  )}
+                  onClick={handleEdit}
+                />
+              </span>
+              <ConfirmActionButton
+                trigger={(onClick) => (
+                  <span title="Deletar" role="img" aria-label="Deletar">
+                    <Trash2
+                      className={cn(
+                        "w-5 h-5 cursor-pointer transition-transform duration-200",
+                        "hover:text-red-500 hover:scale-125"
+                      )}
+                      onClick={onClick}
+                    />
+                  </span>
+                )}
+                message="Tem certeza que deseja apagar essa atividade?"
+                onConfirm={handleDelete}
+              />
+            </>
           )}
         </div>
         {onRegister && onUnregister && (
@@ -276,7 +246,8 @@ const ActivityCard = ({
                 : "bg-accent text-secondary font-medium hover:text-accent hover:bg-secondary"
             )}
           >
-            {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"} {data.has_fee && !isSubscribed && "(1 Token)"}
+            {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}{" "}
+            {data.has_fee && !isSubscribed && "(1 Token)"}
           </Button>
         )}
       </div>

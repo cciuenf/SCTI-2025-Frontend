@@ -21,7 +21,7 @@ const SlugEventPage = async (props: Props) => {
 
   const eventRes = await handleGetSlugCreatedEvent(slug);
   if (!eventRes || !eventRes.data) redirect("/events");
-  
+
   return (
     <Connector className="flex flex-col mx-auto items-center justify-center !mt-20 text-center">
       <h1 className="xl:text-6xl text-4xl font-bold mt-20">{ eventRes?.data.Name }</h1>
@@ -43,7 +43,7 @@ const SlugEventPage = async (props: Props) => {
         {eventRes?.data && <EventManagementActions isEventCreator={isEventCreator} event={eventRes.data}/> }
       </div>
       <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">Atividades</h2>
-      <div className="w-full max-w-4xl px-4">
+      <div className="w-full max-w-6xl px-4">
         {eventRes?.data && user_info &&
           <ActivityListSection
             isEventCreator={isEventCreator}
@@ -53,7 +53,7 @@ const SlugEventPage = async (props: Props) => {
         }
       </div>
       <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">Produtos</h2>
-      <div className="w-full max-w-4xl px-4">
+      <div className="w-full max-w-6xl px-4">
         {eventRes?.data &&
           <ProductListSection
             currentEvent={{id: eventRes.data.ID, slug: slug}}

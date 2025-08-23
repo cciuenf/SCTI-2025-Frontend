@@ -2,9 +2,15 @@
 
 import { useState, useEffect } from "react";
 import ProductModalForm from "./ProductModalForm";
-import type { ProductPurchasesResponseI, ProductResponseI } from "@/types/product-interfaces";
+import type {
+  ProductPurchasesResponseI,
+  ProductResponseI,
+} from "@/types/product-interfaces";
 import type { ActivityResponseI } from "@/types/activity-interface";
-import { handleDeleteProduct, handleGetAllEventProducts } from "@/actions/product-actions";
+import {
+  handleDeleteProduct,
+  handleGetAllEventProducts,
+} from "@/actions/product-actions";
 import { handleGetAllEventActivities } from "@/actions/activity-actions";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -17,12 +23,15 @@ import useMercadoPago from "@/hooks/use-mercado-pago";
 import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
 import type { ProductBuyDataI } from "@/schemas/product-schema";
 
-interface ProductListSectionProps { 
+interface ProductListSectionProps {
   currentEvent: { id: string; slug: string };
   isEventCreator: boolean;
 }
 
-export default function ProductListSection({ currentEvent, isEventCreator }: ProductListSectionProps) {
+export default function ProductListSection({
+  currentEvent,
+  isEventCreator,
+}: ProductListSectionProps) {
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ProductResponseI>();
@@ -34,7 +43,7 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const id = toast.loading('Carregando Produtos...');
+      const id = toast.loading("Carregando Produtos...");
       setLoading(true);
       const [allActivitiesData, allProductsData] = await Promise.all([
         handleGetAllEventActivities(currentEvent.slug),
@@ -43,8 +52,8 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
       setAllActivities(allActivitiesData.data || []);
       setAllProducts(allProductsData.data || []);
       if (allActivitiesData.success && allProductsData.success)
-        toast.success('Produtos carregados com sucesso!', { id });
-      else toast.error('Falha ao carregar os produtos', { id });
+        toast.success("Produtos carregados com sucesso!", { id });
+      else toast.error("Falha ao carregar os produtos", { id });
       setLoading(false);
     };
     fetchProducts();
@@ -52,7 +61,7 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
 
   if (loading) {
     return (
-      <div className="w-full max-w-5xl mt-6">
+      <div className="w-full max-w-6xl mt-6">
         <div className="flex w-full gap-2 mb-6">
           <div className="flex-1 bg-white rounded-lg shadow-md h-10 flex items-center justify-center animate-pulse" />
         </div>
@@ -64,33 +73,51 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
   const openCreationProductModal = (productToUpdate?: ProductResponseI) => {
     setSelectedProduct(productToUpdate);
     setIsCreationModalOpen(true);
-  }
+  };
   const openPurchaseProductModal = (productToBuy: ProductResponseI) => {
     setSelectedProduct(productToBuy);
     setIsPurchaseModalOpen(true);
-  }
-  
+  };
+
   const handleProductCreate = (newProduct: ProductResponseI) => {
-    setAllProducts(prev => [...prev, newProduct]);
+    setAllProducts((prev) => [...prev, newProduct]);
   };
 
   const handleProductUpdate = (updatedProduct: ProductResponseI) => {
-    setAllProducts(prev =>
-      prev.map(p => p.ID === updatedProduct.ID ? updatedProduct : p)
+    setAllProducts((prev) =>
+      prev.map((p) => (p.ID === updatedProduct.ID ? updatedProduct : p))
     );
   };
 
-  const handlePaymentSelector = async (pay: IPaymentFormData, buyableProduct: ProductBuyDataI) => {
-    const result = await selectPaymentMethod(pay, currentEvent.slug, selectedProduct, buyableProduct);
-    if (!result.id) handleProductPurchase(result.data as ProductPurchasesResponseI);    
+  const handlePaymentSelector = async (
+    pay: IPaymentFormData,
+    buyableProduct: ProductBuyDataI
+  ) => {
+    const result = await selectPaymentMethod(
+      pay,
+      currentEvent.slug,
+      selectedProduct,
+      buyableProduct
+    );
+    if (!result.id)
+      handleProductPurchase(result.data as ProductPurchasesResponseI);
     return result;
-  }
+  };
 
-  const handleProductPurchase = (purchasedProduct: ProductPurchasesResponseI) => {
-    setAllProducts(prev =>
-      prev.map(p => p.ID === purchasedProduct.product_id 
-        ? {...p, quantity: Math.max((p.quantity || 0) - purchasedProduct.quantity, 0)} 
-        : p
+  const handleProductPurchase = (
+    purchasedProduct: ProductPurchasesResponseI
+  ) => {
+    setAllProducts((prev) =>
+      prev.map((p) =>
+        p.ID === purchasedProduct.product_id
+          ? {
+              ...p,
+              quantity: Math.max(
+                (p.quantity || 0) - purchasedProduct.quantity,
+                0
+              ),
+            }
+          : p
       )
     );
   };
@@ -99,17 +126,18 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
     const result = await runWithToast(
       handleDeleteProduct({ product_id: product_id }, currentEvent.slug),
       {
-        loading: 'Apagando o produto...',
+        loading: "Apagando o produto...",
         success: () => "Produto apagado com sucesso!",
         error: () => "Erro ao apagar o produto",
       }
     );
-    if (result.success) setAllProducts(prev => prev.filter(p => p.ID !== product_id));
+    if (result.success)
+      setAllProducts((prev) => prev.filter((p) => p.ID !== product_id));
   };
 
   return (
     <>
-      {isEventCreator &&
+      {isEventCreator && (
         <Button
           onClick={() => openCreationProductModal()}
           className={cn(
@@ -121,9 +149,9 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
         >
           <h2>Criar Produto</h2>
         </Button>
-      }
+      )}
       {allProducts.length !== 0 ? (
-        <div className="w-full max-w-5xl my-6">
+        <div className="w-full max-w-6xl my-6">
           <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4">
             {allProducts?.map((product) => (
               <ProductCard
@@ -131,14 +159,18 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
                 data={product}
                 isEventCreator={isEventCreator}
                 onOpenPurchaseModal={openPurchaseProductModal}
-                onUpdateFormOpen={() => isEventCreator ? openCreationProductModal(product) : null}
+                onUpdateFormOpen={() =>
+                  isEventCreator ? openCreationProductModal(product) : null
+                }
                 onDelete={handleProductDelete}
               />
             ))}
           </div>
         </div>
       ) : (
-        <p className="mt-6 mb-10 text-center">Sem produtos disponíveis nessa seção</p>
+        <p className="mt-6 mb-10 text-center">
+          Sem produtos disponíveis nessa seção
+        </p>
       )}
       <ProductModalForm
         currentEvent={currentEvent}
@@ -150,13 +182,15 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
         onProductCreate={handleProductCreate}
         onProductUpdate={handleProductUpdate}
       />
-      {selectedProduct && <ProductBuyModalForm
-        slug={currentEvent.slug}
-        product={selectedProduct}
-        open={isPurchaseModalOpen}
-        setOpen={setIsPurchaseModalOpen}
-        handlePaymentSelector={handlePaymentSelector}
-      />}
+      {selectedProduct && (
+        <ProductBuyModalForm
+          slug={currentEvent.slug}
+          product={selectedProduct}
+          open={isPurchaseModalOpen}
+          setOpen={setIsPurchaseModalOpen}
+          handlePaymentSelector={handlePaymentSelector}
+        />
+      )}
     </>
   );
 }
