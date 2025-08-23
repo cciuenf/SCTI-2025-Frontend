@@ -8,41 +8,36 @@ import { handleGetAllPurchasedProducts } from "@/actions/product-actions";
 import { handleGetUsersInfo } from "@/actions/user-actions";
 import type { UserBasicInfo } from "@/types/auth-interfaces";
 import type { UserProductPurchasesResponseI } from "@/types/product-interfaces";
+import React from "react";
 
 type Supporter = UserBasicInfo & UserProductPurchasesResponseI
 
-async function getAllSupporter () {
-  const resultProducts = await handleGetAllPurchasedProducts();
-  const products = resultProducts.data || []
-  const ids = products.map(item => item.user_id)
-  const resultUsers = (await handleGetUsersInfo({ id_array: ids })).data || [];
-
-  const combined = products.map((reg, idx) => ({
-    ...reg,
-    ...resultUsers[idx]
-  }));
-  console.log("------------------- INICIO HOME -------------------------------");
-  console.log(combined);
-  const unified = Array.from(
-    combined.reduce<Map<string, Supporter>>((map, curr) => {
-      const key = `${curr.user_id}-${curr.product_id}`;
-      if (map.has(key)) map.get(key)!.quantity += curr.quantity;
-      else map.set(key, { ...curr });
-      return map;
-    }, new Map()).values()
-  );
-  console.log(unified);
-
-  return unified;
-}
 
 export default async function HomePage() {
+  async function getAllSupporter () {
+    const resultProducts = await handleGetAllPurchasedProducts();
+    const products = resultProducts.data || []
+    const ids = products.map(item => item.user_id)
+    const resultUsers = (await handleGetUsersInfo({ id_array: ids })).data || [];
+  
+    const combined = products.map((reg, idx) => ({
+        ...reg,
+        ...resultUsers[idx]
+      }));
+      const unified = Array.from(
+        combined.reduce<Map<string, Supporter>>((map, curr) => {
+          const key = `${curr.user_id}-${curr.product_id}`;
+          if (map.has(key)) map.get(key)!.quantity += curr.quantity;
+          else map.set(key, { ...curr });
+          return map;
+        }, new Map()).values()
+      );
+    return unified;
+  };
   const resultActivities = await handleGetAllEventActivities("scti");
   const allSupporters = (await getAllSupporter()).filter(
     item => item.product_id === process.env.SUPPORTER_PRODUCT_ID
   );
-  console.log(allSupporters);
-  console.log("------------------- FIM HOME -------------------------------");
 
   return (
     <div className="flex flex-col items-center font-spartan mx-auto">
@@ -84,11 +79,14 @@ export default async function HomePage() {
             sponsors={[{ text: "Alura", imagePath: "alura-light.svg" }, {text: "Código de Ouro", imagePath: "/img/sponsors/codigoouro.png"}]}
           />
         </div>
-        <h2 className="text-4xl font-bold my-2">Nossos Apoiadores</h2>
-        <div className="flex flex-wrap items-center gap-4">
+        <h2 className="text-4xl font-bold my-4">Nossos Apoiadores</h2>
+        <div className="flex flex-wrap items-center gap-4 mt-2">
           {allSupporters && allSupporters.length > 0 ? (
-            allSupporters.map((prod) => (
-              <p key={prod.id}>{prod.Name} {prod.last_name} X {prod.quantity}</p>
+            allSupporters.map((prod, i) => (
+              <React.Fragment key={prod.id}>
+                <p>{prod.Name} {prod.last_name} X {prod.quantity}</p>
+                {i < allSupporters.length - 1 && <span>•</span>}
+              </React.Fragment>
             ))
           ): (
             <p className="col-span-full text-center text-gray-500">
