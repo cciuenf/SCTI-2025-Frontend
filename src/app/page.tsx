@@ -21,18 +21,17 @@ async function getAllSupporter () {
     ...reg,
     ...resultUsers[idx]
   }));
-
+  console.log("------------------- INICIO HOME -------------------------------");
+  console.log(combined);
   const unified = Array.from(
     combined.reduce<Map<string, Supporter>>((map, curr) => {
       const key = `${curr.user_id}-${curr.product_id}`;
-      if (map.has(key)) {
-        map.get(key)!.quantity += curr.quantity;
-      } else {
-        map.set(key, { ...curr });
-      }
+      if (map.has(key)) map.get(key)!.quantity += curr.quantity;
+      else map.set(key, { ...curr });
       return map;
     }, new Map()).values()
   );
+  console.log(unified);
 
   return unified;
 }
@@ -42,6 +41,8 @@ export default async function HomePage() {
   const allSupporters = (await getAllSupporter()).filter(
     item => item.product_id === process.env.SUPPORTER_PRODUCT_ID
   );
+  console.log(allSupporters);
+  console.log("------------------- FIM HOME -------------------------------");
 
   return (
     <div className="flex flex-col items-center font-spartan mx-auto">
@@ -83,7 +84,7 @@ export default async function HomePage() {
             sponsors={[{ text: "Alura", imagePath: "alura-light.svg" }, {text: "Código de Ouro", imagePath: "/img/sponsors/codigoouro.png"}]}
           />
         </div>
-        <h2 className="text-4xl font-bold mt-2">Nossos Apoiadores</h2>
+        <h2 className="text-4xl font-bold my-2">Nossos Apoiadores</h2>
         <div className="flex flex-wrap items-center gap-4">
           {allSupporters && allSupporters.length > 0 ? (
             allSupporters.map((prod) => (
