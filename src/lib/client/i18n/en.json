@@ -46,5 +46,10 @@
   "error registering to activity: activity has already ended": "O período de inscrição da atividade já encerrou!",
   "error registering to activity: this activity requires a token or payment": "Essa atividade necessita de tokens ou pagamento",
   "error registering to activity: user does not have any available tokens": "Você não possui nenhum token disponível",
-  "user name changed successfully": "Seu nome foi alterado com sucesso!"
+  "user name changed successfully": "Seu nome foi alterado com sucesso!",
+  "account verification required": "É necessário verificar a conta",
+  "password reset email sent": "E-mail de redefinição de senha enviado",
+  "logged out successfully": "Logout realizado com sucesso",
+  "registration already exists: failed to register to activity: user already registered to this activity":
+    "O usuário já está inscrito nesta atividade"
 }

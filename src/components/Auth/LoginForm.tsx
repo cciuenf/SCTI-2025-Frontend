@@ -105,9 +105,9 @@ export default function LoginForm({
             },
             {
               name: "last_name",
-              label: "Sobrenome",
+              label: "Sobrenome Completo",
               type: "text",
-              placeholder: "Coloque seu sobrenome",
+              placeholder: "Coloque seu sobrenome completo",
             },
             {
               name: "email",
