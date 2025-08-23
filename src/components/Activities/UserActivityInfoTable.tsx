@@ -118,7 +118,7 @@ const UserActivityInfoTable = ({
               </TableRow>  
             : usersRegistrations.map((u) => (
               <TableRow key={u.user_id}>
-                <TableCell>{u.Name} {u.last_name}</TableCell>
+                <TableCell>{u.Name} {u.LastName}</TableCell>
                 <TableCell>{u.Email}</TableCell>
                 <TableCell>
                   {isRegistrations 

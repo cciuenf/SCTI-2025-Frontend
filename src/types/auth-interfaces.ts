@@ -14,7 +14,6 @@ export interface UserBasicInfo {
   Name: string;
   LastName: string;
   Email: string;
-  last_name?: string;
 }
 
 export interface UserAccessTokenJwtPayload extends UserBasicInfo {

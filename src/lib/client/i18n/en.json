@@ -31,25 +31,5 @@
     "O usuário já tem outra atividade registrada no mesmo horário que não é palestra",
   "refresh token revoked successfully": "Permissão de Login revogado com sucesso",
   "error registering user: user already exists": "Usuário já existe",
-  "error registering to activity: user must be registered to the event first": "O usuário precisa estar registrado no evento",
-  "error trying to login: invalid password": "Credenciais inválidas",
-  "error trying to login: record not found": "Credenciais inválidas",
-  "error promoting user: users cannot promote themselves": "Usuários não podem se promover",
-  "error demoting user: users cannot demote themselves": "Usuários não podem se rebaixar",
-  "error demoting user: target user not found: record not found": "Usuário alvo não encontrado",
-  "error promoting user: target user not found: record not found": "Usuário alvo não encontrado",
-  "error demoting user: user is not an admin of this event": "Usuário não é um administrador deste evento",
-  "error promoting user: user must be registered to the event to be promoted":
-    "Usuário deve estar registrado no evento para ser promovido",
-  "promoted user": "Usuário promovido a administrador do evento",
-  "demoted user": "Usuário rebaixado a participante do evento",
-  "error registering to activity: activity has already ended": "O período de inscrição da atividade já encerrou!",
-  "error registering to activity: this activity requires a token or payment": "Essa atividade necessita de tokens ou pagamento",
-  "error registering to activity: user does not have any available tokens": "Você não possui nenhum token disponível",
-  "user name changed successfully": "Seu nome foi alterado com sucesso!",
-  "account verification required": "É necessário verificar a conta",
-  "password reset email sent": "E-mail de redefinição de senha enviado",
-  "logged out successfully": "Logout realizado com sucesso",
-  "registration already exists: failed to register to activity: user already registered to this activity":
-    "O usuário já está inscrito nesta atividade"
+  "error registering to activity: user must be registered to the event first": "O usuário precisa estar registrado no evento"
 }

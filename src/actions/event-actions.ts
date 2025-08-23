@@ -99,15 +99,64 @@ export async function handleUnresgiterFromEvent(slug: string) {
 }
 
 export async function handlePromoteUserInEvent(slug: string, email: string) {
-  return actionRequest<{email: string}, EventSubscriptionResponseI>(`/events/${slug}/promote`, {
-    method: "POST",
-    body: { email },
-  });
+  const { accessToken, refreshToken } = await getAuthTokens();
+
+  try {
+    const res = await fetchWrapper<EventSubscriptionResponseI>(
+      `/events/${slug}/promote`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+          Refresh: `Bearer ${refreshToken}`,
+        },
+        body: JSON.stringify({ email: email }),
+      }
+    );
+    return {
+      success: true,
+      message: res.result.message,
+    };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao promover usuário no evento", error.message);
+      return { success: false };
+    } else {
+      console.error("Erro desconhecido ao promover usuário", error);
+      return { success: false };
+    }
+  }
 }
 
 export async function handleDemoteUserInEvent(slug: string, email: string) {
-  return actionRequest<{email: string}, EventSubscriptionResponseI>(`/events/${slug}/demote`, {
-    method: "POST",
-    body: { email },
-  });
+  const { accessToken, refreshToken } = await getAuthTokens();
+
+  try {
+    const res = await fetchWrapper<EventSubscriptionResponseI>(
+      `/events/${slug}/demote`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+          Refresh: `Bearer ${refreshToken}`,
+        },
+        body: JSON.stringify({ email: email }),
+      }
+    );
+    return {
+      success: true,
+      data: res.result.data,
+      message: res.result.message,
+    };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao rebaixar usuário no evento", error.message);
+      return { success: false };
+    } else {
+      console.error("Erro desconhecido ao rebaixar usuário", error);
+      return { success: false };
+    }
+  }
 }

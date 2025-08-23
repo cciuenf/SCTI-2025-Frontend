@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { Calendar, MapPin, Eye, Edit3, Trash2, UserPlus2, UserMinus2 } from "lucide-react";
+import { Calendar, MapPin, Eye, Edit3, Trash2 } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -21,7 +21,6 @@ type Props = {
   onRegister?: ((id: string) => Promise<void>) | null;
   onUnregister?: ((id: string) => Promise<void>) | null;
   onUpdateFormOpen?: () => void | null;
-  onEventRoleUserFormOpen?: (willPromote: boolean) => void | null;
   onDelete?: (id: string) => Promise<void> | null;
 };
 
@@ -37,7 +36,6 @@ const EventCard = ({
   onRegister,
   onUnregister,
   onUpdateFormOpen,
-  onEventRoleUserFormOpen,
   onDelete
 }: Props) => {
   const [isLoadingRegisterState, setIsLoadingRegisterState] = useState(false);
@@ -55,12 +53,6 @@ const EventCard = ({
     e.preventDefault();
     e.stopPropagation();
     if(onUpdateFormOpen) onUpdateFormOpen();
-  };
-
-  const handleEventRole = (e: React.MouseEvent, willPromote: boolean = true) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if(onEventRoleUserFormOpen) onEventRoleUserFormOpen(willPromote);
   };
 
   const handleDelete = async () => {
@@ -88,20 +80,6 @@ const EventCard = ({
               )} />
               {isEventCreator && (
                 <>
-                  <UserPlus2 
-                    className={cn(
-                      "w-5 h-5 cursor-pointer transition-transform duration-200",
-                      "hover:text-accent hover:scale-125"
-                    )} 
-                    onClick={handleEventRole}
-                  />
-                  <UserMinus2
-                    className={cn(
-                      "w-5 h-5 cursor-pointer transition-transform duration-200",
-                      "hover:text-accent hover:scale-125"
-                    )} 
-                    onClick={(e) => handleEventRole(e, false)}
-                  />
                   <Edit3 
                     className={cn(
                       "w-5 h-5 cursor-pointer transition-transform duration-200",

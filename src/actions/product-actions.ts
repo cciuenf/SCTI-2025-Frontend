@@ -1,5 +1,7 @@
 "use server";
 
+import { getAuthTokens } from "@/lib/cookies";
+import { fetchWrapper } from "@/lib/fetch";
 import type { ProductCreationDataI } from "@/schemas/product-schema";
 import type { 
   ProductBuyCredentialsI, 
@@ -9,6 +11,7 @@ import type {
   ProductResponseI, 
   UserTokensResponseI 
 } from "@/types/product-interfaces";
+import { FetchError } from "@/types/utility-classes";
 import { actionRequest } from "./_utils";
 
 
@@ -77,5 +80,24 @@ export async function handleGetAllUserProductsPurchases() {
 }
 
 export async function handleGetAllUserTokens() {
-  return actionRequest<null, UserTokensResponseI[]>("/user-tokens");
+  const { accessToken, refreshToken } = await getAuthTokens();
+  try {
+    const res = await fetchWrapper<UserTokensResponseI[]>(`/user-tokens`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        Refresh: `Bearer ${refreshToken}`,
+      },
+    });
+    return { success: true, data: res.result.data, message: res.result.message };
+  } catch (error) {
+    if (error instanceof FetchError) {
+      console.error("Erro ao resgatar os tokens", error.message);
+      return { status: error.status, data: [], success: false };
+    } else {
+      console.error("Erro desconhecido ao resgatar os tokens", error);
+      return { message: "Erro desconhecido", data: [], success: false };
+    }
+  }
 }

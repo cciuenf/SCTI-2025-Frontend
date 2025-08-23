@@ -6,5 +6,8 @@ export const customization: IPaymentBrickCustomization = {
     maxInstallments: 12,
     bankTransfer: "all",
     creditCard: "all",
+    prepaidCard: "all",
+    debitCard: "all",
+    mercadoPago: "all",
   },
 };

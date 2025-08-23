@@ -19,9 +19,3 @@ export const eventCreationSchema = z.object({
 });
 
 export type EventCreationDataI = z.infer<typeof eventCreationSchema>;
-
-export const eventRoleSchema = z.object({
-  email: z.string().email({ message: "E-mail inválido" })
-});
-
-export type EventRoleDataI = z.infer<typeof eventRoleSchema>;

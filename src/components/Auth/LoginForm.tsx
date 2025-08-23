@@ -105,9 +105,9 @@ export default function LoginForm({
             },
             {
               name: "last_name",
-              label: "Sobrenome Completo",
+              label: "Sobrenome",
               type: "text",
-              placeholder: "Coloque seu sobrenome completo",
+              placeholder: "Coloque seu sobrenome",
             },
             {
               name: "email",
@@ -125,10 +125,7 @@ export default function LoginForm({
               label: "Em que semestre você está?",
               placeholder: "Selecione o Semestre",
               type: "select",
-              options: Array.from({ length: 10 }, (_, i) => ({
-                label: `${i + 1}º Semestre`,
-                value: String(i + 1),
-              })),
+              options: [{label: "1º Semestre", value: "1"}, {label: "2 Semestre", value: "2"}],
               disabledWhen: {
                 field: "is_uenf",
                 value: false
