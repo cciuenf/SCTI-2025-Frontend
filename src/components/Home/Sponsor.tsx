@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { SponsorInfoI } from "@/types/utility-interfaces";
+import type { SponsorInfoI } from "@/types/utility-interfaces";
 import Image from "next/image";
 import { useEffect, useMemo, useRef } from 'react';
 
@@ -16,12 +16,11 @@ const SPEED = 0.005;
 const MIN_LENGTH = 60;
 const SEPARATOR = ' • ';
 
-const Sponsor = ({ 
-  scale = "scale-[100%]", 
+const Sponsor = ({
+  scale = "scale-[100%]",
   info: {
-    text = "Empresa X", 
-    level = "Diamante",  
-    imagePath = "/SCT.svg",
+    text = "Empresa X",
+    imagePath = "/SCTI.png",
   }
 }: Props) => {
   const chars = useMemo(() => {
@@ -37,7 +36,7 @@ const Sponsor = ({
 
   useEffect(() => {
     let animationId: number;
-    
+
     const animate = () => {
       angleRef.current = (angleRef.current + SPEED) % (2 * Math.PI);
       textRefs.current.forEach((el, i) => {
@@ -84,20 +83,17 @@ const Sponsor = ({
         ))}
       </svg>
       <div className={cn(
-        `absolute w-56 h-56 rounded-full border-4 border-secondary`,
+        `absolute w-56 h-56 rounded-full border-4 border-secondary bg-secondary`,
         "-translate-1/2 left-1/2 top-1/2 overflow-hidden",
         "flex flex-col justify-center items-center gap-5"
       )}>
-        <Image 
+        <Image
           src={imagePath}
-          alt="Logo SCT" 
-          width={200} 
-          height={200} 
+          alt="Logo SCT"
+          width={200}
+          height={200}
           className="w-32 h-auto"
         />
-        <p className="bg-secondary text-primary py-2 w-full">
-          Apoiador {level}
-        </p>
       </div>
     </div>
   )

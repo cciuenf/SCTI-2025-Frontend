@@ -17,6 +17,5 @@ export interface ErrorResponseI {
 
 export interface SponsorInfoI {
   text?: string;
-  level?: string;
   imagePath?: string;
 }

@@ -5,7 +5,7 @@ import {
   handleGetAllUserProducts,
 } from "@/actions/product-actions";
 import { format } from "date-fns";
-import {
+import type {
   ProductPurchasesResponseI,
   ProductResponseI,
 } from "@/types/product-interfaces";
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { convertNumberToBRL } from "@/lib/utils";
 import UserPurchasesSkeleton from "./Profile/UserPurchasesSkeleton";
+import { toast } from "sonner";
 
 interface PurchaseWithProduct extends ProductPurchasesResponseI {
   product?: ProductResponseI;
@@ -48,10 +49,10 @@ export default function UserPurchases() {
 
         if (purchasesRes.success && productsRes.success) {
           const productsMap = new Map(
-            productsRes.data.map((product) => [product.ID, product])
+            (productsRes.data || []).map((product) => [product.ID, product])
           );
 
-          const purchasesWithProducts = purchasesRes.data.map((purchase) => ({
+          const purchasesWithProducts = (purchasesRes.data || []).map((purchase) => ({
             ...purchase,
             product: productsMap.get(purchase.product_id),
           }));
@@ -65,12 +66,10 @@ export default function UserPurchases() {
           const overview = filteredPurchases.reduce(
             (acc, pur) => {
               if (pur.product) {
-                if (pur.is_delivered) {
-                  acc.totalInPurchases += pur.product.price_int;
-                  acc.finishedPurchases += 1;
-                } else {
+                acc.totalInPurchases += pur.product.price_int;
+                if (!pur.is_delivered && pur.product.is_physical_item) {
                   acc.pendentPurchases += 1;
-                }
+                } else acc.finishedPurchases += 1;
               }
               return acc;
             },
@@ -81,9 +80,11 @@ export default function UserPurchases() {
             }
           );
           setOverviewData(overview);
+          toast.success("Compras carregadas com sucesso!");
         }
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
+        toast.error("Erro ao carregar compras do usuário.");
       } finally {
         setLoading(false);
       }
@@ -124,7 +125,9 @@ export default function UserPurchases() {
                 {format(p.purchased_at, "dd/MM/yyyy HH:mm")}
               </TableCell>
               <TableCell>{p.is_gift ? p.gifted_to_email : `X`} </TableCell>
-              <TableCell>{p.is_delivered ? `Pago` : `Pendente`} </TableCell>
+              <TableCell>
+                {p.is_delivered && p.product?.is_physical_item ? "Entregue" : p.product?.is_physical_item ? "Pendente" : "Finalizado"}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -145,7 +148,7 @@ export default function UserPurchases() {
         <div className="flex flex-col items-center justify-center">
           <h2 className="text-xl">{overviewData.pendentPurchases}</h2>
           <h3 className="text-zinc-900/70 text-sm sm:text-base">
-            Compras pendentes
+            Compras não entregues
           </h3>
         </div>
       </div>

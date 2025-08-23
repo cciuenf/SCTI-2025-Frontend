@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { Calendar, MapPin, Eye, Edit3, Trash2 } from "lucide-react";
+import { Calendar, MapPin, Eye, Edit3, Trash2, UserPlus2, UserMinus2 } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -21,6 +21,7 @@ type Props = {
   onRegister?: ((id: string) => Promise<void>) | null;
   onUnregister?: ((id: string) => Promise<void>) | null;
   onUpdateFormOpen?: () => void | null;
+  onEventRoleUserFormOpen?: (willPromote: boolean) => void | null;
   onDelete?: (id: string) => Promise<void> | null;
 };
 
@@ -36,20 +37,30 @@ const EventCard = ({
   onRegister,
   onUnregister,
   onUpdateFormOpen,
+  onEventRoleUserFormOpen,
   onDelete
 }: Props) => {
+  const [isLoadingRegisterState, setIsLoadingRegisterState] = useState(false);
   const handleRegisterState = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!onRegister || !onUnregister) return;
+    setIsLoadingRegisterState(true);
     if (isSubscribed) await onUnregister(slug);
     else await onRegister(slug);
+    setIsLoadingRegisterState(false);
   };
 
   const handleEdit = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if(onUpdateFormOpen) onUpdateFormOpen();
+  };
+
+  const handleEventRole = (e: React.MouseEvent, willPromote: boolean = true) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if(onEventRoleUserFormOpen) onEventRoleUserFormOpen(willPromote);
   };
 
   const handleDelete = async () => {
@@ -77,6 +88,20 @@ const EventCard = ({
               )} />
               {isEventCreator && (
                 <>
+                  <UserPlus2 
+                    className={cn(
+                      "w-5 h-5 cursor-pointer transition-transform duration-200",
+                      "hover:text-accent hover:scale-125"
+                    )} 
+                    onClick={handleEventRole}
+                  />
+                  <UserMinus2
+                    className={cn(
+                      "w-5 h-5 cursor-pointer transition-transform duration-200",
+                      "hover:text-accent hover:scale-125"
+                    )} 
+                    onClick={(e) => handleEventRole(e, false)}
+                  />
                   <Edit3 
                     className={cn(
                       "w-5 h-5 cursor-pointer transition-transform duration-200",
@@ -102,7 +127,7 @@ const EventCard = ({
             </div>
           </div>
 
-          <h2 className="font-bold text-lg mb-0">{name}</h2>
+          <h2 className="w-full font-bold text-lg truncate" title={name}>{name}</h2>
 
           <div className="flex justify-between items-center">
             <Calendar className="text-accent h-4 w-4 mr-2.5" />
@@ -127,6 +152,8 @@ const EventCard = ({
                   ? "bg-red-500 text-white font-medium hover:text-red-500 hover:bg-white border border-red-500"
                   : "bg-accent text-secondary font-medium hover:text-accent hover:bg-secondary"
               )}
+              disabled={isLoadingRegisterState}
+              title={isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
             >
               {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
             </Button>

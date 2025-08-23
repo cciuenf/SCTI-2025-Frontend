@@ -7,16 +7,19 @@ import {
   handleRegisterFromActivity,
   handleUnregisterFromActivity,
 } from "@/actions/activity-actions";
-import { ActivityResponseI } from "@/types/activity-interface";
+import type { ActivityResponseI } from "@/types/activity-interface";
 import { useEffect, useState } from "react";
 import ActivityModalForm from "./ActivityModalForm";
 import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { Coins, Plus } from "lucide-react";
 import CardSkeleton from "../Loading/CardSkeleton";
 import { toast } from "sonner";
 import ActivityCard from "./ActivityCard";
 import UserActivityInfoTable from "./UserActivityInfoTable";
 import PresenceManagmentModalForm from "./PresenceManagementModalForm";
+import { runWithToast } from "@/lib/client/run-with-toast";
+import { handleGetAllUserTokens } from "@/actions/product-actions";
+import type { UserTokensResponseI } from "@/types/product-interfaces";
 
 interface ActivityListSectionProps {
   user_id: string;
@@ -30,40 +33,53 @@ export default function ActivityListSection({
   isEventCreator,
 }: ActivityListSectionProps) {
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
+  const [userTokens, setUserTokens] = useState<UserTokensResponseI[]>([])
   const [isUsersModalOpen, setIsUsersModalOpen] = useState(false);
   const [isPresenceModalOpen, setIsPresenceModalOpen] = useState(false);
-  const [searchUsersRegistrations, setSearchUsersRegistrations] =
-    useState(false);
+  const [searchUsersRegistrations, setSearchUsersRegistrations] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityResponseI>();
   const [myActivities, setMyActivities] = useState<ActivityResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentView, setCurrentView] = useState<string>("all");
 
-  const fetchActivities = async () => {
-    try {
-      setLoading(true);
+  useEffect(() => {
+    const fetchUserTokens = async () => {
+      await runWithToast(
+        handleGetAllUserTokens(),
+        {
+          loading: "Carregando seus Tokens",
+          success: (res) => {
+            setUserTokens(res.data || []);
+            return "Tokens carregados com sucesso!"
+          },
+          error: () => "Falha ao carregar seus tokens"
+        }
+      )
+    };
+    const fetchActivities = async () => {
+      const id = toast.loading('Carregando Atividades...');
+      setIsLoading(true);
       const [allActivitiesData, myActivitiesData] = await Promise.all([
         handleGetAllEventActivities(currentEvent.slug),
         handleGetUserEventActivities(currentEvent.slug),
       ]);
-      setAllActivities(allActivitiesData?.data || []);
-      setMyActivities(myActivitiesData?.data || []);
-    } catch (error) {
-      console.error("Erro ao carregar atividades:", error);
-      toast.error("Erro ao carregar atividades");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
+      setAllActivities(allActivitiesData.data || []);
+      setMyActivities(myActivitiesData.data || []);
+      if (allActivitiesData.success && myActivitiesData.success)
+        toast.success('Atividades carregadas com sucesso!', { id });
+      else if(!allActivitiesData.success && !myActivitiesData.success) 
+        toast.error("Erro ao carregar as atividades", { id });
+      else toast.error('Falha ao carregar alguma das atividades', { id });
+      setIsLoading(false);
+    };
+    fetchUserTokens();
     fetchActivities();
-  }, []);
+  }, [currentEvent.slug]);
 
   const currentData = currentView === "all" ? allActivities : myActivities;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="w-full max-w-5xl mt-6">
         <div className="flex w-full gap-2 mb-6">
@@ -108,60 +124,81 @@ export default function ActivityListSection({
   };
 
   const handleActivityDelete = async (activity_id: string) => {
-    const res = await handleDeleteActivity(
-      { activity_id: activity_id },
-      currentEvent.slug
+    const res = await runWithToast(
+      handleDeleteActivity({ activity_id: activity_id }, currentEvent.slug),
+      {
+        loading: 'Apagando atividade...',
+        success: () => "Atividade: apagada com sucesso!",
+        error: () => "Erro ao apagar a atividade",
+      }
     );
     if (res.success) {
       setAllActivities((prev) => prev.filter((a) => a.ID !== activity_id));
       setMyActivities((prev) => prev.filter((a) => a.ID !== activity_id));
-      toast.success("Atividade apagada com sucesso!");
-    } else toast.error("Erro ao apagar a atividade");
+    }
   };
 
   const handleRegister = async (data: ActivityResponseI) => {
-    const res = await handleRegisterFromActivity(
-      data,
-      currentEvent.slug,
-      user_id
+    const res = await runWithToast(
+      handleRegisterFromActivity(data, currentEvent.slug, user_id),
+      {
+        loading: `Realizando a inscrição na atividade: ${data.name}...`,
+        success: () => "Inscrição realizada com sucesso!",
+        error: () => "Erro ao se inscrever na atividade",
+      }
     );
+
     if (res.success) {
       const activity = allActivities.find((a) => a.ID === data.ID);
-      if (activity && !myActivities.some((a) => a.ID === data.ID)) {
+      if (activity && !myActivities.some((a) => a.ID === data.ID))
         setMyActivities((prev) => [...prev, activity]);
-        toast.success("Inscrição realizada com sucesso!");
-      }
-    }
-
-    if (!res.success) {
-      const errorReason = res.message.split(":");
-
-      switch (errorReason[1].trim()) {
-        case "user must be registered to the event first":
-          toast.error(
-            "Você precisa se inscrever no evento antes de se inscrever em alguma atividade!"
-          );
-          break;
-        default:
-          toast.error("Erro desconhecido ao tentar se inscrever na atividade!");
+      if(activity?.has_fee) {
+        setUserTokens((prev) => {
+          const availableToken = prev.find((t) => !t.is_used);
+          if(!availableToken) return prev;
+          return prev.map((t) => t.id === availableToken.id ? {
+            ...t, is_used: true, used_for_id: data.ID
+          }: t)
+        })
       }
     }
   };
 
   const handleUnregister = async (data: ActivityResponseI) => {
-    const res = await handleUnregisterFromActivity(
-      data,
-      currentEvent.slug,
-      user_id
+    const res = await runWithToast(
+      handleUnregisterFromActivity(data, currentEvent.slug, user_id),
+      {
+        loading: `Removendo a inscrição da atividade: ${data.name}...`,
+        success: () => "Inscrição cancelada com sucesso!",
+        error: () => "Erro ao cancelar inscrição na atividade",
+      }
     );
     if (res.success) {
       setMyActivities((prev) => prev.filter((a) => a.ID !== data.ID));
-      toast.success("Inscrição cancelada com sucesso!");
-    } else toast.error("Erro ao cancelar inscrição na atividade");
+      if(data.has_fee) {
+        setUserTokens((prev) => 
+          prev.map((t) => t.used_for_id === data.ID ? {
+            ...t, is_used: false,  used_for_id: ""
+          }: t)
+        )
+      }
+    }
   };
 
   return (
     <>
+      <div 
+        className={cn(
+          "fixed top-2 right-2 w-32 h-8 px-4 py-2 rounded-full z-[160]",
+          "flex justify-center items-center shadow-lg font-bold text-sm",
+          "bg-gradient-to-r from-yellow-500 to-accent text-white",
+          "truncate"
+        )}
+        title={userTokens.filter(t => !t.is_used).length + " Tokens"}
+      >
+        <Coins className="w-4 h-4 mr-2"/>
+        {userTokens.filter((t) => !t.is_used).length} Tokens
+      </div>
       <div
         className={cn(
           "flex items-center justify-around relative",
@@ -209,10 +246,10 @@ export default function ActivityListSection({
         </div>
       </div>
 
-      {currentData?.length !== 0 ? (
+      {currentData.length !== 0 ? (
         <div className="w-full max-w-5xl my-6">
           <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {currentData?.map((activity) => (
+            {currentData.map((activity) => (
               <ActivityCard
                 key={activity.ID}
                 data={activity}

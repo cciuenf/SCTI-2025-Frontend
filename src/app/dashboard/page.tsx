@@ -1,19 +1,17 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
+import type { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
 import TopCard from "@/components/Dashboard/TopCard";
 import ProductsDashboardCard from "@/components/Dashboard/ProductsDashboardCard";
 import ActivitiesDashboardCard from "@/components/Dashboard/ActivitiesDashboardCard";
-import { handleGetUserEventActivities } from "@/actions/activity-actions";
 import Connector from "@/components/ui/Generic/Connector";
 
-export default async function Dashboard() {
+export default async function DashboardPage() {
   const cookieStore = cookies();
   const access_token = (await cookieStore).get("access_token")?.value;
   const user_info = jwt.decode(
     access_token as string
   ) as UserAccessTokenJwtPayload | null;
-  const refresh_token = (await cookieStore).get("refresh_token")?.value;
 
   return (
     <>

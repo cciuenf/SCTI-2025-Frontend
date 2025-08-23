@@ -1,14 +1,8 @@
 "use client";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RefObject, useRef } from "react";
+import { type RefObject, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,27 +10,25 @@ import {
   handleResendVerifyToken,
   handleVerifyToken,
 } from "@/actions/auth-actions";
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 
 type Props = {
-  setMustShowVerify?: Dispatch<SetStateAction<boolean>>;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setIsLoading?: Dispatch<SetStateAction<boolean>>;
   origin: "signup" | "profile";
 };
 
 const verifyFormSchema = z.object({
-  digit_1: z.string().max(1).min(1),
-  digit_2: z.string().max(1).min(1),
-  digit_3: z.string().max(1).min(1),
-  digit_4: z.string().max(1).min(1),
-  digit_5: z.string().max(1).min(1),
-  digit_6: z.string().max(1).min(1),
+  digit_1: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_2: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_3: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_4: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_5: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_6: z.string().max(1).min(1, "Precisa ser preenchido"),
 });
 
-const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
+const VerifyForm = ({ setIsLoading, origin }: Props) => {
   const verifyForm = useForm<z.infer<typeof verifyFormSchema>>({
     resolver: zodResolver(verifyFormSchema),
     defaultValues: {
@@ -67,9 +59,9 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
     digit_6,
   }: z.infer<typeof verifyFormSchema>) => {
     const token = digit_1.concat(digit_2, digit_3, digit_4, digit_5, digit_6);
-    setIsLoading(true);
+    if (setIsLoading) setIsLoading(true);
     const res = await handleVerifyToken(token);
-    setIsLoading(false);
+    if (setIsLoading) setIsLoading(false);
 
     if (res.status == 200) {
       toast.success("Usuário verificado");
@@ -139,7 +131,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -166,7 +158,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -193,7 +185,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -220,7 +212,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -247,7 +239,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -274,7 +266,7 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       value={field.value}
                       maxLength={1}
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -284,11 +276,17 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
           </div>
           <Button ref={verifyRef}>Verificar</Button>
           {origin == "signup" ? (
-            <Button type="button" variant={"outline"} onClick={() => verifyAfter()}>
+            <Button
+              type="button"
+              variant={"outline"}
+              onClick={() => verifyAfter()}
+            >
               Deixar para depois
             </Button>
           ) : (
-            <Button type="button" onClick={resendVerifyToken}>Reenviar Código</Button>
+            <Button type="button" onClick={resendVerifyToken}>
+              Reenviar Código
+            </Button>
           )}
         </form>
       </Form>

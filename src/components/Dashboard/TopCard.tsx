@@ -18,8 +18,8 @@ const TopCard = ({ type, data }: Props) => {
   const [totalEvents, setTotalEvents] = useState<string>("0");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  if (type == "spent") {
-    useEffect(() => {
+  useEffect(() => {
+    if (type === "spent") {
       const getUserTotalSpent = async () => {
         setIsLoading(true);
         const [products, purchases] = await Promise.all([
@@ -29,15 +29,15 @@ const TopCard = ({ type, data }: Props) => {
         const initialValue: number = 0.0;
 
         if (products.success && purchases.success) {
-          const productsMap = new Map(products.data.map((p) => [p.ID, p]));
+          const productsMap = new Map((products.data || []).map((p) => [p.ID, p]));
 
-          const purchasesWithProducts = purchases.data.map((p) => ({
+          const purchasesWithProducts = (purchases.data || []).map((p) => ({
             ...p,
             product: productsMap.get(p.product_id),
           }));
 
           const total: number = purchasesWithProducts.reduce((acc, p) => {
-            if (p.is_delivered && p.product) {
+            if (p.product) {
               acc = acc + p.product?.price_int;
             }
 
@@ -50,11 +50,7 @@ const TopCard = ({ type, data }: Props) => {
       };
 
       getUserTotalSpent();
-    }, []);
-  }
-
-  if (type == "subs") {
-    useEffect(() => {
+    } else if (type === "subs") {
       const getUserTotalEvents = async () => {
         setIsLoading(true);
 
@@ -67,8 +63,8 @@ const TopCard = ({ type, data }: Props) => {
       };
 
       getUserTotalEvents();
-    }, []);
-  }
+    }
+  }, [type]);
 
   if (type == "subs") {
     return (

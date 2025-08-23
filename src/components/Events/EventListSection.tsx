@@ -1,31 +1,35 @@
 "use client";
 import { useState } from "react";
 import EventCard from "./EventCard";
-import { EventResponseI } from "@/types/event-interfaces";
+import type { EventResponseI } from "@/types/event-interfaces";
 import CardSkeleton from "../Loading/CardSkeleton";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import EventModalForm from "./EventModalForm";
 import { useUserEvents } from "@/contexts/UserEventsProvider";
+import UserEventRoleManager from "./UserEventRoleManager";
 
 const EventListSection = (props: { isEventCreator: boolean }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
+  const [willPromoteUser, setWillPromoteUser] = useState(true);
+  const [isEventRoleModalOpen, setIsEventRoleModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventResponseI>();
   const [currentView, setCurrentView] = useState<string>("all");
   const {
     allEvents,
     myEvents,
-    loading,
+    isLoading,
     handleEventCreate,
     handleEventDelete,
     handleEventUpdate,
     handleRegister,
-    handleUnregister
+    handleUnregister,
+    handleUserEventRole
   } = useUserEvents();
 
   const currentData = currentView === "all" ? allEvents : myEvents;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="w-full max-w-5xl mt-6">
         <div className="flex w-full gap-2 mb-6">
@@ -39,7 +43,7 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
 
   const openEventModal = (eventToUpdate?: EventResponseI) => {
     setSelectedEvent(eventToUpdate);
-    setIsModalOpen(true);
+    setIsCreationModalOpen(true);
   }
 
   return (
@@ -103,6 +107,11 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
                 onUnregister={handleUnregister}
                 onUpdateFormOpen={() => props.isEventCreator ? openEventModal(e) : null}
                 onDelete={handleEventDelete}
+                onEventRoleUserFormOpen={(willPromote: boolean) => {
+                  setSelectedEvent(e);
+                  setWillPromoteUser(willPromote);
+                  setIsEventRoleModalOpen(true);
+                }}
               />
             ))}
           </div>
@@ -113,10 +122,17 @@ const EventListSection = (props: { isEventCreator: boolean }) => {
       <EventModalForm
         event={selectedEvent}
         isCreating={!selectedEvent}
-        open={isModalOpen}
-        setOpen={setIsModalOpen}
+        open={isCreationModalOpen}
+        setOpen={setIsCreationModalOpen}
         onEventCreate={handleEventCreate}
         onEventUpdate={handleEventUpdate}
+      />
+      <UserEventRoleManager
+        slug={selectedEvent?.Slug || ""}
+        open={isEventRoleModalOpen && props.isEventCreator}
+        setOpen={setIsEventRoleModalOpen}
+        onRoleChange={handleUserEventRole} 
+        willPromote={willPromoteUser}      
       />
     </>
   );

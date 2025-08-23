@@ -1,22 +1,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 import CustomGenericForm, {
-  FieldConfig,
+  type FieldConfig,
 } from "../ui/Generic/CustomGenericForm";
 import { handleForgotPassword } from "@/actions/auth-actions";
+import { runWithToast } from "@/lib/client/run-with-toast";
 
-type Props = {};
-
-const ForgotPasswordForm = (props: Props) => {
+const ForgotPasswordForm = () => {
   const fields: FieldConfig<z.infer<typeof changePasswordSchema>>[] = [
     { name: "email", label: "Email" },
   ];
 
   const changePasswordSchema = z.object({
-    email: z.string().email(),
+    email: z.string().email({ message: "Precisa ser um email válido" }),
   });
 
   const form = useForm<z.infer<typeof changePasswordSchema>>({
@@ -27,16 +25,12 @@ const ForgotPasswordForm = (props: Props) => {
   });
 
   const handleOnSubmit = async ({ email }: { email: string }) => {
-    try {
-      const result = await handleForgotPassword(email);
-
-      if (result?.status == 200) {
-        toast.info(`Te enviamos um email para que possa recuperar seu acesso!`);
-        return;
-      }
-    } catch (error) {
-      toast.error("Erro ao iniciar o processo de recuperação de acesso");
-    }
+    await runWithToast(handleForgotPassword(email), {
+      loading: "Enviando email para recuperação de acesso...",
+      success: () =>
+        "Te enviamos um email para que possa recuperar seu acesso!",
+      error: () => "Erro ao iniciar o processo de recuperação de acesso",
+    });
   };
 
   return (

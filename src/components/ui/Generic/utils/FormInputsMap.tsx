@@ -3,22 +3,30 @@ import { Input } from "../../input";
 import { MultiSelect } from "../../multi-select";
 import { Switch } from "../../switch";
 import { SimpleDateTimePicker } from "./SimpleDateTimePicker";
-import { EyeOff, Eye } from "lucide-react";
-import React, { SetStateAction } from "react";
+import type { SetStateAction } from "react";
+import type { FieldType } from "../CustomGenericForm";
+import type { ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form";
+import { Select } from "../../select";
+import { PasswordInput } from "./PasswordInput";
+import { Checkbox } from "../../checkbox";
 
-export const FormInputRenderMap: Record<
-  string,
-  (props: {
-    field: any;
-    disabled: boolean;
-    placeholder?: string;
-    options?: { label: string; value: string }[];
-    showPassword?: boolean;
-    setShowPassword?: React.Dispatch<SetStateAction<boolean>>;
-  }) => React.ReactNode
-> = {
+type CommonProps<T extends FieldValues> = {
+  field: ControllerRenderProps<T, FieldPath<T>>;
+  disabled: boolean;
+  placeholder?: string;
+  options?: { label: string; value: string }[];
+  showPassword?: boolean;
+  setShowPassword?: React.Dispatch<SetStateAction<boolean>>;
+};
+
+type Renderer = <T extends FieldValues>(props: CommonProps<T>) => React.ReactNode;
+
+export const FormInputRenderMap = {
   text: ({ field, disabled, placeholder }) => (
     <Input {...field} placeholder={placeholder} disabled={disabled} />
+  ),
+  email: ({ field, disabled, placeholder }) => (
+    <Input {...field} type="email" placeholder={placeholder} disabled={disabled} />
   ),
   number: ({ field, disabled, placeholder }) => (
     <Input
@@ -32,6 +40,13 @@ export const FormInputRenderMap: Record<
   ),
   switch: ({ field, disabled }) => (
     <Switch
+      checked={field.value}
+      onCheckedChange={disabled ? undefined : field.onChange}
+      disabled={disabled}
+    />
+  ),
+  checkbox: ({ field, disabled }) => (
+    <Checkbox
       checked={field.value}
       onCheckedChange={disabled ? undefined : field.onChange}
       disabled={disabled}
@@ -53,6 +68,16 @@ export const FormInputRenderMap: Record<
       disabled={disabled}
     />
   ),
+  select: ({ field, disabled, placeholder, options = [] }) => (
+    <Select
+      value={field.value as string}
+      onValueChange={(value) => !disabled && field.onChange(value)}
+      options={options}
+      placeholder={placeholder}
+      className="w-full"
+      disabled={disabled}
+    />
+  ),
   multiple_select: ({ field, disabled, placeholder, options = [] }) => (
     <MultiSelect
       options={options}
@@ -71,5 +96,7 @@ export const FormInputRenderMap: Record<
       placeholder={placeholder}
     />
   ),
-  password: ({ field }) => <Input type="password" {...field} />,
-};
+  password: ({ field, disabled, placeholder }) => (
+    <PasswordInput field={field} placeholder={placeholder} disabled={disabled} />
+  )
+} satisfies Record<FieldType, Renderer>;

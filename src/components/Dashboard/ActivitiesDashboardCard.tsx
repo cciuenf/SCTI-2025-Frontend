@@ -1,5 +1,5 @@
 "use client";
-import { ActivityResponseI } from "@/types/activity-interface";
+import type { ActivityResponseI } from "@/types/activity-interface";
 import { useEffect, useState } from "react";
 import { handleGetUserEventActivities } from "@/actions/activity-actions";
 import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
@@ -7,9 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import ActivitiesDashboardListSkeleton from "./ActivitiesDashboardListSkeleton";
 
-type Props = {};
-
-const ActivitiesDashboardCard = (props: Props) => {
+const ActivitiesDashboardCard = () => {
   const [activitiesByDay, setActivitiesByDay] = useState<
     Map<string, ActivityResponseI[]>
   >(new Map([]));
@@ -64,7 +62,7 @@ const ActivitiesDashboardCard = (props: Props) => {
     };
 
     getUserActivitesByDay();
-  }, [currentDay]);
+  }, [currentDay, router]);
 
   return (
     <div className="w-9/10 lg:w-3/5 min-h-[310px] flex flex-col gap-5 items-center shadow-sm rounded-md py-5 shrink">

@@ -2,11 +2,8 @@
 
 import { useState, useEffect } from "react";
 import ProductModalForm from "./ProductModalForm";
-import type { 
-  ProductPurchasesResponseI, 
-  ProductResponseI
-} from "@/types/product-interfaces";
-import { ActivityResponseI } from "@/types/activity-interface";
+import type { ProductPurchasesResponseI, ProductResponseI } from "@/types/product-interfaces";
+import type { ActivityResponseI } from "@/types/activity-interface";
 import { handleDeleteProduct, handleGetAllEventProducts } from "@/actions/product-actions";
 import { handleGetAllEventActivities } from "@/actions/activity-actions";
 import { cn } from "@/lib/utils";
@@ -15,9 +12,11 @@ import CardSkeleton from "../Loading/CardSkeleton";
 import { toast } from "sonner";
 import ProductCard from "./ProductCard";
 import ProductBuyModalForm from "./ProductBuyModalForm";
+import { runWithToast } from "@/lib/client/run-with-toast";
 import useMercadoPago from "@/hooks/use-mercado-pago";
 import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
-import { ProductBuyDataI } from "@/schemas/product-schema";
+import type { ProductBuyDataI } from "@/schemas/product-schema";
+import { useRouter } from "next/navigation";
 
 interface ProductListSectionProps { 
   currentEvent: { id: string; slug: string };
@@ -31,29 +30,27 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
   const [allProducts, setAllProducts] = useState<ProductResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter(); 
 
   const { selectPaymentMethod } = useMercadoPago();
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
+    const fetchProducts = async () => {
+      const id = toast.loading('Carregando Produtos...');
       setLoading(true);
       const [allActivitiesData, allProductsData] = await Promise.all([
         handleGetAllEventActivities(currentEvent.slug),
         handleGetAllEventProducts(currentEvent.slug),
       ]);
-      setAllActivities(allActivitiesData?.data || []);
-      setAllProducts(allProductsData?.data || []);
-    } catch (error) {
-      console.error("Erro ao carregar os produtos:", error);
-      toast.error("Erro ao carregar os produtos");
-    } finally {
+      setAllActivities(allActivitiesData.data || []);
+      setAllProducts(allProductsData.data || []);
+      if (allActivitiesData.success && allProductsData.success)
+        toast.success('Produtos carregados com sucesso!', { id });
+      else toast.error('Falha ao carregar os produtos', { id });
       setLoading(false);
-    }
-  };
+    };
+    fetchProducts();
+  }, [currentEvent.slug]);
 
   if (loading) {
     return (
@@ -87,8 +84,7 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
 
   const handlePaymentSelector = async (pay: IPaymentFormData, buyableProduct: ProductBuyDataI) => {
     const result = await selectPaymentMethod(pay, currentEvent.slug, selectedProduct, buyableProduct);
-    if(result.data && result.state) handleProductPurchase(result.data);
-    else toast.error("Ocorreu um erro ao proceder com o pagamento!");
+    if (result.data != null && "product_id" in result.data) handleProductPurchase(result.data);    
     return result;
   }
 
@@ -102,11 +98,15 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
   };
 
   const handleProductDelete = async (product_id: string) => {
-    const res = await handleDeleteProduct({ product_id: product_id }, currentEvent.slug);
-    if (res.success) {
-      setAllProducts(prev => prev.filter(p => p.ID !== product_id));
-      toast.success("Produto apagado com sucesso!");
-    } else toast.error("Erro ao apagar o produto");
+    const result = await runWithToast(
+      handleDeleteProduct({ product_id: product_id }, currentEvent.slug),
+      {
+        loading: 'Apagando o produto...',
+        success: () => "Produto apagado com sucesso!",
+        error: () => "Erro ao apagar o produto",
+      }
+    );
+    if (result.success) setAllProducts(prev => prev.filter(p => p.ID !== product_id));
   };
 
   return (
@@ -156,10 +156,12 @@ export default function ProductListSection({ currentEvent, isEventCreator }: Pro
         slug={currentEvent.slug}
         product={selectedProduct}
         open={isPurchaseModalOpen}
-        setOpen={setIsPurchaseModalOpen}
+        setOpen={(open) => {
+          setIsPurchaseModalOpen(open);
+          if(!open) router.refresh();
+        }}
         handlePaymentSelector={handlePaymentSelector}
       />}
     </>
-
   );
 }

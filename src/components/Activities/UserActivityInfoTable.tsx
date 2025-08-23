@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { toast } from "sonner";
 import LoadingSpinner from "../Loading/LoadingSpinner";
-import { UserBasicInfo } from "@/types/auth-interfaces";
-import { handleGetRegisteredUsersInActivity, handleGetUsersWhoParticipateInActivity } from "@/actions/activity-actions";
-import { ActivityRegistrationI } from "@/types/activity-interface";
+import type { UserBasicInfo } from "@/types/auth-interfaces";
+import { 
+  handleGetRegisteredUsersInActivity, 
+  handleGetUsersWhoParticipateInActivity 
+} from "@/actions/activity-actions";
+import type { ActivityRegistrationI } from "@/types/activity-interface";
 import { handleGetUsersInfo } from "@/actions/user-actions";
 import { formatFullDate } from "@/lib/utils";
+import type { ActionResult } from "@/actions/_utils";
+import { runWithToast } from "@/lib/client/run-with-toast";
 
 interface Props {
   activityId: string;
@@ -18,44 +22,72 @@ interface Props {
   setOpen: (open: boolean) => void;
 }
 
-const UserActivityInfoTable = ({ activityId, activityName, slug, isRegistrations, open, setOpen }: Props) => {
-  const [usersRegistrations, setUsersRegistrations] = useState<(UserBasicInfo & ActivityRegistrationI)[]>([])
+type Combined = UserBasicInfo & ActivityRegistrationI;
+
+const UserActivityInfoTable = ({ 
+  activityId, 
+  activityName, 
+  slug, 
+  isRegistrations, 
+  open, 
+  setOpen 
+}: Props) => {
+  const [usersRegistrations, setUsersRegistrations] = useState<Combined[]>([])
   const [loading, setLoading] = useState(true);
 
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      let result;
-      if(isRegistrations) result = await handleGetRegisteredUsersInActivity({ id: activityId }, slug);
-      else result = await handleGetUsersWhoParticipateInActivity({ id: activityId }, slug);
-      const registrations = result.data;
-      if(result.success && registrations) {
-        const userIds = registrations.map(reg => reg.user_id);
-        const usersResult = await handleGetUsersInfo({id_array: userIds});
-        if(usersResult.success && usersResult.data) {
-          const users = usersResult.data;
-          const combined = registrations.map((reg, idx) => ({
-            ...reg,
-            ...users[idx]
-          }));
-          setUsersRegistrations(combined);
-        }
-      }
-    } catch (error) {
-      console.error("Erro ao carregar os usuários:", error);
-      toast.error("Erro ao carregar os usuários");
-    } finally { 
-      setLoading(false); 
+  const loadRegistrationsWithUsers = useCallback(async (): Promise<ActionResult<Combined[]>> => {
+    const regRes = isRegistrations
+      ? await handleGetRegisteredUsersInActivity({ id: activityId }, slug)
+      : await handleGetUsersWhoParticipateInActivity({ id: activityId }, slug);
+    if (!regRes.success) {
+      return { success: false, data: null, message: regRes.message || 'Falha inesperada' };
     }
-  }
+    if(!regRes.data)
+      return { success: true, data: [], message: 'Nenhum usuário encontrado' };
 
+    const registrations: ActivityRegistrationI[] = regRes.data;
+    if (registrations.length === 0) 
+      return { success: true, data: [], message: 'Nenhum usuário encontrado' };
+    
+    const ids = registrations.map(r => r.user_id);
+    const usersRes = await handleGetUsersInfo({ id_array: ids });
+
+    if (!usersRes.success || !usersRes.data) 
+      return { success: false, data: null, message: usersRes.message ?? 'Falha ao ler usuários' };
+
+    const users = usersRes.data;
+
+    const combined = registrations.map((reg, idx) => ({
+      ...reg,
+      ...users[idx]
+    }));
+
+    return { success: true, data: combined, message: 'Usuários carregados' };
+  }, [activityId, isRegistrations, slug]);
+
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+
+    const res = await runWithToast(
+      loadRegistrationsWithUsers(),
+      {
+        loading: 'Carregando usuários...',
+        success: () => 'Usuários carregados',
+        error: () => 'Erro ao carregar usuários',
+      }
+    );
+
+    if (res.success && res.data) setUsersRegistrations(res.data);
+    
+    setLoading(false);
+  }, [loadRegistrationsWithUsers]);
+  
   useEffect(() => {
-    if(open) {
+    if (open) {
       setUsersRegistrations([]);
       fetchUsers();
     }
-  }, [activityName, open])
-  
+  }, [open, fetchUsers]);
 
   return(
     <CustomGenericModal
@@ -65,7 +97,7 @@ const UserActivityInfoTable = ({ activityId, activityName, slug, isRegistrations
       onOpenChange={setOpen}
       trigger={null}
     >
-      <Table>
+      <Table className="h-full">
         <TableHeader>
           <TableRow>
             <TableHead>Nome</TableHead>
@@ -86,10 +118,13 @@ const UserActivityInfoTable = ({ activityId, activityName, slug, isRegistrations
               </TableRow>  
             : usersRegistrations.map((u) => (
               <TableRow key={u.user_id}>
-                <TableCell>{u.Name} {u.LastName}</TableCell>
+                <TableCell>{u.Name} {u.last_name}</TableCell>
                 <TableCell>{u.Email}</TableCell>
                 <TableCell>
-                  {isRegistrations ? formatFullDate(u.registered_at) : formatFullDate(u.attended_at)}
+                  {isRegistrations 
+                    ? formatFullDate(u.registered_at) 
+                    : formatFullDate(u.attended_at || new Date().toString())
+                  }
                 </TableCell>
               </TableRow>
             ))

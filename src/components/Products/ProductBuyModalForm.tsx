@@ -1,19 +1,18 @@
 "use client";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import CustomGenericForm, {
-  FieldConfig,
+  type FieldConfig,
 } from "../ui/Generic/CustomGenericForm";
-import type { 
-  ProductPurchasesResponseI, 
-  ProductResponseI 
+import type {
+  PaymentResult,
+  ProductResponseI,
 } from "@/types/product-interfaces";
 import { convertNumberToBRL } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type ProductBuyDataI, productBuySchema } from "@/schemas/product-schema";
-
-import { useState } from "react";
 import { ProductPaymentModalForm } from "./ProductPaymentModalForm";
+import { useState } from "react";
 import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
 
 const ProductBuyModalForm: React.FC<{
@@ -24,7 +23,7 @@ const ProductBuyModalForm: React.FC<{
   handlePaymentSelector: (
     pay: IPaymentFormData, 
     buyableProduct: ProductBuyDataI
-  ) => Promise<{state: boolean, data: ProductPurchasesResponseI | null, id: string | null }>;
+  ) => Promise<{data: PaymentResult | null, id: string | null }>;
 }> = ({ slug, product, open, setOpen, handlePaymentSelector }) => {
   const [buyableProduct, setBuyableProduct] = useState<ProductBuyDataI | null>(null);
 
@@ -62,33 +61,6 @@ const ProductBuyModalForm: React.FC<{
 
   const handleSubmit = async (data: ProductBuyDataI) => setBuyableProduct(data);
 
-  // const handleSubmit = async (data: ProductBuyDataI) => {
-  //   const result = await handleBuyProduct(
-  //     { ...data, product_id: product.ID },
-  //     slug
-  //   );
-  //   if (result?.success && result.data && onProductPurchase) {
-  //     toast.success(`Produto comprado com sucesso!`);
-  //     setOpen(false);
-  //     onProductPurchase(result.data.purchase);
-  //     return;
-  //   }
-
-  //   if (!result.success && result.message) {
-  //     const errorReason = result.message.split(":");
-
-  //     switch (errorReason[1].trim()) {
-  //       case "user is not registered to this event":
-  //         toast.error(
-  //           "Você precisa se inscrever no evento antes de comprar um produto!"
-  //         );
-  //         break;
-  //       default:
-  //         toast.error("Erro desconhecido ao tentar comprar produto!");
-  //     }
-  //   }
-  // };
-
   return (
     <CustomGenericModal
       title="Comprar"
@@ -121,10 +93,10 @@ const ProductBuyModalForm: React.FC<{
             onCancel={() => setOpen(false)}
             form={form}
             submitLabel="Realizar Pedido"
+            submittingLabel="Processando..."
           />
         </div>
-      ) 
-      }
+      )}
     </CustomGenericModal>
   );
 };

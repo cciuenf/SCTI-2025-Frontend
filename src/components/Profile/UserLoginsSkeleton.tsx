@@ -1,9 +1,7 @@
 import React from "react";
 import { Skeleton } from "../ui/skeleton";
 
-type Props = {};
-
-const UserLoginsSkeleton = (props: Props) => {
+const UserLoginsSkeleton = () => {
   return (
     <div className="w-full flex flex-col justify-around items-center gap-2">
       <div className="w-9/10 sm:w-4/5 min-h-[100px] py-2 px-5 flex justify-between items-center border-2 border-muted-foreground/20 rounded-md gap-5 sm:gap-10">

@@ -6,7 +6,7 @@ import {
   handleGetAllUserProductsPurchases,
 } from "@/actions/product-actions";
 import { useState, useEffect } from "react";
-import {
+import type {
   ProductPurchasesResponseI,
   ProductResponseI,
 } from "@/types/product-interfaces";
@@ -32,17 +32,15 @@ const ProductsDashboardCard = () => {
 
         if (purchasesRes.success && productsRes.success) {
           const productsMap = new Map(
-            productsRes.data.map((product) => [product.ID, product])
+            (productsRes.data || []).map((product) => [product.ID, product])
           );
 
-          const purchasesWithProducts = purchasesRes.data.map((purchase) => ({
+          const purchasesWithProducts = (purchasesRes.data || []).map((purchase) => ({
             ...purchase,
             product: productsMap.get(purchase.product_id),
           }));
 
-          const filteredPurchases = purchasesWithProducts.filter(
-            (purchase) => purchase.product && purchase.is_delivered
-          );
+          const filteredPurchases = purchasesWithProducts.filter((purchase) => purchase.product);
 
           setPurchases(filteredPurchases);
         }
