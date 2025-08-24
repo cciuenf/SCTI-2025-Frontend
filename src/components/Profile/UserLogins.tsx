@@ -49,13 +49,7 @@ const UserLogins = ({ refresh_token }: Props) => {
   useEffect(() => {
     setIsLoading(true);
     const getLogins = async () => {
-      const res = await runWithToast(
-        handleGetRefreshTokens(), {
-          loading: "Carregando logins...",
-          success: () => "Logins carregados!",
-          error: () => "Erro ao carregar logins!",
-        }
-      );
+      const res = await handleGetRefreshTokens();
 
       const transformedData = (res.data || [])
         .map((i) => {

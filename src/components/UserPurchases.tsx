@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/table";
 import { convertNumberToBRL } from "@/lib/utils";
 import UserPurchasesSkeleton from "./Profile/UserPurchasesSkeleton";
-import { toast } from "sonner";
 
 interface PurchaseWithProduct extends ProductPurchasesResponseI {
   product?: ProductResponseI;
@@ -80,11 +79,9 @@ export default function UserPurchases() {
             }
           );
           setOverviewData(overview);
-          toast.success("Compras carregadas com sucesso!");
         }
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
-        toast.error("Erro ao carregar compras do usuário.");
       } finally {
         setLoading(false);
       }
