@@ -1,7 +1,6 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { EventResponseI } from "@/types/event-interfaces";
-import { toast } from "sonner";
 import { 
   handleDeleteSlugCreatedEvents, 
   handleDemoteUserInEvent, 
@@ -34,7 +33,7 @@ export const UserEventsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchEvents = async () => {
-    const id = toast.loading('Carregando Eventos...');
+    // const id = toast.loading('Carregando Eventos...');
     const [allEventsData, myEventsData] = await Promise.all([
       handleGetEvents(),
       handleGetUserSubscribedEvents(),
@@ -42,11 +41,11 @@ export const UserEventsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setAllEvents(allEventsData.data || []);
     setMyEvents(myEventsData.data || []);
 
-    if (allEventsData.success && myEventsData.success)
-      toast.success('Eventos carregados com sucesso!', { id });
-    else if(!allEventsData.success && !myEventsData.success) 
-      toast.error("Erro ao carregar os eventos", { id });
-    else toast.error('Falha ao carregar algum dos eventos', { id });
+    // if (allEventsData.success && myEventsData.success)
+    //   toast.success('Eventos carregados com sucesso!', { id });
+    // else if(!allEventsData.success && !myEventsData.success) 
+    //   toast.error("Erro ao carregar os eventos", { id });
+    // else toast.error('Falha ao carregar algum dos eventos', { id });
     setIsLoading(false);
   };
 

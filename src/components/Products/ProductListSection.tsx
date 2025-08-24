@@ -15,7 +15,6 @@ import { handleGetAllEventActivities } from "@/actions/activity-actions";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import CardSkeleton from "../Loading/CardSkeleton";
-import { toast } from "sonner";
 import ProductCard from "./ProductCard";
 import ProductBuyModalForm from "./ProductBuyModalForm";
 import { runWithToast } from "@/lib/client/run-with-toast";
@@ -45,7 +44,7 @@ export default function ProductListSection({
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const id = toast.loading("Carregando Produtos...");
+      // const id = toast.loading("Carregando Produtos...");
       setLoading(true);
       const [allActivitiesData, allProductsData] = await Promise.all([
         handleGetAllEventActivities(currentEvent.slug),
@@ -53,9 +52,9 @@ export default function ProductListSection({
       ]);
       setAllActivities(allActivitiesData.data?.map(item => item.activity) || []);
       setAllProducts(allProductsData.data || []);
-      if (allActivitiesData.success && allProductsData.success)
-        toast.success("Produtos carregados com sucesso!", { id });
-      else toast.error("Falha ao carregar os produtos", { id });
+      // if (allActivitiesData.success && allProductsData.success)
+      //   toast.success("Produtos carregados com sucesso!", { id });
+      // else toast.error("Falha ao carregar os produtos", { id });
       setLoading(false);
     };
     fetchProducts();
