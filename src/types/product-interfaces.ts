@@ -92,3 +92,9 @@ interface AccessTargetsI {
   is_event: boolean,
   target_id: string,
 }
+
+export interface CanGiftRequestI {
+  email: string,
+  product_id: string,
+  quantity: number,
+}
