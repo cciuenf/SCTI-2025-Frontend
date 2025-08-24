@@ -55,7 +55,7 @@ const ProductsDashboardCard = () => {
   }, []);
 
   return (
-    <div className="w-9/10 lg:w-1/3 min-h-72 flex flex-col items-center gap-3 rounded-md shadow-sm py-1">
+    <div className="flex flex-col items-center gap-3 rounded-md shadow-sm py-1">
       <h2 className="text-2xl font-bold">Meus Produtos</h2>
       {isLoading ? (
         <div className="w-full flex flex-col justify-around">

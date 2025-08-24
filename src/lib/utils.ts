@@ -50,3 +50,12 @@ export function getActivityRequirements(reqs: string) {
   const arr = reqs.trim().split(",").sort();
   return arr;
 }
+
+export function getUserParticipationPercentage(
+  totalActivities: string,
+  attendedActivities: string
+) {
+  const result = parseFloat(attendedActivities) / parseFloat(totalActivities);
+  const rounded = (result * 100).toFixed(2)
+  return `${rounded}%`;
+}
