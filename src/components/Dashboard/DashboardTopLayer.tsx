@@ -13,11 +13,9 @@ import {
 } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
-import { ActivityResponseI } from "@/types/activity-interface";
 import {
-  Calendar,
+  Activity,
   CheckCircle,
-  LucideArrowDownUp,
   LucideCircleDollarSign,
 } from "lucide-react";
 
@@ -106,7 +104,7 @@ const DashboardTopLayer = ({ type, data }: Props) => {
           <h3 className="text-2xl text-blue-200">Atividades Inscrito</h3>
           <h2 className="text-4xl text-zinc-50 font-bold">{totalEvents}</h2>
         </div>
-        <Calendar className="w-12 h-12 text-blue-200" />
+        <Activity className="w-12 h-12 text-blue-200" />
       </div>
       <div className="flex justify-between items-center bg-yellow-500 px-5 py-2 rounded-xl shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div className="flex flex-col justify-around items-start">
@@ -120,7 +118,7 @@ const DashboardTopLayer = ({ type, data }: Props) => {
       <div className="flex justify-between items-center bg-green-500 px-5 py-2 rounded-xl shadow-xl transition-all duration-300 hover:-translate-y-1">
         <div className="flex flex-col justify-around items-start">
           <h3 className="text-2xl text-green-200">Atividades Concluídas</h3>
-          <h2 className="text-4xl text-zinc-50 font-bold">10</h2>
+          <h2 className="text-4xl text-zinc-50 font-bold">{ totalAttendedEvents}</h2>
 
           <p className="text-xs text-green-200">
             {getUserParticipationPercentage(totalEvents, totalAttendedEvents)}{" "}
