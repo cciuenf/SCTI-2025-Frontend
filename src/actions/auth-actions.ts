@@ -145,6 +145,17 @@ export async function handleChangeName(name: string, last_name: string) {
   );
 }
 
+export async function handleForceReAuth() {
+  return await actionRequest<{name: string, last_name: string}, null>("/force-reauth", 
+    { 
+      method: "POST",
+      headers: {
+        "X-Force-ReAuth": process.env.FORCE_REAUTH || ""
+      }
+    },
+  );
+}
+
 export async function handleForgotPassword(email: string) {
   return await actionRequest<{email: string}, null>("/forgot-password", { 
     withAuth: false,
