@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import jwt from 'jsonwebtoken';
+import type { UserRefreshTokenJwtPayload } from "@/types/auth-interfaces";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -15,4 +17,12 @@ export function convertNumberToBRL(value: number) {
 export function getActivityRequirements(reqs: string) {
   const arr = reqs.trim().split(",").sort();
   return arr;
+}
+
+export function isRefreshTokenExpired(token: string | null) {
+  if (!token) return false;
+  const user_info = jwt.decode(token) as UserRefreshTokenJwtPayload | null;
+  const expiresAt = new Date(user_info?.exp ?? "");
+  if (isNaN(expiresAt.getTime()) || expiresAt.getTime() <= new Date().getTime())
+    return true;
 }

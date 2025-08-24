@@ -23,13 +23,13 @@ const items = {
       only_admin: false,
     },
     {
-      title: "Eventos",
+      title: "Gerenciamento",
       url: "/events",
       icon: FolderDot,
       only_admin: true,
     },
     {
-      title: "Atividades",
+      title: "Evento",
       url: "/events/scti",
       icon: Calendar,
       only_admin: false,
