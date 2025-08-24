@@ -1,5 +1,6 @@
 "use client";
-import { cn, formatEventTimeRange } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { formatEventTimeRange } from "@/lib/date-utils";
 import type { ActivityResponseI } from "@/types/activity-interface";
 import React from "react";
 import { Badge } from "../ui/badge";
