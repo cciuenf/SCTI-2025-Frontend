@@ -19,6 +19,14 @@ export function getActivityRequirements(reqs: string) {
   return arr;
 }
 
+export function getUserParticipationPercentage(
+  totalActivities: string,
+  attendedActivities: string
+) {
+  const result = parseFloat(attendedActivities) / parseFloat(totalActivities);
+  const rounded = (result * 100).toFixed(2)
+  return `${rounded}%`;
+}
 export function isRefreshTokenExpired(token: string | null) {
   if (!token) return false;
   const user_info = jwt.decode(token) as UserRefreshTokenJwtPayload | null;
