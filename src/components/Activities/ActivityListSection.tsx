@@ -13,7 +13,6 @@ import ActivityModalForm from "./ActivityModalForm";
 import { cn } from "@/lib/utils";
 import { Coins, Plus } from "lucide-react";
 import CardSkeleton from "../Loading/CardSkeleton";
-import { toast } from "sonner";
 import ActivityCard from "./ActivityCard";
 import UserActivityInfoTable from "./UserActivityInfoTable";
 import PresenceManagmentModalForm from "./PresenceManagementModalForm";
@@ -45,18 +44,11 @@ export default function ActivityListSection({
 
 useEffect(() => {
   const fetchUserTokens = async () => {
-    await runWithToast(handleGetAllUserTokens(), {
-      loading: "Carregando seus Tokens",
-      success: (res) => {
-        setUserTokens(res.data || []);
-        return "Tokens carregados com sucesso!";
-      },
-      error: () => "Falha ao carregar seus tokens",
-    });
+    await handleGetAllUserTokens();
   };
 
   const fetchActivities = async () => {
-    const id = toast.loading("Carregando Atividades...");
+    // const id = toast.loading("Carregando Atividades...");
     setIsLoading(true);
 
     const [allActivitiesData, myActivitiesData] = await Promise.all([
@@ -78,13 +70,13 @@ useEffect(() => {
 
     setMyActivities(my);
 
-    if (allActivitiesData.success && myActivitiesData.success) {
-      toast.success("Atividades carregadas com sucesso!", { id });
-    } else if (!allActivitiesData.success && !myActivitiesData.success) {
-      toast.error("Erro ao carregar as atividades", { id });
-    } else {
-      toast.error("Falha ao carregar alguma das atividades", { id });
-    }
+    // if (allActivitiesData.success && myActivitiesData.success) {
+    //   toast.success("Atividades carregadas com sucesso!", { id });
+    // } else if (!allActivitiesData.success && !myActivitiesData.success) {
+    //   toast.error("Erro ao carregar as atividades", { id });
+    // } else {
+    //   toast.error("Falha ao carregar alguma das atividades", { id });
+    // }
 
     setIsLoading(false);
   };
