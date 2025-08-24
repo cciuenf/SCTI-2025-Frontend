@@ -14,6 +14,8 @@ import { type ProductBuyDataI, productBuySchema } from "@/schemas/product-schema
 import { ProductPaymentModalForm } from "./ProductPaymentModalForm";
 import { useState } from "react";
 import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
+import { runWithToast } from "@/lib/client/run-with-toast";
+import { canGiveAGift } from "@/actions/product-actions";
 
 const ProductBuyModalForm: React.FC<{
   slug: string;
@@ -59,7 +61,21 @@ const ProductBuyModalForm: React.FC<{
     },
   ];
 
-  const handleSubmit = async (data: ProductBuyDataI) => setBuyableProduct(data);
+  const handleSubmit = async (data: ProductBuyDataI) => {
+    if(data.is_gift) {
+      const res = await runWithToast(
+        canGiveAGift({ email: data.gifted_to_email, product_id: product.ID, quantity: data.quantity }),
+        {
+          loading: "Verificando se o usuário pode receber o presente",
+          success: () => "O presente pode ser enviado!",
+          error: () => "Presente não pode ser enviado!"
+        }
+      )
+      if(!res.data) return;
+      
+    }
+    setBuyableProduct(data);
+  }
 
   return (
     <CustomGenericModal

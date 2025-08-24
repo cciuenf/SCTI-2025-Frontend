@@ -2,6 +2,7 @@
 
 import type { ProductCreationDataI } from "@/schemas/product-schema";
 import type { 
+  CanGiftRequestI,
   ProductBuyCredentialsI, 
   ProductPixPurchaseResponseI, 
   ProductPurchasesResourceResponseI, 
@@ -73,6 +74,11 @@ export async function handleGetAllUserProducts() {
   return actionRequest<null, ProductResponseI[]>("/user-products");
 }
 
+// // TO DO:
+// export async function handleGetAllUserProductsRelation() {
+//   return actionRequest<null, ProductResponseI[]>("/user-products-relation");
+// }
+
 export async function handleGetAllUserProductsPurchases() {
   return actionRequest<null, ProductPurchasesResponseI[]>("/user-purchases");
 }
@@ -85,4 +91,11 @@ export async function handleGetAllPurchasedProducts() {
   return actionRequest<null, UserProductPurchasesResponseI[]>("/all-user-products-relation", {
     withAuth: false,
   });
+}
+
+export async function canGiveAGift(data: CanGiftRequestI) {
+  return actionRequest<CanGiftRequestI, boolean>("can-gift", {
+    method: "POST",
+    body: data,
+  })
 }
