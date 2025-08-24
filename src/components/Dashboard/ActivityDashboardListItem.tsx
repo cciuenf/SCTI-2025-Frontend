@@ -1,11 +1,10 @@
+"use client";
 import { cn, formatEventTimeRange } from "@/lib/utils";
-import {
-  ActivityRegistrationI,
-  ActivityResponseI,
-} from "@/types/activity-interface";
+import type { ActivityResponseI } from "@/types/activity-interface";
 import React from "react";
 import { Badge } from "../ui/badge";
 import { CheckCircle, Clock, LoaderIcon, MapPin } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Props = {
   activity: ActivityResponseI;
@@ -13,6 +12,7 @@ type Props = {
 };
 
 const ActivityDashboardListItem = ({ activity, userAttends }: Props) => {
+  const isMobile = useIsMobile();
   return (
     <div
       key={activity.ID}
@@ -52,21 +52,41 @@ const ActivityDashboardListItem = ({ activity, userAttends }: Props) => {
         {!userAttends.includes(activity.ID) &&
           new Date(activity.end_time) > new Date() && (
             <Badge className="bg-blue-200 text-blue-800 rounded-2xl">
-              <LoaderIcon className="text-blue-800 h-5 w-5" />
-              Inscrito
+              {isMobile ? (
+                <LoaderIcon className="text-blue-800 h-5 w-5" />
+              ) : (
+                <>
+                  {" "}
+                  <LoaderIcon className="text-blue-800 h-5 w-5" />
+                  Inscrito
+                </>
+              )}
             </Badge>
           )}
         {userAttends.includes(activity.ID) && (
           <Badge className="bg-green-300 text-green-800 rounded-2xl">
-            <CheckCircle className="text-green-800 h-5 w-5" />
-            Participou
+            {isMobile ? (
+              <CheckCircle className="text-green-800 h-5 w-5" />
+            ) : (
+              <>
+                {" "}
+                <CheckCircle className="text-green-800 h-5 w-5" />
+                Participou
+              </>
+            )}
           </Badge>
         )}
         {!userAttends.includes(activity.ID) &&
           new Date(activity.end_time) < new Date() && (
             <Badge className="bg-red-300 text-red-800 rounded-2xl">
-              <CheckCircle className="text-red-800 h-5 w-5" />
-              Faltou
+              {isMobile ? (
+                <CheckCircle className="text-red-800 h-5 w-5" />
+              ) : (
+                <>
+                  <CheckCircle className="text-red-800 h-5 w-5" />
+                  Faltou
+                </>
+              )}
             </Badge>
           )}
       </>

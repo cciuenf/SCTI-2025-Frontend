@@ -1,14 +1,9 @@
-import { cookies } from "next/headers";
 import DashBoardTopLayer from "@/components/Dashboard/DashboardTopLayer";
-import ProductsDashboardCard from "@/components/Dashboard/ProductsDashboardCard";
+import NearActivitiesListCard from "@/components/Dashboard/NearActivitiesListCard";
 import ActivitiesDashboardCard from "@/components/Dashboard/ActivitiesDashboardCard";
 import Connector from "@/components/ui/Generic/Connector";
 
 export default async function DashboardPage() {
-  const cookieStore = cookies();
-  const access_token = (await cookieStore).get("access_token")?.value;
-
-
   return (
     <>
       <Connector
@@ -24,7 +19,7 @@ export default async function DashboardPage() {
         </div>
         <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 p-4 gap-3">
           <ActivitiesDashboardCard />
-          <ProductsDashboardCard />
+          <NearActivitiesListCard />
         </div>
       </Connector>
     </>

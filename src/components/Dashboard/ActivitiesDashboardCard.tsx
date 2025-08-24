@@ -1,14 +1,11 @@
 "use client";
-import type {
-  ActivityRegistrationI,
-  ActivityResponseI,
-} from "@/types/activity-interface";
+import type { ActivityResponseI } from "@/types/activity-interface";
 import { useEffect, useState } from "react";
 import {
   handleGetActivitiesWhichUserParticipate,
   handleGetUserEventActivities,
 } from "@/actions/activity-actions";
-import { ArrowLeftCircle, ArrowRightCircle, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import ActivitiesDashboardListSkeleton from "./ActivitiesDashboardListSkeleton";
@@ -69,14 +66,13 @@ const ActivitiesDashboardCard = () => {
         setAttendedEventsIds(ids);
       }
       setIsLoading(false);
-
     };
 
     getUserActivitesByDay();
   }, [currentDay, router]);
 
   return (
-    <div className="flex flex-col gap-5 min-h-80 items-center shadow-sm rounded-md py-5">
+    <div className="flex flex-col gap-5 min-h-80 items-start shadow-sm rounded-md py-5">
       <div className="w-full flex flex-col gap-2 sm:gap-0 sm:flex-row justify-around sm:justify-between items-center sm:items-start px-4">
         <div className="flex items-center gap-2">
           <Calendar className="h-6 w-6 text-secondary" />
