@@ -9,9 +9,9 @@ import {
 } from "@/actions/activity-actions";
 import type { ActivityRegistrationI } from "@/types/activity-interface";
 import { handleGetUsersInfo } from "@/actions/user-actions";
-import { formatFullDate } from "@/lib/utils";
 import type { ActionResult } from "@/actions/_utils";
 import { runWithToast } from "@/lib/client/run-with-toast";
+import { formatFullDate } from "@/lib/date-utils";
 
 interface Props {
   activityId: string;

@@ -5,8 +5,8 @@ import { Calendar, MapPin, Eye, Edit3, Trash2, UserPlus2, UserMinus2 } from "luc
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { formatEventDateRange } from "@/lib/utils";
 import ConfirmActionButton from "../ConfirmActionButton";
+import { formatEventDateRange, normalizeDate } from "@/lib/date-utils";
 
 type Props = {
   slug: string;
@@ -132,7 +132,7 @@ const EventCard = ({
           <div className="flex justify-between items-center">
             <Calendar className="text-accent h-4 w-4 mr-2.5" />
             <h3 className="opacity-90 text-sm">
-              {formatEventDateRange(start_date, end_date)}
+              {formatEventDateRange(normalizeDate(start_date), normalizeDate(end_date))}
             </h3>
           </div>
           <div className="flex justify-between items-center">

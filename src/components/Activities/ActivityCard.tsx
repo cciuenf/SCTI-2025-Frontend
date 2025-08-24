@@ -12,11 +12,11 @@ import {
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { formatEventDateRange } from "@/lib/utils";
 import ConfirmActionButton from "../ConfirmActionButton";
 import type { ActivityResponseI, ActivityWithSlotResponseI } from "@/types/activity-interface";
 import LevelBadge from "./LevelBadge";
 import RequirementsHoverCard from "./RequirementsHoverCard";
+import { formatEventDateRange, normalizeDate } from "@/lib/date-utils";
 
 type Props = {
   data: ActivityWithSlotResponseI;
@@ -106,8 +106,8 @@ const ActivityCard = ({
           <Calendar className="text-accent h-4 w-4 mr-2.5" />
           <h3 className="opacity-90 text-sm">
             {formatEventDateRange(
-              new Date(data.activity.start_time),
-              new Date(data.activity.end_time)
+              normalizeDate(data.activity.start_time),
+              normalizeDate(data.activity.end_time)
             )}
           </h3>
         </div>
