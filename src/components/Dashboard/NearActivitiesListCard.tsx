@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useState, useEffect } from "react";
-import { cn, formatEventDateRange } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { handleGetUserEventActivities } from "@/actions/activity-actions";
 import type { ActivityResponseI } from "@/types/activity-interface";
 import { Clock } from "lucide-react";
@@ -9,6 +9,7 @@ import { Badge } from "../ui/badge";
 import LevelBadge from "../Activities/LevelBadge";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ActivitiesDashboardListSkeleton from "./ActivitiesDashboardListSkeleton";
+import { formatEventDateRange } from "@/lib/date-utils";
 
 const NearActivitiesListCard = () => {
   const [nearActivities, setNearActivities] = useState<ActivityResponseI[]>();

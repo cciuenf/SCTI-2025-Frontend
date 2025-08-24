@@ -11,9 +11,10 @@ import jwt from "jsonwebtoken";
 import UserLoginsSkeleton from "./UserLoginsSkeleton";
 import { runWithToast } from "@/lib/client/run-with-toast";
 import { UAParser } from "ua-parser-js";
-import { cn } from "@/lib/utils";
+import { cn, isRefreshTokenExpired } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { clearAuthTokens } from "@/lib/cookies";
+import { Badge } from "../ui/badge";
 
 interface Props {
   refresh_token: string;
@@ -95,7 +96,7 @@ const UserLogins = ({ refresh_token }: Props) => {
                 <DeviceIcon userAgent={r.payload!.user_agent} />
                 <div className="flex flex-col justify-around items-start">
                   <h2 className="text-base sm:text-xl lg:text-2xl">
-                    {formatUserAgent(r)} {is_current && "(Atual)"}
+                    {formatUserAgent(r)}
                   </h2>
                   <p className="text-sm text-gray-500">
                     {new Date(r.payload!.last_used).toLocaleString("pt-BR", {
@@ -107,6 +108,8 @@ const UserLogins = ({ refresh_token }: Props) => {
                     })} • IP: {r.payload!.ip_address}
                   </p>
                 </div>
+                {is_current && <Badge className="text-green-800">Atual</Badge>}
+                {!is_current && isRefreshTokenExpired(r.token) && <Badge className="text-slate-600">Expirado</Badge>}
               </div>
               <Button
                 variant={"destructive"}

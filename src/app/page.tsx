@@ -103,7 +103,7 @@ export default async function HomePage() {
           evento.
         </p>
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d463.1845209940032!2d-41.29240932163486!3d-21.761824678315794!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xbdd59aeac46b65%3A0x1b713a26d44d896a!2sUENF%20-%20CCT%20Centro%20de%20Ci%C3%AAncia%20e%20Tecnologia!5e0!3m2!1spt-BR!2sbr!4v1754446232724!5m2!1spt-BR!2sbr"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d231.59193621020208!2d-41.29157224025164!3d-21.76202565086077!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xbdd59779f62349%3A0x13e700efb0c12ad3!2zQ2nDqm5jaWEgZGEgQ29tcHV0YcOnw6NvIFVFTkY!5e0!3m2!1spt-BR!2sbr!4v1756014700287!5m2!1spt-BR!2sbr"
           className="w-full min-h-screen h-full border-0"
           allowFullScreen
           loading="lazy"

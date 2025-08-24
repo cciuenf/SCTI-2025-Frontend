@@ -1,10 +1,11 @@
 "use client";
 import { Calendar, Edit3, Trash2, Store, Coins } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { cn, convertNumberToBRL, formatFullDate } from "@/lib/utils";
+import { cn, convertNumberToBRL } from "@/lib/utils";
 import { Button } from "../ui/button";
 import ConfirmActionButton from "../ConfirmActionButton";
 import type { ProductResponseI } from "@/types/product-interfaces";
+import { formatFullDate } from "@/lib/date-utils";
 
 type Props = {
   data: ProductResponseI;
