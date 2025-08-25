@@ -65,7 +65,7 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
 
     if (res.status == 200) {
       toast.success("Usuário verificado");
-      router.push("/profile");
+      router.push("/events/scti");
     }
 
     if (res.status != 200) {

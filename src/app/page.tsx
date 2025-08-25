@@ -10,40 +10,45 @@ import type { UserBasicInfo } from "@/types/auth-interfaces";
 import type { UserProductPurchasesResponseI } from "@/types/product-interfaces";
 import React from "react";
 
-type Supporter = UserBasicInfo & UserProductPurchasesResponseI
-
+type Supporter = UserBasicInfo & UserProductPurchasesResponseI;
 
 export default async function HomePage() {
-  async function getAllSupporter () {
+  async function getAllSupporter() {
     const resultProducts = await handleGetAllPurchasedProducts();
-    const products = resultProducts.data || []
-    const ids = products.map(item => item.user_id)
-    const resultUsers = (await handleGetUsersInfo({ id_array: ids })).data || [];
-  
+    const products = resultProducts.data || [];
+    const ids = products.map((item) => item.user_id);
+    const resultUsers =
+      (await handleGetUsersInfo({ id_array: ids })).data || [];
+
     const combined = products.map((reg, idx) => ({
-        ...reg,
-        ...resultUsers[idx]
-      }));
-      const unified = Array.from(
-        combined.reduce<Map<string, Supporter>>((map, curr) => {
+      ...reg,
+      ...resultUsers[idx],
+    }));
+    const unified = Array.from(
+      combined
+        .reduce<Map<string, Supporter>>((map, curr) => {
           const key = `${curr.user_id}-${curr.product_id}`;
           if (map.has(key)) map.get(key)!.quantity += curr.quantity;
           else map.set(key, { ...curr });
           return map;
-        }, new Map()).values()
-      );
+        }, new Map())
+        .values()
+    );
     return unified;
-  };
+  }
   const resultActivities = (await handleGetAllEventActivities("scti")).data;
   const allSupporters = (await getAllSupporter()).filter(
-    item => item.product_id === process.env.SUPPORTER_PRODUCT_ID
+    (item) => item.product_id === process.env.SUPPORTER_PRODUCT_ID
   );
 
   return (
     <div className="flex flex-col items-center font-spartan mx-auto">
       <ScrollManager />
       <InfoCarousel />
-      <Connector id="info" className="text-center flex flex-col items-center w-screen !mt-20">
+      <Connector
+        id="info"
+        className="text-center flex flex-col items-center w-screen !mt-20"
+      >
         <h2 className="text-4xl font-bold">Atividades da Semana</h2>
         <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
           Descubra nossa programação completa com palestras, workshops e
@@ -70,25 +75,39 @@ export default async function HomePage() {
         <h2 className="text-4xl font-bold">Nossos Patrocinadores</h2>
         <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
           Agradecemos imensamente às empresas que tornaram possível a realização
-          do SCT 2025. Conheça os parceiros que acreditam no potencial dos
+          do SCTI 2025. Conheça os parceiros que acreditam no potencial dos
           estudantes universitários.
         </p>
         <div className="w-full overflow-auto">
           <AutoScrollSponsors
             scale="scale-[90%]"
-            sponsors={[{ text: "Alura", imagePath: "alura-light.svg" }, {text: "Código de Ouro", imagePath: "/img/sponsors/codigoouro.png"}]}
+            sponsors={[
+              { text: "Alura", imagePath: "alura-light.svg" },
+              {
+                text: "Código de Ouro",
+                imagePath: "/img/sponsors/codigoouro.png",
+              },
+            ]}
           />
         </div>
-        <h2 className="text-4xl font-bold my-4">Nossos Apoiadores</h2>
-        <div className="flex flex-wrap items-center gap-4 mt-2">
+        <div className="flex items-center md:gap-5 lg:gap-10">
+          <span className="opacity-0 md:opacity-100 md:w-52 lg:w-72 h-0.5 bg-linear-to-bl to-zinc-100 from-secondary"></span>
+          <h2 className="text-4xl font-bold my-4">Nossos Apoiadores</h2>
+          <span className="opacity-0 md:opacity-100 md:w-52 lg:w-72 h-0.5 bg-linear-to-br to-zinc-100 from-secondary"></span>
+        </div>
+        <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
+          Expressamos profunda gratidão a todos que contribuíram com o evento
+          por meio de doações voluntárias. Ficamos felizes em tocar seus
+          corações com o nosso propósito.
+        </p>
+        <div className="flex flex-wrap items-center justify-center max-w-7xl gap-4 my-3 px-4">
           {allSupporters && allSupporters.length > 0 ? (
             allSupporters.map((prod, i) => (
-              <React.Fragment key={prod.id}>
-                <p>{prod.Name} {prod.last_name} X {prod.quantity}</p>
-                {i < allSupporters.length - 1 && <span>•</span>}
+              <React.Fragment key={i}>
+                <p>{`${prod.Name} ${prod.last_name}`}</p>
               </React.Fragment>
             ))
-          ): (
+          ) : (
             <p className="col-span-full text-center text-gray-500">
               Nenhum apoiador.
             </p>
@@ -98,7 +117,7 @@ export default async function HomePage() {
       <Connector className="text-center flex flex-col items-center w-screen h-screen !mt-20">
         <h2 className="text-4xl font-bold">Localização do Evento</h2>
         <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
-          A SCT 2025 acontece no campus da UENF, em Campos dos Goytacazes (RJ),
+          A SCTI 2025 acontece no campus da UENF, em Campos dos Goytacazes (RJ),
           onde serão realizados todos os workshops, palestras e exposições do
           evento.
         </p>

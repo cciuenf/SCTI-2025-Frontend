@@ -71,7 +71,7 @@ const ProfileInfos = ({
     );
     if(res.success) {
       await clearAuthTokens();
-      router.push("/");      
+      router.push("/");
     }
   };
 
@@ -141,7 +141,7 @@ const ProfileInfos = ({
         <>
           <h2 className="text-2xl md:text-3xl lg:text-4xl">Meus Produtos</h2>
           <p className="text-sm md:text-base font-light">
-            Visualize todos os seus produtos
+            Visualize todos os seus produtos comprados
           </p>
           <UserProducts />
         </>
