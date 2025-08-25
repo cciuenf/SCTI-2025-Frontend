@@ -9,9 +9,9 @@ import { handleGetUsersInfo } from "@/actions/user-actions";
 import type { UserBasicInfo } from "@/types/auth-interfaces";
 import type { UserProductPurchasesResponseI } from "@/types/product-interfaces";
 import React from "react";
+import { cn } from "@/lib/utils";
 
 type Supporter = UserBasicInfo & UserProductPurchasesResponseI
-
 
 export default async function HomePage() {
   async function getAllSupporter () {
@@ -49,7 +49,10 @@ export default async function HomePage() {
           Descubra nossa programação completa com palestras, workshops e
           atividades práticas nas mais diversas áreas da ciência e tecnologia.
         </p>
-        <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-2 w-full px-32">
+        <div className={cn(
+          "grid justify-center md:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-2 w-full px-32",
+          "max-w-7xl"
+        )}>
           {resultActivities && resultActivities.length > 0 ? (
             resultActivities.map((card) => (
               <ActivityCard
@@ -70,7 +73,7 @@ export default async function HomePage() {
         <h2 className="text-4xl font-bold">Nossos Patrocinadores</h2>
         <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
           Agradecemos imensamente às empresas que tornaram possível a realização
-          do SCT 2025. Conheça os parceiros que acreditam no potencial dos
+          da SCTI 2025. Conheça os parceiros que acreditam no potencial dos
           estudantes universitários.
         </p>
         <div className="w-full overflow-auto">
@@ -98,7 +101,7 @@ export default async function HomePage() {
       <Connector className="text-center flex flex-col items-center w-screen h-screen !mt-20">
         <h2 className="text-4xl font-bold">Localização do Evento</h2>
         <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
-          A SCT 2025 acontece no campus da UENF, em Campos dos Goytacazes (RJ),
+          A SCTI 2025 acontece no campus da UENF, em Campos dos Goytacazes (RJ),
           onde serão realizados todos os workshops, palestras e exposições do
           evento.
         </p>
