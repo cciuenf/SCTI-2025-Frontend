@@ -60,7 +60,7 @@ export default function EventSlugTabManager({
     },
   ]
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="w-full flex flex-col items-center max-h-screen overflow-hidden">
       <CustomGenericTabs tabs={tabs} className="max-w-7xl" showFab={isEventCreator}/>
     </div>
   )
