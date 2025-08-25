@@ -391,8 +391,8 @@ export default function ActivityListSection({
       {filteredSortedActivities.length !== 0 ? (
         <div
           className={cn(
-            "relative w-full max-h-[50vh] md:max-h-[75vh]",
-            "overflow-clip overflow-y-auto overscroll-contain"
+            "relative w-full h-full max-h-screen pb-48 sm:pb-24",
+            "overflow-clip overflow-y-auto scrollbar-unvisible overscroll-contain"
           )}
         >
           <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 p-6">
