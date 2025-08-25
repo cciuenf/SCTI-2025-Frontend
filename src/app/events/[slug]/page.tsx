@@ -1,7 +1,6 @@
 import { handleGetSlugCreatedEvent } from "@/actions/event-actions";
-import ActivityListSection from "@/components/Activities/ActivityListSection";
 import EventManagementActions from "@/components/Events/EventManagementActions";
-import ProductListSection from "@/components/Products/ProductListSection";
+import EventSlugTabManager from "@/components/Events/Slug/EventSlugTabManager";
 import Connector from "@/components/ui/Generic/Connector";
 import { getUserInfo } from "@/lib/cookies";
 import { formatEventDateRange, normalizeDate } from "@/lib/date-utils";
@@ -42,25 +41,12 @@ const SlugEventPage = async (props: Props) => {
       <div className="flex flex-wrap justify-center gap-4 px-2 my-6">
         {eventRes?.data && <EventManagementActions isEventCreator={isEventCreator} event={eventRes.data}/> }
       </div>
-      <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">Atividades</h2>
-      <div className="w-full max-w-6xl px-4">
-        {eventRes?.data && user_info &&
-          <ActivityListSection
-            isEventCreator={isEventCreator}
-            currentEvent={{id: eventRes.data.ID, slug: slug}}
-            user_id={user_info.id}
-          />
-        }
-      </div>
-      <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">Produtos</h2>
-      <div className="w-full max-w-6xl px-4">
-        {eventRes?.data &&
-          <ProductListSection
-            currentEvent={{id: eventRes.data.ID, slug: slug}}
-            isEventCreator={isEventCreator}
-          />
-        }
-      </div>
+      <EventSlugTabManager 
+        isEventCreator={isEventCreator}
+        eventId={eventRes.data.ID}
+        slug={slug}
+        userId={user_info?.id || ""}
+      />
     </Connector>
   );
 };
