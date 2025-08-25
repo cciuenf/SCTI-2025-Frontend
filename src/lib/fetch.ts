@@ -12,7 +12,7 @@ export async function fetchWrapper<T = unknown>(
 ): Promise<FetchResponse<T>> {
   const baseUrl = process.env.API_BASE_URL?.replace(/\/+$/, "");
   const path = input.replace(/^\/+/, "");
-  const url = `${baseUrl}/${path}`;
+  const url = `${baseUrl}/v1/${path}`;
 
   try {
     const clientInfo = await getClientInfoFromHeaders();
