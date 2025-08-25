@@ -1,41 +1,15 @@
 import { handleGetSlugCreatedEvent } from "@/actions/event-actions";
-// import ActivityListSection from "@/components/Activities/ActivityListSection";
 import EventManagementActions from "@/components/Events/EventManagementActions";
-// import ProductListSection from "@/components/Products/ProductListSection";
+import EventSlugTabManager from "@/components/Events/Slug/EventSlugTabManager";
 import Connector from "@/components/ui/Generic/Connector";
-import type { TabItem } from "@/components/ui/Generic/CustomGenericTabs";
-import CustomGenericTabs from "@/components/ui/Generic/CustomGenericTabs";
 import { getUserInfo } from "@/lib/cookies";
 import { formatEventDateRange, normalizeDate } from "@/lib/date-utils";
-import { Activity, Boxes, Calendar, MapPin, Plus, Users } from "lucide-react";
+import { Calendar, MapPin, Users } from "lucide-react";
 import { redirect } from "next/navigation";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
-
-const tabs: TabItem[] = [
-  {
-    id: "activities",
-    label: "Atividades",
-    content: <div>Atividades</div>,
-    icon: <Activity />,
-    fab: {
-      icon: <Plus className="w-8 h-8"/>,
-      fabVariant: {color: "primary"}
-    },
-  },
-  {
-    id: "products",
-    label: "Produtos",
-    content: <div>Produtos</div>,
-    icon: <Boxes />,
-    fab: {
-      icon: <Plus className="w-8 h-8"/>,
-      fabVariant: {color: "secondary"}
-    }
-  },
-]
 
 const SlugEventPage = async (props: Props) => {
   const { slug } = await props.params;
@@ -67,28 +41,12 @@ const SlugEventPage = async (props: Props) => {
       <div className="flex flex-wrap justify-center gap-4 px-2 my-6">
         {eventRes?.data && <EventManagementActions isEventCreator={isEventCreator} event={eventRes.data}/> }
       </div>
-      <div className="w-full px-4">
-        <CustomGenericTabs tabs={tabs} />
-      </div>
-      {/* <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">Atividades</h2>
-      <div className="w-full max-w-6xl px-4">
-        {eventRes?.data && user_info &&
-          <ActivityListSection
-            isEventCreator={isEventCreator}
-            currentEvent={{id: eventRes.data.ID, slug: slug}}
-            user_id={user_info.id}
-          />
-        }
-      </div>
-      <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">Produtos</h2>
-      <div className="w-full max-w-6xl px-4">
-        {eventRes?.data &&
-          <ProductListSection
-            currentEvent={{id: eventRes.data.ID, slug: slug}}
-            isEventCreator={isEventCreator}
-          />
-        }
-      </div> */}
+      <EventSlugTabManager 
+        isEventCreator={isEventCreator}
+        eventId={eventRes.data.ID}
+        slug={slug}
+        userId={user_info?.id || ""}
+      />
     </Connector>
   );
 };

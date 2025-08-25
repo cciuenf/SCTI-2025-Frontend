@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type Dispatch, type SetStateAction, useMemo } from "react";
 import ProductModalForm from "./ProductModalForm";
 import type {
   ProductPurchasesResponseI,
@@ -13,7 +13,6 @@ import {
 } from "@/actions/product-actions";
 import { handleGetAllEventActivities } from "@/actions/activity-actions";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
 import CardSkeleton from "../Loading/CardSkeleton";
 import ProductCard from "./ProductCard";
 import ProductBuyModalForm from "./ProductBuyModalForm";
@@ -22,29 +21,34 @@ import useMercadoPago from "@/hooks/use-mercado-pago";
 import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
 import type { ProductBuyDataI } from "@/schemas/product-schema";
 import { useRouter } from "next/navigation";
+import { Input } from "../ui/input";
+import { Boxes, ListFilter, Search } from "lucide-react";
 
 interface ProductListSectionProps {
   currentEvent: { id: string; slug: string };
   isEventCreator: boolean;
+  isCreationModalOpen: boolean,
+  setIsCreationModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function ProductListSection({
   currentEvent,
   isEventCreator,
+  isCreationModalOpen,
+  setIsCreationModalOpen,
 }: ProductListSectionProps) {
-  const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ProductResponseI>();
   const [allProducts, setAllProducts] = useState<ProductResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter(); 
+  const [query, setQuery] = useState("");
 
   const { selectPaymentMethod } = useMercadoPago();
 
   useEffect(() => {
     const fetchProducts = async () => {
-      // const id = toast.loading("Carregando Produtos...");
       setLoading(true);
       const [allActivitiesData, allProductsData] = await Promise.all([
         handleGetAllEventActivities(currentEvent.slug),
@@ -52,17 +56,27 @@ export default function ProductListSection({
       ]);
       setAllActivities(allActivitiesData.data?.map(item => item.activity) || []);
       setAllProducts(allProductsData.data || []);
-      // if (allActivitiesData.success && allProductsData.success)
-      //   toast.success("Produtos carregados com sucesso!", { id });
-      // else toast.error("Falha ao carregar os produtos", { id });
       setLoading(false);
     };
     fetchProducts();
   }, [currentEvent.slug]);
 
+
+  const filteredSortedProducts: ProductResponseI[] = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return q.length
+      ? allProducts.filter((p) => {
+          const name = (p.name ?? "").toLowerCase();
+          const description = (p.description ?? "").toLowerCase();
+          return name.includes(q) || description.includes(q);
+        })
+      : allProducts;
+  }, [allProducts, query]);
+
+
   if (loading) {
     return (
-      <div className="w-full max-w-6xl mt-6">
+      <div className="w-full mt-6">
         <div className="flex w-full gap-2 mb-6">
           <div className="flex-1 bg-white rounded-lg shadow-md h-10 flex items-center justify-center animate-pulse" />
         </div>
@@ -70,6 +84,8 @@ export default function ProductListSection({
       </div>
     );
   }
+
+  const clearFilters = () => setQuery("");
 
   const openCreationProductModal = (productToUpdate?: ProductResponseI) => {
     setSelectedProduct(productToUpdate);
@@ -128,29 +144,50 @@ export default function ProductListSection({
         error: () => "Erro ao apagar o produto",
       }
     );
-    if (result.success)
-      setAllProducts((prev) => prev.filter((p) => p.ID !== product_id));
+    if (result.success) setAllProducts((prev) => prev.filter((p) => p.ID !== product_id));
   };
 
   return (
     <>
-      {isEventCreator && (
-        <Button
-          onClick={() => openCreationProductModal()}
+      <div
+        className={cn(
+          "flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3",
+          "w-full mt-2 justify-center items-center"
+        )}
+      >
+        <div className="relative flex-1">
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Pesquisar produtos..."
+            className={cn(
+              "w-full h-10 rounded-md border border-zinc-300 bg-white pr-9 pl-10",
+              "outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
+            )}
+          />
+          <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+        </div>
+
+        <div
           className={cn(
-            "flex w-full p-5 rounded-sm shadow-md cursor-pointer",
-            "transition-colors duration-200 bg-accent mb-4 font-bold",
-            "text-secondary font-medium hover:text-accent hover:bg-secondary"
+            "h-10 px-3 rounded-md flex items-center gap-2",
+            "bg-white border border-zinc-300 text-zinc-800"
           )}
-          title="Criar Produto"
+          title={`${allProducts.length} produtos cadastrados`}
         >
-          <h2>Criar Produto</h2>
-        </Button>
-      )}
-      {allProducts.length !== 0 ? (
-        <div className="w-full max-w-6xl my-6">
-          <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {allProducts?.map((product) => (
+          <Boxes className="w-4 h-4" />
+          <span className="whitespace-nowrap">{allProducts.length} Produtos</span>
+        </div>
+      </div>
+      {filteredSortedProducts.length !== 0 ? (
+        <div
+          className={cn(
+            "relative w-full max-h-[50vh] md:max-h-[75vh]",
+            "overflow-clip overflow-y-auto overscroll-contain"
+          )}
+        >
+          <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 p-6">
+            {filteredSortedProducts?.map((product) => (
               <ProductCard
                 key={product.ID}
                 data={product}
@@ -165,9 +202,38 @@ export default function ProductListSection({
           </div>
         </div>
       ) : (
-        <p className="mt-6 mb-10 text-center">
-          Sem produtos disponíveis nessa seção
-        </p>
+        <div className="w-full my-10 px-3 sm:px-5 lg:px-10">
+          <div
+            className={cn(
+              "mx-auto max-w-xl text-center rounded-xl border border-dashed border-zinc-300",
+              "bg-white/70 p-8 sm:p-10 shadow-sm"
+            )}
+          >
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100">
+              <Search className="h-7 w-7 text-zinc-500" />
+            </div>
+            <h3 className="text-lg font-semibold text-zinc-800">
+              Nenhum produto encontrado
+            </h3>
+            <p className="mt-1 text-sm text-zinc-600">
+              Não encontramos resultados para a sua pesquisa atual. Tente
+              ajustar os termos ou alterar os filtros.
+            </p>
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+              <button
+                onClick={clearFilters}
+                className={cn(
+                  "h-9 px-3 rounded-md flex items-center gap-2",
+                  "bg-zinc-100 text-zinc-800 hover:bg-zinc-200 transition-colors"
+                )}
+                title="Limpar busca e filtros"
+              >
+                <ListFilter className="w-4 h-4" />
+                <span>Limpar filtros</span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
       <ProductModalForm
         currentEvent={currentEvent}

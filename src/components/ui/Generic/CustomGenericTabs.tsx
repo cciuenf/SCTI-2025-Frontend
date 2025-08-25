@@ -122,7 +122,7 @@ export default function CustomGenericTabs({
   return (
     <div
       className={cn(
-        "w-full min-w-[320px]",
+        "w-full min-w-[320px] h-screen",
         className
       )}
     >
@@ -182,7 +182,7 @@ export default function CustomGenericTabs({
       </div>
 
       {/* Content Panel */}
-      <div className="relative p-3 sm:p-4 md:p-6">
+      <div className="relative">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab?.id}
