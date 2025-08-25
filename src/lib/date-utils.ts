@@ -48,3 +48,7 @@ export function formatEventTimeRange(start_date: Date, end_date: Date) {
     return `${format(start_date, "HH:mm")} - ${format(end_date, "HH:mm")}`;
   return "Horários em dias diferentes";
 }
+
+export function safeTime (time: string) {
+  return (normalizeDate(time) || new Date(8640000000000000)).getTime();
+}

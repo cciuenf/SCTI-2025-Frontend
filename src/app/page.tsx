@@ -10,6 +10,7 @@ import type { UserBasicInfo } from "@/types/auth-interfaces";
 import type { UserProductPurchasesResponseI } from "@/types/product-interfaces";
 import React from "react";
 import { cn } from "@/lib/utils";
+import { safeTime } from "@/lib/date-utils";
 
 type Supporter = UserBasicInfo & UserProductPurchasesResponseI
 
@@ -35,6 +36,9 @@ export default async function HomePage() {
     return unified;
   };
   const resultActivities = (await handleGetAllEventActivities("scti")).data;
+  resultActivities?.sort(
+    (a, b) => safeTime(a.activity.start_time) - safeTime(b.activity.start_time)
+  );
   const allSupporters = (await getAllSupporter()).filter(
     item => item.product_id === process.env.SUPPORTER_PRODUCT_ID
   );
