@@ -321,11 +321,12 @@ export default function ActivityListSection({
   }
 
   return (
-    <>
+    <section className="h-full flex flex-col">
       <div
         className={cn(
+          "shrink-0",
           "flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3",
-          "w-full mt-2 justify-center items-center"
+          "w-full mt-2 justify-center items-center py-3"
         )}
       >
         <div className="relative flex-1">
@@ -391,8 +392,8 @@ export default function ActivityListSection({
       {filteredSortedActivities.length !== 0 ? (
         <div
           className={cn(
-            "relative w-full h-full max-h-screen pb-48 sm:pb-24",
-            "overflow-clip overflow-y-auto scrollbar-unvisible overscroll-contain"
+            "relative w-full flex-1",
+            "overflow-y-auto scrollbar-unvisible"
           )}
         >
           <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 p-6">
@@ -506,6 +507,6 @@ export default function ActivityListSection({
         open={isPresenceModalOpen}
         setOpen={setIsPresenceModalOpen}
       />
-    </>
+    </section>
   );
 }
