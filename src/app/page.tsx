@@ -19,7 +19,7 @@ export default async function HomePage() {
     const products = resultProducts.data || []
     const ids = products.map(item => item.user_id)
     const resultUsers = (await handleGetUsersInfo({ id_array: ids })).data || [];
-  
+
     const combined = products.map((reg, idx) => ({
         ...reg,
         ...resultUsers[idx]
@@ -35,9 +35,292 @@ export default async function HomePage() {
     return unified;
   };
   const resultActivities = (await handleGetAllEventActivities("scti")).data;
-  const allSupporters = (await getAllSupporter()).filter(
-    item => item.product_id === process.env.SUPPORTER_PRODUCT_ID
-  );
+  // const allSupporters = (await getAllSupporter()).filter(
+  //   item => item.product_id === process.env.SUPPORTER_PRODUCT_ID
+  // );
+  const allSupporters = [{
+    name: "Niki",
+    last_name: "Calveley"
+  }, {
+    name: "Dyane",
+    last_name: "Cumbridge"
+  }, {
+    name: "Giles",
+    last_name: "McGinnis"
+  }, {
+    name: "Marijn",
+    last_name: "Grooby"
+  }, {
+    name: "Vlad",
+    last_name: "Iacovucci"
+  }, {
+    name: "Ethelbert",
+    last_name: "Quincey"
+  }, {
+    name: "Carleen",
+    last_name: "McLelland"
+  }, {
+    name: "Meridel",
+    last_name: "Bonar"
+  }, {
+    name: "Nicko",
+    last_name: "Kleuer"
+  }, {
+    name: "Brod",
+    last_name: "Picknett"
+  }, {
+    name: "Marabel",
+    last_name: "Dobbson"
+  }, {
+    name: "Mindy",
+    last_name: "Kenney"
+  }, {
+    name: "Harvey",
+    last_name: "Rothery"
+  }, {
+    name: "Pierce",
+    last_name: "Andell"
+  }, {
+    name: "Brena",
+    last_name: "Digby"
+  }, {
+    name: "Bobette",
+    last_name: "Kerrey"
+  }, {
+    name: "Ada",
+    last_name: "Bensley"
+  }, {
+    name: "Elysee",
+    last_name: "Howell"
+  }, {
+    name: "Lucas",
+    last_name: "Mallinder"
+  }, {
+    name: "Jane",
+    last_name: "Westwell"
+  }, {
+    name: "Bekki",
+    last_name: "Duffit"
+  }, {
+    name: "Jilly",
+    last_name: "Lugton"
+  }, {
+    name: "Shaina",
+    last_name: "Ashborne"
+  }, {
+    name: "Willis",
+    last_name: "Follen"
+  }, {
+    name: "Nan",
+    last_name: "MacDuff"
+  }, {
+    name: "Maude",
+    last_name: "Bannard"
+  }, {
+    name: "Eleanore",
+    last_name: "Hallybone"
+  }, {
+    name: "Heinrick",
+    last_name: "Pariss"
+  }, {
+    name: "Joseph",
+    last_name: "Zarfati"
+  }, {
+    name: "Adam",
+    last_name: "Prate"
+  }, {
+    name: "Annabell",
+    last_name: "Simmon"
+  }, {
+    name: "Fedora",
+    last_name: "Lemmens"
+  }, {
+    name: "Maurizio",
+    last_name: "Thake"
+  }, {
+    name: "Missy",
+    last_name: "Rushman"
+  }, {
+    name: "Audre",
+    last_name: "Marfe"
+  }, {
+    name: "Skippy",
+    last_name: "Kleinplac"
+  }, {
+    name: "Fred",
+    last_name: "Upfold"
+  }, {
+    name: "Pacorro",
+    last_name: "Cheeke"
+  }, {
+    name: "Fredek",
+    last_name: "O'Longain"
+  }, {
+    name: "Francisca",
+    last_name: "Sanbrook"
+  }, {
+    name: "Ansel",
+    last_name: "McCulloch"
+  }, {
+    name: "Maryl",
+    last_name: "Gerriet"
+  }, {
+    name: "Shandee",
+    last_name: "Menham"
+  }, {
+    name: "Feliza",
+    last_name: "Crumb"
+  }, {
+    name: "Ester",
+    last_name: "Foker"
+  }, {
+    name: "Rhody",
+    last_name: "de Guise"
+  }, {
+    name: "Talya",
+    last_name: "Brotherhood"
+  }, {
+    name: "Krishnah",
+    last_name: "Tunnock"
+  }, {
+    name: "Jemima",
+    last_name: "Josse"
+  }, {
+    name: "Valery",
+    last_name: "Hache"
+  }, {
+    name: "Geri",
+    last_name: "McGilbon"
+  }, {
+    name: "Amaleta",
+    last_name: "Tite"
+  }, {
+    name: "Tobi",
+    last_name: "Herculeson"
+  }, {
+    name: "Jolene",
+    last_name: "Anslow"
+  }, {
+    name: "Maurene",
+    last_name: "Keelin"
+  }, {
+    name: "Cyndy",
+    last_name: "Minillo"
+  }, {
+    name: "Ozzy",
+    last_name: "Nesey"
+  }, {
+    name: "Doralyn",
+    last_name: "Gibard"
+  }, {
+    name: "Theodore",
+    last_name: "Costley"
+  }, {
+    name: "Gerrie",
+    last_name: "Bafford"
+  }, {
+    name: "Annis",
+    last_name: "Allnutt"
+  }, {
+    name: "Francoise",
+    last_name: "Gristock"
+  }, {
+    name: "Vera",
+    last_name: "Kitchinham"
+  }, {
+    name: "Che",
+    last_name: "Croneen"
+  }, {
+    name: "Dore",
+    last_name: "Florez"
+  }, {
+    name: "Itch",
+    last_name: "Knowlson"
+  }, {
+    name: "Dyanne",
+    last_name: "Bousquet"
+  }, {
+    name: "Lind",
+    last_name: "Swadlin"
+  }, {
+    name: "Alyda",
+    last_name: "Blazeby"
+  }, {
+    name: "Svend",
+    last_name: "Jaffrey"
+  }, {
+    name: "Calida",
+    last_name: "Colaton"
+  }, {
+    name: "Cariotta",
+    last_name: "Beslier"
+  }, {
+    name: "Alphonso",
+    last_name: "Eagles"
+  }, {
+    name: "Marleen",
+    last_name: "Jeroch"
+  }, {
+    name: "Gabbie",
+    last_name: "Tupling"
+  }, {
+    name: "Walliw",
+    last_name: "Mawman"
+  }, {
+    name: "Dosi",
+    last_name: "Souster"
+  }, {
+    name: "Peri",
+    last_name: "Blasio"
+  }, {
+    name: "Lenna",
+    last_name: "Tackell"
+  }, {
+    name: "Cori",
+    last_name: "Gell"
+  }, {
+    name: "Deck",
+    last_name: "Wyre"
+  }, {
+    name: "Aurora",
+    last_name: "Austins"
+  }, {
+    name: "Orbadiah",
+    last_name: "Gerge"
+  }, {
+    name: "Fredek",
+    last_name: "Poulgreen"
+  }, {
+    name: "Nelly",
+    last_name: "Abbey"
+  }, {
+    name: "Aimil",
+    last_name: "Foxall"
+  }, {
+    name: "Arabel",
+    last_name: "Fantini"
+  }, {
+    name: "Steven",
+    last_name: "Carlon"
+  }, {
+    name: "Jewell",
+    last_name: "Baldoni"
+  }, {
+    name: "Shaine",
+    last_name: "Janowicz"
+  }, {
+    name: "Franchot",
+    last_name: "Gulliver"
+  }, {
+    name: "Renae",
+    last_name: "Lawry"
+  }, {
+    name: "Artemis",
+    last_name: "Lockitt"
+  }, {
+    name: "Peg",
+    last_name: "Borsnall"
+  }]
 
   return (
     <div className="flex flex-col items-center font-spartan mx-auto">
@@ -80,12 +363,12 @@ export default async function HomePage() {
           />
         </div>
         <h2 className="text-4xl font-bold my-4">Nossos Apoiadores</h2>
-        <div className="flex flex-wrap items-center gap-4 mt-2">
+        <div className="flex flex-wrap items-center justify-center gap-4 my-3 px-4">
           {allSupporters && allSupporters.length > 0 ? (
             allSupporters.map((prod, i) => (
-              <React.Fragment key={prod.id}>
-                <p>{prod.Name} {prod.last_name} X {prod.quantity}</p>
-                {i < allSupporters.length - 1 && <span>•</span>}
+              <React.Fragment key={i}>
+                <p>{prod.name} {prod.last_name}</p>
+
               </React.Fragment>
             ))
           ): (

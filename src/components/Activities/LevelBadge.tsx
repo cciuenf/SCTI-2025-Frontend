@@ -8,7 +8,6 @@ type Props = {
 };
 
 const LevelBadge = ({ level, icon = false }: Props) => {
-  console.log(icon);
   if (level == "none") {
     return;
   }
