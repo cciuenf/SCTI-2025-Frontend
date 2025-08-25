@@ -65,7 +65,7 @@ export default function UserPurchases() {
           const overview = filteredPurchases.reduce(
             (acc, pur) => {
               if (pur.product) {
-                acc.totalInPurchases += pur.product.price_int * pur.product.quantity;
+                acc.totalInPurchases += pur.product.price_int * pur.quantity;
                 if (!pur.is_delivered && pur.product.is_physical_item) {
                   acc.pendentPurchases += 1;
                 } else acc.finishedPurchases += 1;
