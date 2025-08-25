@@ -364,7 +364,7 @@ export default function ActivityListSection({
 
         <div
           className={cn(
-            "h-10 px-3 rounded-md flex items-center gap-2",
+            "h-10 w-32 px-3 rounded-md flex items-center gap-2",
             "bg-gradient-to-r from-yellow-500 to-accent text-white",
             "shadow-md font-semibold"
           )}
