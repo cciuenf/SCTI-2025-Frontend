@@ -1,7 +1,6 @@
 import { handleGetSlugCreatedEvent } from "@/actions/event-actions";
-import ActivityListSection from "@/components/Activities/ActivityListSection";
 import EventManagementActions from "@/components/Events/EventManagementActions";
-import ProductListSection from "@/components/Products/ProductListSection";
+import EventSlugTabManager from "@/components/Events/Slug/EventSlugTabManager";
 import Connector from "@/components/ui/Generic/Connector";
 import { getAdminStatus, getUserInfo } from "@/lib/cookies";
 import { formatEventDateRange, normalizeDate } from "@/lib/date-utils";
@@ -84,6 +83,12 @@ const SlugEventPage = async (props: Props) => {
           />
         )}
       </div>
+      <EventSlugTabManager
+        isEventCreator={isEventCreator}
+        eventId={eventRes.data.ID}
+        slug={slug}
+        userId={user_info?.id || ""}
+      />
     </Connector>
   );
 };

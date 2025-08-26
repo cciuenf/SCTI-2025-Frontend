@@ -11,7 +11,7 @@ import CustomGenericForm, {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { handleChangeName } from "@/actions/auth-actions";
+import { handleChangeName, handleForceReAuth } from "@/actions/auth-actions";
 import type { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
 import { runWithToast } from "@/lib/client/run-with-toast";
 
@@ -66,6 +66,7 @@ const ChangeNameModalForm = ({ accessData, setAccessData }: Props) => {
         name: new_name,
         last_name: new_last_name,
       };
+      await handleForceReAuth();
       setAccessData(newAccessTokenData);
       setOpen(false);
     }
