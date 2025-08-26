@@ -122,12 +122,12 @@ export default function CustomGenericTabs({
   return (
     <div
       className={cn(
-        "w-full min-w-[320px] flex flex-col h-full",
+        "w-full min-w-[320px] h-full",
         className
       )}
     >
       {/* Tabs Header */}
-      <div className="relative shrink-0">
+      <div className="relative">
         {!equalize && (
           <>
             <div className="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-background to-transparent" />
@@ -182,7 +182,7 @@ export default function CustomGenericTabs({
       </div>
 
       {/* Content Panel */}
-      <div className="relative flex-1">
+      <div className="relative h-screen">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab?.id}

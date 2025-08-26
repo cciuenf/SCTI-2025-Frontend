@@ -37,11 +37,13 @@ import { Select } from "../ui/select";
 import Link from "next/link";
 
 interface ActivityListSectionProps {
-  user_id: string;
-  currentEvent: { id: string; slug: string };
-  isEventCreator: boolean;
+  user_id: string,
+  currentEvent: { id: string; slug: string },
+  isEventCreator: boolean,
   isCreationModalOpen: boolean,
-  setIsCreationModalOpen: Dispatch<SetStateAction<boolean>>;
+  setIsCreationModalOpen: Dispatch<SetStateAction<boolean>>,
+  query: string,
+  setQuery: Dispatch<SetStateAction<string>>,
 }
 
 type FilterKey = "all" | "my" | "free" | "paid" | "available";
@@ -51,7 +53,9 @@ export default function ActivityListSection({
   user_id,
   isEventCreator,
   isCreationModalOpen,
-  setIsCreationModalOpen
+  setIsCreationModalOpen,
+  query,
+  setQuery,
 }: ActivityListSectionProps) {
   const [userTokens, setUserTokens] = useState<UserTokensResponseI[]>([]);
   const [isUsersModalOpen, setIsUsersModalOpen] = useState(false);
@@ -62,7 +66,6 @@ export default function ActivityListSection({
   const [allActivities, setAllActivities] = useState<ActivityWithSlotResponseI[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterKey>("all");
 
   useEffect(() => {
@@ -392,7 +395,7 @@ export default function ActivityListSection({
       {filteredSortedActivities.length !== 0 ? (
         <div
           className={cn(
-            "relative w-full flex-1",
+            "relative w-full flex-1 mb-20",
             "overflow-y-auto scrollbar-unvisible"
           )}
         >

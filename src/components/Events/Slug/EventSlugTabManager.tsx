@@ -2,6 +2,7 @@
 import ActivityListSection from "@/components/Activities/ActivityListSection";
 import ProductListSection from "@/components/Products/ProductListSection";
 import CustomGenericTabs, { type TabItem } from "@/components/ui/Generic/CustomGenericTabs";
+import { useUserEvents } from "@/contexts/UserEventsProvider";
 import { Activity, Boxes, Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -19,6 +20,9 @@ export default function EventSlugTabManager({
   slug
 }: EventSlugTabManagerProps) {
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const { myEvents } = useUserEvents();
+  const isUserRegistered = (myEvents.find(item => item.ID === eventId) && true) || false;
 
   const tabs: TabItem[] = [
     {
@@ -31,6 +35,8 @@ export default function EventSlugTabManager({
           user_id={userId}
           isCreationModalOpen={isCreationModalOpen}
           setIsCreationModalOpen={setIsCreationModalOpen}
+          query={query}
+          setQuery={setQuery}
         />
       ),
       icon: <Activity />,
@@ -49,6 +55,9 @@ export default function EventSlugTabManager({
           isEventCreator={isEventCreator} 
           isCreationModalOpen={isCreationModalOpen}
           setIsCreationModalOpen={setIsCreationModalOpen}
+          query={query}
+          setQuery={setQuery}
+          isUserRegistered={isUserRegistered}
         />
       ),
       icon: <Boxes />,
@@ -60,7 +69,7 @@ export default function EventSlugTabManager({
     },
   ]
   return (
-    <div className="w-full flex flex-col items-center max-h-screen overflow-hidden">
+    <div className="flex flex-col items-center max-h-screen w-full overflow-hidden">
       <CustomGenericTabs tabs={tabs} className="max-w-7xl" showFab={isEventCreator}/>
     </div>
   )

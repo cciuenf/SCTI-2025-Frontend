@@ -22,13 +22,16 @@ import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment
 import type { ProductBuyDataI } from "@/schemas/product-schema";
 import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
-import { Boxes, ListFilter, Search } from "lucide-react";
+import { Boxes, ListFilter, OctagonMinus, Search } from "lucide-react";
 
 interface ProductListSectionProps {
-  currentEvent: { id: string; slug: string };
-  isEventCreator: boolean;
+  currentEvent: { id: string; slug: string },
+  isEventCreator: boolean,
   isCreationModalOpen: boolean,
-  setIsCreationModalOpen: Dispatch<SetStateAction<boolean>>;
+  setIsCreationModalOpen: Dispatch<SetStateAction<boolean>>,
+  query: string,
+  setQuery: Dispatch<SetStateAction<string>>,
+  isUserRegistered: boolean,
 }
 
 export default function ProductListSection({
@@ -36,6 +39,9 @@ export default function ProductListSection({
   isEventCreator,
   isCreationModalOpen,
   setIsCreationModalOpen,
+  query,
+  setQuery,
+  isUserRegistered,
 }: ProductListSectionProps) {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ProductResponseI>();
@@ -43,7 +49,6 @@ export default function ProductListSection({
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter(); 
-  const [query, setQuery] = useState("");
 
   const { selectPaymentMethod } = useMercadoPago();
 
@@ -148,11 +153,12 @@ export default function ProductListSection({
   };
 
   return (
-    <>
+    <section className="h-full flex flex-col">
       <div
         className={cn(
+          "shrink-0",
           "flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3",
-          "w-full mt-2 justify-center items-center"
+          "w-full mt-2 justify-center items-center py-3"
         )}
       >
         <div className="relative flex-1">
@@ -179,15 +185,28 @@ export default function ProductListSection({
           <span className="whitespace-nowrap">{allProducts.length} Produtos</span>
         </div>
       </div>
+      {!isUserRegistered && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-white/60 backdrop-blur-sm z-20">
+          <div className="flex flex-col items-center text-center max-w-sm px-6">
+            <OctagonMinus className="w-32 h-32 mb-3 text-destructive" />
+            <h3 className="text-lg font-semibold text-secondary-foreground">
+              Acesso restrito
+            </h3>
+            <p className="text-sm text-secondary">
+              Você precisa se inscrever neste evento para poder comprar produtos.
+            </p>
+          </div>
+        </div>
+      )}
       {filteredSortedProducts.length !== 0 ? (
         <div
           className={cn(
-            "relative w-full h-full max-h-screen pb-32 sm:pb-24",
-            "overflow-clip overflow-y-auto scrollbar-unvisible overscroll-contain"
+            "relative w-full flex-1",
+            "overflow-y-auto scrollbar-unvisible mb-20"
           )}
         >
           <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 p-6">
-            {filteredSortedProducts?.map((product) => (
+            {filteredSortedProducts.map((product) => (
               <ProductCard
                 key={product.ID}
                 data={product}
@@ -256,6 +275,6 @@ export default function ProductListSection({
         }}
         handlePaymentSelector={handlePaymentSelector}
       />}
-    </>
+    </section>
   );
 }
