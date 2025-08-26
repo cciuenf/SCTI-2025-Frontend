@@ -127,7 +127,7 @@ export default function CustomGenericTabs({
       )}
     >
       {/* Tabs Header */}
-      <div className="relative">
+      <div className="relative overflow-x-auto">
         {!equalize && (
           <>
             <div className="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-background to-transparent" />
