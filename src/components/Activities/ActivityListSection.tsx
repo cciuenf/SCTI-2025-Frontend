@@ -31,7 +31,7 @@ import PresenceManagmentModalForm from "./PresenceManagementModalForm";
 import { runWithToast } from "@/lib/client/run-with-toast";
 import { handleGetAllUserTokens } from "@/actions/product-actions";
 import type { UserTokensResponseI } from "@/types/product-interfaces";
-import { safeTime } from "@/lib/date-utils";
+import { formatBR, safeTime, startOfLocalDay, toLocalDateKey } from "@/lib/date-utils";
 import { Input } from "../ui/input";
 import { Select } from "../ui/select";
 import Link from "next/link";
@@ -67,6 +67,7 @@ export default function ActivityListSection({
   const [isLoading, setIsLoading] = useState(true);
 
   const [filter, setFilter] = useState<FilterKey>("all");
+  const [dateFilter, setDateFilter] = useState<string>("all");
 
   useEffect(() => {
     const fetchUserTokens = async () => {
@@ -286,6 +287,34 @@ export default function ActivityListSection({
     }
   }, [filter, allActivities, myActivities]);
 
+  const { minTs, maxTs } = useMemo(() => {
+    if (!baseList.length) return { minTs: 0, maxTs: 0 };
+
+    let min = Infinity;
+    let max = -Infinity;
+
+    for (const w of baseList) {
+      const s = safeTime(w.activity.start_time); // string -> ms via sua função
+      if (s < min) min = s;
+      if (s > max) max = s;
+    }
+    return { minTs: startOfLocalDay(min), maxTs: startOfLocalDay(max) };
+  }, [baseList]);
+
+  const dayOptions = useMemo(() => {
+    if (!minTs || !maxTs || !isFinite(minTs) || !isFinite(maxTs)) return [];
+    const days: { value: string; label: string }[] = [];
+
+    for (let cur = minTs; cur <= maxTs; ) {
+      days.push({ value: toLocalDateKey(cur), label: formatBR(cur) });
+      const d = new Date(cur);
+      d.setDate(d.getDate() + 1);
+      cur = d.getTime();
+    }
+    return days;
+  }, [minTs, maxTs]);
+
+
   const filteredSortedActivities = useMemo(() => {
     const q = query.trim().toLowerCase();
     const searched = q.length
@@ -298,10 +327,14 @@ export default function ActivityListSection({
         })
       : baseList;
 
-    return [...searched].sort(
+    const byDay = dateFilter === "all"
+      ? searched
+      : searched.filter((w) => toLocalDateKey(safeTime(w.activity.start_time)) === dateFilter);
+
+    return [...byDay].sort(
       (a, b) => safeTime(a.activity.start_time) - safeTime(b.activity.start_time)
     );
-  }, [baseList, query]);
+  }, [baseList, query, dateFilter]);
 
   const availableTokensCount = userTokens.filter((t) => !t.is_used).length;
   const hasFilters = filter !== "all" || query.trim().length > 0;
@@ -328,11 +361,11 @@ export default function ActivityListSection({
       <div
         className={cn(
           "shrink-0",
-          "flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3",
-          "w-full mt-2 justify-center items-center py-3"
+          "flex flex-col sm:flex-row items-stretch flex-wrap sm:items-center gap-2 sm:gap-3",
+          "w-full mt-2 justify-center items-center py-3 px-4"
         )}
       >
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-56">
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -343,6 +376,24 @@ export default function ActivityListSection({
             )}
           />
           <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+        </div>
+
+        <div className="w-52">
+          <Select
+            value={dateFilter}
+            onValueChange={(v) => setDateFilter(v)}
+            className={cn(
+              "h-10 w-full border border-zinc-300 bg-white px-3",
+              "outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
+            )}
+            placeholder="Filtrar por data"
+            searchPlaceholder="Buscar data..."
+            title="Filtrar por data"
+            options={[
+              { value: "all", label: "Todas as datas", icon: ListFilter },
+              ...dayOptions.map((d) => ({ value: d.value, label: d.label, icon: Calendar })),
+            ]}
+          />
         </div>
 
         <div className="w-46">

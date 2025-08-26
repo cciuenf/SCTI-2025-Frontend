@@ -158,7 +158,7 @@ export default function ProductListSection({
         className={cn(
           "shrink-0",
           "flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3",
-          "w-full mt-2 justify-center items-center py-3"
+          "w-full mt-2 justify-center items-center py-3 px-4"
         )}
       >
         <div className="relative flex-1">

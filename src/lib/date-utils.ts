@@ -52,3 +52,24 @@ export function formatEventTimeRange(start_date: Date, end_date: Date) {
 export function safeTime (time: string) {
   return (normalizeDate(time) || new Date(8640000000000000)).getTime();
 }
+
+export const toLocalDateKey = (ms: number) => {
+  const d = new Date(ms);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+};
+
+export const formatBR = (ms: number) => {
+  const d = new Date(ms);
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+};
+
+export const startOfLocalDay = (ms: number) => {
+  const d = new Date(ms);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+};
