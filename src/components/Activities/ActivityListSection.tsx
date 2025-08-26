@@ -24,12 +24,14 @@ interface ActivityListSectionProps {
   user_id: string;
   currentEvent: { id: string; slug: string };
   isEventCreator: boolean;
+  isAdminStatus: {isAdmin: boolean, type: "admin" | "master_admin" | ""}
 }
 
 export default function ActivityListSection({
   currentEvent,
   user_id,
   isEventCreator,
+  isAdminStatus
 }: ActivityListSectionProps) {
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
   const [userTokens, setUserTokens] = useState<UserTokensResponseI[]>([])
@@ -319,6 +321,7 @@ const currentData = currentView === "all" ? allActivities : myActivities;
                   key={act.ID}
                   data={wrapper}
                   isEventCreator={isEventCreator}
+                  isAdminStatus={isAdminStatus}
                   isSubscribed={myActivities.some((a) => a.activity.ID === act.ID)}
                   onRegister={handleRegister}
                   onUnregister={handleUnregister}

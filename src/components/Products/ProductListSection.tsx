@@ -26,11 +26,14 @@ import { useRouter } from "next/navigation";
 interface ProductListSectionProps {
   currentEvent: { id: string; slug: string };
   isEventCreator: boolean;
+  isAdminStatus: {isAdmin: boolean, type: "admin" | "master_admin" | ""}
+
 }
 
 export default function ProductListSection({
   currentEvent,
   isEventCreator,
+  isAdminStatus
 }: ProductListSectionProps) {
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
@@ -38,7 +41,7 @@ export default function ProductListSection({
   const [allProducts, setAllProducts] = useState<ProductResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter(); 
+  const router = useRouter();
 
   const { selectPaymentMethod } = useMercadoPago();
 
@@ -92,12 +95,12 @@ export default function ProductListSection({
 
   const handlePaymentSelector = async (pay: IPaymentFormData, buyableProduct: ProductBuyDataI) => {
     const result = await selectPaymentMethod(
-      pay, 
-      currentEvent.slug, 
-      selectedProduct, 
+      pay,
+      currentEvent.slug,
+      selectedProduct,
       buyableProduct
     );
-    if (result.data != null && "product_id" in result.data) handleProductPurchase(result.data);    
+    if (result.data != null && "product_id" in result.data) handleProductPurchase(result.data);
     return result;
   };
 
@@ -134,7 +137,7 @@ export default function ProductListSection({
 
   return (
     <>
-      {isEventCreator && (
+      {isEventCreator || (isAdminStatus.isAdmin && isAdminStatus.type =="master_admin") && (
         <Button
           onClick={() => openCreationProductModal()}
           className={cn(

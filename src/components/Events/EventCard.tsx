@@ -1,7 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { Calendar, MapPin, Eye, Edit3, Trash2, UserPlus2, UserMinus2 } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  Eye,
+  Edit3,
+  Trash2,
+  UserPlus2,
+  UserMinus2,
+} from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -17,6 +25,7 @@ type Props = {
   description: string;
 
   isEventCreator: boolean;
+  isAdminStatus: { isAdmin: boolean; type: "admin" | "master_admin" | "" };
   isSubscribed: boolean;
   onRegister?: ((id: string) => Promise<void>) | null;
   onUnregister?: ((id: string) => Promise<void>) | null;
@@ -33,12 +42,13 @@ const EventCard = ({
   local,
   description,
   isEventCreator,
+  isAdminStatus,
   isSubscribed,
   onRegister,
   onUnregister,
   onUpdateFormOpen,
   onEventRoleUserFormOpen,
-  onDelete
+  onDelete,
 }: Props) => {
   const [isLoadingRegisterState, setIsLoadingRegisterState] = useState(false);
   const handleRegisterState = async (e: React.MouseEvent) => {
@@ -54,25 +64,34 @@ const EventCard = ({
   const handleEdit = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if(onUpdateFormOpen) onUpdateFormOpen();
+    if (onUpdateFormOpen) onUpdateFormOpen();
   };
 
-  const handleEventRole = (e: React.MouseEvent, willPromote: boolean = true) => {
+  const handleEventRole = (
+    e: React.MouseEvent,
+    willPromote: boolean = true
+  ) => {
     e.preventDefault();
     e.stopPropagation();
-    if(onEventRoleUserFormOpen) onEventRoleUserFormOpen(willPromote);
+    if (onEventRoleUserFormOpen) onEventRoleUserFormOpen(willPromote);
   };
 
   const handleDelete = async () => {
-    if(onDelete) await onDelete(slug);
+    if (onDelete) await onDelete(slug);
   };
 
   return (
-    <Link href={`/events/${slug}`} key={slug} className="block w-full h-full cursor-default">
-      <div className={cn(
-        "not-md:min-w-80 min-w-auto flex flex-col justify-left items-center bg-white rounded-lg shadow-md",
-        "px-1 py-3 transition-all hover:scale-105"
-      )}>
+    <Link
+      href={`/events/${slug}`}
+      key={slug}
+      className="block w-full h-full cursor-default"
+    >
+      <div
+        className={cn(
+          "not-md:min-w-80 min-w-auto flex flex-col justify-left items-center bg-white rounded-lg shadow-md",
+          "px-1 py-3 transition-all hover:scale-105"
+        )}
+      >
         <div className="w-full flex flex-col justify-around items-start gap-3.5 px-2">
           <div className="w-full flex justify-between">
             <Badge
@@ -82,31 +101,33 @@ const EventCard = ({
               {slug.toUpperCase()}
             </Badge>
             <div className="flex items-center gap-3">
-              <Eye className={cn(
-                "w-5 h-5 cursor-pointer transition-transform duration-200",
-                "hover:text-accent hover:scale-125"
-              )} />
+              <Eye
+                className={cn(
+                  "w-5 h-5 cursor-pointer transition-transform duration-200",
+                  "hover:text-accent hover:scale-125"
+                )}
+              />
               {isEventCreator && (
                 <>
-                  <UserPlus2 
+                  <UserPlus2
                     className={cn(
                       "w-5 h-5 cursor-pointer transition-transform duration-200",
                       "hover:text-accent hover:scale-125"
-                    )} 
+                    )}
                     onClick={handleEventRole}
                   />
                   <UserMinus2
                     className={cn(
                       "w-5 h-5 cursor-pointer transition-transform duration-200",
                       "hover:text-accent hover:scale-125"
-                    )} 
+                    )}
                     onClick={(e) => handleEventRole(e, false)}
                   />
-                  <Edit3 
+                  <Edit3
                     className={cn(
                       "w-5 h-5 cursor-pointer transition-transform duration-200",
                       "hover:text-accent hover:scale-125"
-                    )} 
+                    )}
                     onClick={handleEdit}
                   />
                   <ConfirmActionButton
@@ -124,27 +145,53 @@ const EventCard = ({
                   />
                 </>
               )}
+              {isAdminStatus.isAdmin &&
+                isAdminStatus.type == "master_admin" && (
+                  <>
+                    <UserPlus2
+                      className={cn(
+                        "w-5 h-5 cursor-pointer transition-transform duration-200",
+                        "hover:text-accent hover:scale-125"
+                      )}
+                      onClick={handleEventRole}
+                    />
+                    <UserMinus2
+                      className={cn(
+                        "w-5 h-5 cursor-pointer transition-transform duration-200",
+                        "hover:text-accent hover:scale-125"
+                      )}
+                      onClick={(e) => handleEventRole(e, false)}
+                    />
+                  </>
+                )}
             </div>
           </div>
 
-          <h2 className="w-full font-bold text-lg truncate" title={name}>{name}</h2>
+          <h2 className="w-full font-bold text-lg truncate" title={name}>
+            {name}
+          </h2>
 
           <div className="flex justify-between items-center">
             <Calendar className="text-accent h-4 w-4 mr-2.5" />
             <h3 className="opacity-90 text-sm">
-              {formatEventDateRange(normalizeDate(start_date), normalizeDate(end_date))}
+              {formatEventDateRange(
+                normalizeDate(start_date),
+                normalizeDate(end_date)
+              )}
             </h3>
           </div>
           <div className="flex justify-between items-center">
             <MapPin className="text-accent h-4 w-4 mr-2.5" />
-            <h3 className="opacity-90 text-sm">{local || "Não Informado"}</h3>
+            <h3 className="opacity-90 text-sm shrink">
+              {local || "Não Informado"}
+            </h3>
           </div>
 
           <h3 className="h-9 w-full text-ellipsis overflow-hidden text-left opacity-90 text-sm">
             {description || "Não Informado"}
           </h3>
-          {(onRegister && onUnregister) && (
-            <Button 
+          {onRegister && onUnregister && (
+            <Button
               onClick={handleRegisterState}
               className={cn(
                 "w-full py-1 rounded-sm shadow-md cursor-pointer duration-300 transition-colors",

@@ -60,6 +60,7 @@ export default async function HomePage() {
               <ActivityCard
                 key={card.activity.ID}
                 data={card}
+                isAdminStatus={{isAdmin: false, type: ""}}
                 isEventCreator={false}
                 isSubscribed={false}
               />

@@ -13,7 +13,10 @@ import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import ConfirmActionButton from "../ConfirmActionButton";
-import type { ActivityResponseI, ActivityWithSlotResponseI } from "@/types/activity-interface";
+import type {
+  ActivityResponseI,
+  ActivityWithSlotResponseI,
+} from "@/types/activity-interface";
 import LevelBadge from "./LevelBadge";
 import RequirementsHoverCard from "./RequirementsHoverCard";
 import { formatEventDateRange, normalizeDate } from "@/lib/date-utils";
@@ -21,6 +24,7 @@ import { formatEventDateRange, normalizeDate } from "@/lib/date-utils";
 type Props = {
   data: ActivityWithSlotResponseI;
   isEventCreator: boolean;
+  isAdminStatus: { isAdmin: boolean; type: "admin" | "master_admin" | "" };
   isSubscribed: boolean;
   onPresenceManagerOpen?: (data: ActivityResponseI) => void | null;
   onViewUsersOpen?: (
@@ -36,6 +40,7 @@ type Props = {
 const ActivityCard = ({
   data,
   isEventCreator,
+  isAdminStatus,
   isSubscribed,
   onViewUsersOpen,
   onPresenceManagerOpen,
@@ -67,36 +72,42 @@ const ActivityCard = ({
       className={cn(
         "not-md:min-w-80 min-w-auto flex flex-col justify-left items-center bg-white rounded-lg shadow-md",
         "px-1 py-3 transition-all hover:scale-105",
-        data.activity.has_fee && "bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 "
+        data.activity.has_fee &&
+          "bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 "
       )}
     >
       <div className="w-full flex flex-col justify-between items-start gap-3.5 px-2 h-full">
         <div className="w-full flex justify-between px-0.5">
           <div className="flex gap-2">
-            {data.activity.has_fee && 
+            {data.activity.has_fee && (
               <div className="w-6 h-6 rounded-full bg-orange-500 text-white p-1">
-                <Coins className="w-full h-full"/>
+                <Coins className="w-full h-full" />
               </div>
-            }
+            )}
             <Badge
               className="bg-accent text-secondary max-w-[120px] truncate overflow-hidden whitespace-nowrap"
               title={data.activity.type && data.activity.type}
             >
-              {data.activity.type && (data.activity.type.charAt(0).toUpperCase() + data.activity.type.substring(1)) }
+              {data.activity.type &&
+                data.activity.type.charAt(0).toUpperCase() +
+                  data.activity.type.substring(1)}
             </Badge>
             <LevelBadge level={data.activity.level} />
-            {!data.activity.has_fee && <Badge
-              className="bg-green-500 text-white truncate overflow-hidden whitespace-nowrap"
-            >
-              Gratuito
-            </Badge>}
+            {!data.activity.has_fee && (
+              <Badge className="bg-green-500 text-white truncate overflow-hidden whitespace-nowrap">
+                Gratuito
+              </Badge>
+            )}
           </div>
           {data.activity.requirements && (
             <RequirementsHoverCard data={data.activity.requirements} />
           )}
         </div>
 
-        <h2 className="w-full h-14 px-3 flex items-center" title={data.activity.name}>
+        <h2
+          className="w-full h-14 px-3 flex items-center"
+          title={data.activity.name}
+        >
           <span className="w-full text-lg font-bold text-left line-clamp-2 break-words">
             {data.activity.name}
           </span>
@@ -124,9 +135,9 @@ const ActivityCard = ({
         <div className="flex justify-between items-center">
           <Users className="text-accent h-4 w-4 mr-2.5" />
           <h3 className="opacity-90 text-sm">
-            {data.activity.has_unlimited_capacity ? "Vagas Ilimitadas" : 
-              `${data.available_slots.available_slots} / ${data.available_slots.total_capacity} vagas`
-            }
+            {data.activity.has_unlimited_capacity
+              ? "Vagas Ilimitadas"
+              : `${data.available_slots.available_slots} / ${data.available_slots.total_capacity} vagas`}
           </h3>
         </div>
 
@@ -154,7 +165,78 @@ const ActivityCard = ({
           </div>
         )}
 
-        {isEventCreator && (
+        {isEventCreator ||
+          (isAdminStatus.isAdmin && isAdminStatus.type == "master_admin" && (
+            <div className="flex w-3/5 items-center justify-around mx-auto">
+              <span
+                title="Marcar Presença"
+                role="img"
+                aria-label="Marcar Presença"
+              >
+                <CheckCircle
+                  className={cn(
+                    "w-5 h-5 cursor-pointer transition-transform duration-200",
+                    "hover:text-accent hover:scale-125"
+                  )}
+                  onClick={() =>
+                    onPresenceManagerOpen &&
+                    onPresenceManagerOpen(data.activity)
+                  }
+                />
+              </span>
+              <span title="Ver Presenças" role="img" aria-label="Ver Presenças">
+                <Eye
+                  className={cn(
+                    "w-5 h-5 cursor-pointer transition-transform duration-200",
+                    "hover:text-accent hover:scale-125"
+                  )}
+                  onClick={() =>
+                    onViewUsersOpen && onViewUsersOpen(false, data.activity)
+                  }
+                />
+              </span>
+              <span
+                title="Ver Inscrições"
+                role="img"
+                aria-label="Ver Inscrições"
+              >
+                <Users
+                  className={cn(
+                    "w-5 h-5 cursor-pointer transition-transform duration-200",
+                    "hover:text-accent hover:scale-125"
+                  )}
+                  onClick={() =>
+                    onViewUsersOpen && onViewUsersOpen(true, data.activity)
+                  }
+                />
+              </span>
+              <span title="Editar" role="img" aria-label="Editar">
+                <Edit3
+                  className={cn(
+                    "w-5 h-5 cursor-pointer transition-transform duration-200",
+                    "hover:text-accent hover:scale-125"
+                  )}
+                  onClick={handleEdit}
+                />
+              </span>
+              <ConfirmActionButton
+                trigger={(onClick) => (
+                  <span title="Deletar" role="img" aria-label="Deletar">
+                    <Trash2
+                      className={cn(
+                        "w-5 h-5 cursor-pointer transition-transform duration-200",
+                        "hover:text-red-500 hover:scale-125"
+                      )}
+                      onClick={onClick}
+                    />
+                  </span>
+                )}
+                message="Tem certeza que deseja apagar essa atividade?"
+                onConfirm={handleDelete}
+              />
+            </div>
+          ))}
+        {isAdminStatus.isAdmin && isAdminStatus.type == "admin" && (
           <div className="flex w-3/5 items-center justify-around mx-auto">
             <span
               title="Marcar Presença"
@@ -182,43 +264,17 @@ const ActivityCard = ({
                 }
               />
             </span>
-            <span
-              title="Ver Inscrições"
-              role="img"
-              aria-label="Ver Inscrições"
-            >
+            <span title="Ver Inscrições" role="img" aria-label="Ver Inscrições">
               <Users
                 className={cn(
                   "w-5 h-5 cursor-pointer transition-transform duration-200",
                   "hover:text-accent hover:scale-125"
                 )}
-                onClick={() => onViewUsersOpen && onViewUsersOpen(true, data.activity)}
+                onClick={() =>
+                  onViewUsersOpen && onViewUsersOpen(true, data.activity)
+                }
               />
             </span>
-            <span title="Editar" role="img" aria-label="Editar">
-              <Edit3
-                className={cn(
-                  "w-5 h-5 cursor-pointer transition-transform duration-200",
-                  "hover:text-accent hover:scale-125"
-                )}
-                onClick={handleEdit}
-              />
-            </span>
-            <ConfirmActionButton
-              trigger={(onClick) => (
-                <span title="Deletar" role="img" aria-label="Deletar">
-                  <Trash2
-                    className={cn(
-                      "w-5 h-5 cursor-pointer transition-transform duration-200",
-                      "hover:text-red-500 hover:scale-125"
-                    )}
-                    onClick={onClick}
-                  />
-                </span>
-              )}
-              message="Tem certeza que deseja apagar essa atividade?"
-              onConfirm={handleDelete}
-            />
           </div>
         )}
         {onRegister && onUnregister && (
