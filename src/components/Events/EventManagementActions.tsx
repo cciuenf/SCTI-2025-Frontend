@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil } from "lucide-react";
+import { Pencil, UserPlus, UserX } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useUserEvents } from "@/contexts/UserEventsProvider";
@@ -48,39 +48,42 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
       await handleRegister(updatedEvent.Slug);
     }
     setIsLoadingRegisterState(false);
-    router.push(`/events/${updatedEvent}`);
+    router.push(`/events/${updatedEvent}`); // This needs to improve
   };
 
   return (
-    <>
-      {isEventCreator && (
-        <>
-          <Button
-            onClick={() => setIsEventModalOpen(true)}
-            className={cn(
-              "min-w-[140px] flex items-center justify-center gap-1 p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 font-medium",
-              "bg-accent text-secondary hover:text-accent hover:bg-secondary"
-            )}
-            title="Editar"
-          >
-            <Pencil size={18} />
-            Editar
-          </Button>
-        </>
-      )}
+    <section className="w-full max-w-sm mx-auto flex flex-col items-stretch gap-3">
       <Button
         onClick={handleRegisterState}
+        disabled={isLoadingRegisterState}
+        title={isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
         className={cn(
-          "min-w-[140px] flex items-center justify-center gap-1 p-2 rounded-sm shadow-md cursor-pointer transition-colors duration-200 font-medium",
+          "inline-flex w-full items-center justify-center gap-2",
+          "h-12 px-4 text-base font-semibold rounded-md shadow-md transition-colors",
+          "disabled:opacity-60 disabled:pointer-events-none",
           isSubscribed
-            ? "bg-red-500 text-white hover:text-red-500 hover:bg-white border hover:border-red-500"
+            ? "bg-white text-red-600 border border-red-500 hover:bg-red-50 hover:text-red-600"
             : "bg-accent text-secondary hover:text-accent hover:bg-secondary"
         )}
-        title={isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
-        disabled={isLoadingRegisterState}
       >
+        {isSubscribed ? <UserX className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
         {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
       </Button>
+      {isEventCreator && (
+        <Button
+          onClick={() => setIsEventModalOpen(true)}
+          title="Editar evento"
+          variant="outline"
+          className={cn(
+            "inline-flex w-full items-center justify-center gap-2",
+            "h-10 px-3 text-sm font-medium rounded-md shadow-sm transition-colors",
+            "text-gray-800 border border-gray-200 hover:border-accent"
+          )}
+        >
+          <Pencil className="w-4 h-4" />
+          Editar
+        </Button>
+      )}
       <EventModalForm
         event={updatedEvent}
         isCreating={false}
@@ -88,7 +91,7 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
         setOpen={setIsEventModalOpen}
         onEventUpdate={handleEventUpdate}
       />
-    </>
+    </section>
   );
 };
 

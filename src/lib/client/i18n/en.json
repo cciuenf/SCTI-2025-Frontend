@@ -65,5 +65,7 @@
   "error getting user info: user with {n} of this product is trying to buy {n}, max ownable quantity is {n}, this exceeds it by {n}":
     "O usuário em questão já possui {n} deste produto, tentativa de adicionar {n}. O máximo permitido é {n}, excedendo em {n}.",
   "activity is at full capacity: maximum capacity reached": "A atividade está lotada!",
-  "error processing purchase: user is not registered to this event": "É necessário estar registrado no evento para comprar"
+  "error processing purchase: user is not registered to this event": "É necessário estar registrado no evento para comprar",
+  "error unregistering from event: cannot unregister from event where you bought products":
+    "Não é possível remover a inscrição de um evento, o qual você comprou algum produto"
 }

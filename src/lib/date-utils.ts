@@ -25,9 +25,9 @@ export function formatEventDateRange(start_date: Date | null, end_date: Date | n
   if (sameDay)
     return format(start_date, "dd 'de' MMMM, HH:mm", { locale: ptBR });
   if (sameMonth && sameYear)
-    return `${format(start_date, "dd", { locale: ptBR })}-${format(
+    return `${format(start_date, "dd", { locale: ptBR })} - ${format(
       end_date,
-      "dd 'de' MMMM, yyyy",
+      "dd MMM yyyy",
       { locale: ptBR }
     )}`;
   return `${format(start_date, "dd/MM/yyyy")} até ${format(
