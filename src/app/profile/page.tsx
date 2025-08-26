@@ -8,7 +8,8 @@ import type {
 } from "@/types/auth-interfaces";
 import jwt from "jsonwebtoken";
 import { handleGetUserDeviceInfos } from "@/actions/auth-actions";
-import Connector from "@/components/ui/Generic/Connector";
+import CustomGenericTabs, { type TabItem } from "@/components/ui/Generic/CustomGenericTabs";
+import ProfileInfo from "@/components/Profile/Tabs/ProfileInfo";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -28,8 +29,52 @@ const ProfilePage = async ({ searchParams }: Props) => {
   ) as UserRefreshTokenJwtPayload | null;
   const deviceInfos = await handleGetUserDeviceInfos();
 
+
+  const tabs: TabItem[] = [
+    {
+      id: "infos",
+      label: "Informações",
+      content: (
+        <ProfileInfo />
+      ),
+    },
+    {
+      id: "products",
+      label: "Produtos",
+      content: (
+        <div>
+          Produtos
+        </div>
+      ),
+    },
+    {
+      id: "shopping",
+      label: "Compras",
+      content: (
+        <div>
+          Compras
+        </div>
+      ),
+    },
+    {
+      id: "security",
+      label: "Segurança",
+      content: (
+        <div>
+          Segurança
+        </div>
+      ),
+    },
+  ]
+
   return (
-    <Connector
+    <div className="flex flex-col items-center max-h-screen w-full overflow-hidden">
+      <CustomGenericTabs
+        tabs={tabs}
+        initialTabId={view}
+        className="max-w-7xl"
+      />
+          {/* <Connector
       className="text-center flex flex-col items-center !mt-20"
       id="info"
     >
@@ -43,7 +88,8 @@ const ProfilePage = async ({ searchParams }: Props) => {
           deviceInfos={deviceInfos.data}
         />
       </div>
-    </Connector>
+    </Connector> */}
+    </div>
   );
 };
 
