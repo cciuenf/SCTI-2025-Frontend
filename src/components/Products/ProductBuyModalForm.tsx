@@ -23,7 +23,7 @@ const ProductBuyModalForm: React.FC<{
   open: boolean;
   setOpen: (open: boolean) => void;
   handlePaymentSelector: (
-    pay: IPaymentFormData, 
+    pay: IPaymentFormData,
     buyableProduct: ProductBuyDataI
   ) => Promise<{data: PaymentResult | null, id: string | null }>;
 }> = ({ slug, product, open, setOpen, handlePaymentSelector }) => {
@@ -45,9 +45,9 @@ const ProductBuyModalForm: React.FC<{
     { name: "is_gift", label: "É um presente?", type: "switch" as const },
     {
       name: "gifted_to_email",
-      label: "E-mail do alvo",
-      placeholder: "teste@gmail.com",
-      type: "text" as const,
+      label: "Usuário que será presenteado",
+      placeholder: "usuarioprivilegiado@gmail.com",
+      type: "email" as const,
       disabledWhen: {
         field: "is_gift",
         value: false,
@@ -72,7 +72,7 @@ const ProductBuyModalForm: React.FC<{
         }
       )
       if(!res.data) return;
-      
+
     }
     setBuyableProduct(data);
   }
