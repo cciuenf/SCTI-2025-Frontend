@@ -41,8 +41,8 @@
   "error demoting user: user is not an admin of this event": "Usuário não é um administrador deste evento",
   "error promoting user: user must be registered to the event to be promoted":
     "Usuário deve estar registrado no evento para ser promovido",
-  "promoted user": "Usuário promovido a administrador do evento",
-  "demoted user": "Usuário rebaixado a participante do evento",
+  "promoted user": "O Usuário foi promovido",
+  "demoted user": "O Usuário foi rebaixado",
   "error registering to activity: activity has already ended": "O período de inscrição da atividade já encerrou!",
   "error registering to activity: this activity requires a token or payment": "Essa atividade necessita de tokens ou pagamento",
   "error registering to activity: user does not have any available tokens": "Você não possui nenhum token disponível",
@@ -67,5 +67,7 @@
   "activity is at full capacity: maximum capacity reached": "A atividade está lotada!",
   "error processing purchase: user is not registered to this event": "É necessário estar registrado no evento para comprar",
   "error unregistering from event: cannot unregister from event where you bought products":
-    "Não é possível remover a inscrição de um evento, o qual você comprou algum produto"
+    "Não é possível remover a inscrição de um evento, o qual você comprou algum produto",
+  "error removing attendance: unauthorized: only master admins, event creators, or super users can remove attendance":
+    "Apenas ADMIN Mestre, criador de evento ou super usuário podem remover presença"
 }
