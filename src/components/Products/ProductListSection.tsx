@@ -194,6 +194,7 @@ export default function ProductListSection({
                 key={product.ID}
                 data={product}
                 isEventCreator={isEventCreator}
+                isAdminStatus={isAdminStatus}
                 onOpenPurchaseModal={openPurchaseProductModal}
                 onUpdateFormOpen={() =>
                   isEventCreator ? openCreationProductModal(product) : null

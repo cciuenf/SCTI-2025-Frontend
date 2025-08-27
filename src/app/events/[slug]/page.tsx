@@ -53,37 +53,14 @@ const SlugEventPage = async (props: Props) => {
       <div className="flex flex-wrap justify-center gap-4 px-2 my-6">
         {eventRes?.data && (
           <EventManagementActions
+            isAdminStatus={user_admin_status}
             isEventCreator={isEventCreator}
             event={eventRes.data}
           />
         )}
       </div>
-      <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">
-        Atividades
-      </h2>
-      <div className="w-full max-w-6xl px-4">
-        {eventRes?.data && user_info && (
-          <ActivityListSection
-            isAdminStatus={user_admin_status}
-            isEventCreator={isEventCreator}
-            currentEvent={{ id: eventRes.data.ID, slug: slug }}
-            user_id={user_info.id}
-          />
-        )}
-      </div>
-      <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2 mb-6">
-        Produtos
-      </h2>
-      <div className="w-full max-w-6xl px-4">
-        {eventRes?.data && (
-          <ProductListSection
-            currentEvent={{ id: eventRes.data.ID, slug: slug }}
-            isEventCreator={isEventCreator}
-            isAdminStatus={user_admin_status}
-          />
-        )}
-      </div>
       <EventSlugTabManager
+        isAdminStatus={user_admin_status}
         isEventCreator={isEventCreator}
         eventId={eventRes.data.ID}
         slug={slug}

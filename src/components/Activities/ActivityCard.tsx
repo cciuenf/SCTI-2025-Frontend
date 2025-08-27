@@ -49,6 +49,8 @@ const ActivityCard = ({
   onUpdateFormOpen,
   onDelete,
 }: Props) => {
+    console.log(isEventCreator)
+    console.log(isAdminStatus)
   const handleRegisterState = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -135,13 +137,11 @@ const ActivityCard = ({
         <div className="flex justify-between items-center">
           <Users className="text-accent h-4 w-4 mr-2.5" />
           <h3 className="opacity-90 text-sm">
-            {data.activity.has_unlimited_capacity ? (
-              "Vagas ilimitadas"
-            ) : data.available_slots.is_full ? (
-              "Não há mais vagas disponíveis!"
-            ) : (
-              `${data.available_slots.available_slots} de ${data.available_slots.total_capacity} vagas restantes`
-            )}
+            {data.activity.has_unlimited_capacity
+              ? "Vagas ilimitadas"
+              : data.available_slots.is_full
+              ? "Não há mais vagas disponíveis!"
+              : `${data.available_slots.available_slots} de ${data.available_slots.total_capacity} vagas restantes`}
           </h3>
         </div>
 
@@ -169,8 +169,8 @@ const ActivityCard = ({
           </div>
         )}
 
-        {isEventCreator ||
-          (isAdminStatus.isAdmin && isAdminStatus.type == "master_admin" && (
+        {isEventCreator
+           && (
             <div className="flex w-3/5 items-center justify-around mx-auto">
               <span
                 title="Marcar Presença"
@@ -239,7 +239,7 @@ const ActivityCard = ({
                 onConfirm={handleDelete}
               />
             </div>
-          ))}
+          )}
         {isAdminStatus.isAdmin && isAdminStatus.type == "admin" && (
           <div className="flex w-3/5 items-center justify-around mx-auto">
             <span

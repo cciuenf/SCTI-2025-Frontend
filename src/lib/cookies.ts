@@ -62,7 +62,6 @@ export async function getAdminStatus(): Promise<{
   if (user_info && Object.keys(JSON.parse(user_info.admin_status)).length > 0) {
     const eventId = Object.keys(JSON.parse(user_info.admin_status))[0];
     const admin_type = JSON.parse(user_info.admin_status)[eventId];
-    console.log(admin_type)
     return { isAdmin: true, type: admin_type };
   }
 

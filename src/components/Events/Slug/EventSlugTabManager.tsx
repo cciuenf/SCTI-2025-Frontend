@@ -7,6 +7,7 @@ import { useState } from "react";
 
 interface EventSlugTabManagerProps {
   isEventCreator: boolean,
+  isAdminStatus: {isAdmin: boolean, type: "admin" | "master_admin" | ""}
   eventId: string,
   userId: string,
   slug: string,
@@ -14,11 +15,13 @@ interface EventSlugTabManagerProps {
 
 export default function EventSlugTabManager({
   isEventCreator,
+  isAdminStatus,
   eventId,
   userId,
   slug
 }: EventSlugTabManagerProps) {
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
+
 
   const tabs: TabItem[] = [
     {
@@ -26,6 +29,7 @@ export default function EventSlugTabManager({
       label: "Atividades",
       content: (
         <ActivityListSection
+          isAdminStatus={isAdminStatus}
           isEventCreator={isEventCreator}
           currentEvent={{ id: eventId, slug }}
           user_id={userId}
@@ -44,9 +48,10 @@ export default function EventSlugTabManager({
       id: "products",
       label: "Produtos",
       content: (
-        <ProductListSection 
-          currentEvent={{ id: eventId, slug }} 
-          isEventCreator={isEventCreator} 
+        <ProductListSection
+          currentEvent={{ id: eventId, slug }}
+          isEventCreator={isEventCreator}
+          isAdminStatus={isAdminStatus}
           isCreationModalOpen={isCreationModalOpen}
           setIsCreationModalOpen={setIsCreationModalOpen}
         />
