@@ -197,7 +197,7 @@ export default function ProductListSection({
                 isAdminStatus={isAdminStatus}
                 onOpenPurchaseModal={openPurchaseProductModal}
                 onUpdateFormOpen={() =>
-                  isEventCreator ? openCreationProductModal(product) : null
+                  isEventCreator || isAdminStatus.type == "master_admin" ? openCreationProductModal(product) : null
                 }
                 onDelete={handleProductDelete}
               />

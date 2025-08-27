@@ -49,8 +49,6 @@ const ActivityCard = ({
   onUpdateFormOpen,
   onDelete,
 }: Props) => {
-    console.log(isEventCreator)
-    console.log(isAdminStatus)
   const handleRegisterState = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -168,78 +166,71 @@ const ActivityCard = ({
             )}
           </div>
         )}
-
-        {isEventCreator || isAdminStatus.type == "master_admin"
-           && (
-            <div className="flex w-3/5 items-center justify-around mx-auto">
-              <span
-                title="Marcar Presença"
-                role="img"
-                aria-label="Marcar Presença"
-              >
-                <CheckCircle
-                  className={cn(
-                    "w-5 h-5 cursor-pointer transition-transform duration-200",
-                    "hover:text-accent hover:scale-125"
-                  )}
-                  onClick={() =>
-                    onPresenceManagerOpen &&
-                    onPresenceManagerOpen(data.activity)
-                  }
-                />
-              </span>
-              <span title="Ver Presenças" role="img" aria-label="Ver Presenças">
-                <Eye
-                  className={cn(
-                    "w-5 h-5 cursor-pointer transition-transform duration-200",
-                    "hover:text-accent hover:scale-125"
-                  )}
-                  onClick={() =>
-                    onViewUsersOpen && onViewUsersOpen(false, data.activity)
-                  }
-                />
-              </span>
-              <span
-                title="Ver Inscrições"
-                role="img"
-                aria-label="Ver Inscrições"
-              >
-                <Users
-                  className={cn(
-                    "w-5 h-5 cursor-pointer transition-transform duration-200",
-                    "hover:text-accent hover:scale-125"
-                  )}
-                  onClick={() =>
-                    onViewUsersOpen && onViewUsersOpen(true, data.activity)
-                  }
-                />
-              </span>
-              <span title="Editar" role="img" aria-label="Editar">
-                <Edit3
-                  className={cn(
-                    "w-5 h-5 cursor-pointer transition-transform duration-200",
-                    "hover:text-accent hover:scale-125"
-                  )}
-                  onClick={handleEdit}
-                />
-              </span>
-              <ConfirmActionButton
-                trigger={(onClick) => (
-                  <span title="Deletar" role="img" aria-label="Deletar">
-                    <Trash2
-                      className={cn(
-                        "w-5 h-5 cursor-pointer transition-transform duration-200",
-                        "hover:text-red-500 hover:scale-125"
-                      )}
-                      onClick={onClick}
-                    />
-                  </span>
+        {(isEventCreator || isAdminStatus.type == "master_admin") && (
+          <div className="flex w-3/5 items-center justify-around mx-auto">
+            <span
+              title="Marcar Presença"
+              role="img"
+              aria-label="Marcar Presença"
+            >
+              <CheckCircle
+                className={cn(
+                  "w-5 h-5 cursor-pointer transition-transform duration-200",
+                  "hover:text-accent hover:scale-125"
                 )}
-                message="Tem certeza que deseja apagar essa atividade?"
-                onConfirm={handleDelete}
+                onClick={() =>
+                  onPresenceManagerOpen && onPresenceManagerOpen(data.activity)
+                }
               />
-            </div>
-          )}
+            </span>
+            <span title="Ver Presenças" role="img" aria-label="Ver Presenças">
+              <Eye
+                className={cn(
+                  "w-5 h-5 cursor-pointer transition-transform duration-200",
+                  "hover:text-accent hover:scale-125"
+                )}
+                onClick={() =>
+                  onViewUsersOpen && onViewUsersOpen(false, data.activity)
+                }
+              />
+            </span>
+            <span title="Ver Inscrições" role="img" aria-label="Ver Inscrições">
+              <Users
+                className={cn(
+                  "w-5 h-5 cursor-pointer transition-transform duration-200",
+                  "hover:text-accent hover:scale-125"
+                )}
+                onClick={() =>
+                  onViewUsersOpen && onViewUsersOpen(true, data.activity)
+                }
+              />
+            </span>
+            <span title="Editar" role="img" aria-label="Editar">
+              <Edit3
+                className={cn(
+                  "w-5 h-5 cursor-pointer transition-transform duration-200",
+                  "hover:text-accent hover:scale-125"
+                )}
+                onClick={handleEdit}
+              />
+            </span>
+            <ConfirmActionButton
+              trigger={(onClick) => (
+                <span title="Deletar" role="img" aria-label="Deletar">
+                  <Trash2
+                    className={cn(
+                      "w-5 h-5 cursor-pointer transition-transform duration-200",
+                      "hover:text-red-500 hover:scale-125"
+                    )}
+                    onClick={onClick}
+                  />
+                </span>
+              )}
+              message="Tem certeza que deseja apagar essa atividade?"
+              onConfirm={handleDelete}
+            />
+          </div>
+        )}
         {isAdminStatus.isAdmin && isAdminStatus.type == "admin" && (
           <div className="flex w-3/5 items-center justify-around mx-auto">
             <span
