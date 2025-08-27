@@ -53,7 +53,7 @@ export default async function HomePage() {
     return false;
   };
 
-  const hasLogin = await hasMadeLogin()
+  const hasLogin = await hasMadeLogin();
 
   return (
     <div className="flex flex-col items-center font-spartan mx-auto">
@@ -92,7 +92,11 @@ export default async function HomePage() {
         </div>
       </Connector>
       <Connector className="text-center flex flex-col items-center w-screen !mt-20">
-        <h2 className="text-4xl font-bold">Nossos Patrocinadores</h2>
+        <div className="flex items-center md:gap-5 lg:gap-10">
+          <span className="opacity-0 md:opacity-100 md:w-52 lg:w-72 h-0.5 bg-linear-to-bl to-zinc-100 from-secondary"></span>
+          <h2 className="text-4xl font-bold my-4">Nossos Patrocinadores</h2>
+          <span className="opacity-0 md:opacity-100 md:w-52 lg:w-72 h-0.5 bg-linear-to-br to-zinc-100 from-secondary"></span>
+        </div>
         <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
           Agradecemos imensamente às empresas que tornaram possível a realização
           da SCTI 2025. Conheça os parceiros que acreditam no potencial dos
@@ -102,10 +106,21 @@ export default async function HomePage() {
           <AutoScrollSponsors
             scale="scale-[90%]"
             sponsors={[
-              { text: "Alura", imagePath: "alura-light.svg" },
+              {
+                text: "RocketSeat",
+                imagePath: "rs-vertical.svg",
+                link: "https://rseat.in/scti",
+              },
+
+              {
+                text: "Alura",
+                imagePath: "alura-light.svg",
+                link: "https://www.alura.com.br",
+              },
               {
                 text: "Código de Ouro",
                 imagePath: "/img/sponsors/codigoouro.png",
+                link: "https://operacaocodigodeouro.com.br",
               },
             ]}
           />
