@@ -52,7 +52,11 @@ export default function ProfileInfo({
   };
 
   return (
-    <section className="flex flex-wrap justify-center max-h-full max-w-7xl py-8 gap-8 px-6 sm:px-8 overflow-y-auto scrollbar-unvisible pb-12">
+    <section className={cn(
+      "flex flex-wrap justify-center max-h-full max-w-7xl",
+      "overflow-y-auto scrollbar-unvisible",
+      "px-2 sm:px-8 pt-4 pb-14 gap-8"
+    )}>
       <div className="bg-white border border-slate-200/60 rounded-2xl shadow-sm min-w-[310px] flex-1 mx-1 sm:mx-2">
         <div className="flex items-center gap-4 bg-secondary rounded-t-2xl p-4">
           <div className="w-14 h-14 rounded-full bg-white/95 flex items-center justify-center text-secondary font-semibold shadow-md">
