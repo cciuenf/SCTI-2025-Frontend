@@ -169,7 +169,7 @@ const ActivityCard = ({
           </div>
         )}
 
-        {isEventCreator
+        {isEventCreator || isAdminStatus.type == "master_admin"
            && (
             <div className="flex w-3/5 items-center justify-around mx-auto">
               <span

@@ -56,7 +56,7 @@ const ProductCard = ({
             {data.is_public ? "Público" : "Privado"}
           </Badge>
           <div className="flex items-center gap-3">
-            {isEventCreator && (
+            {isEventCreator || isAdminStatus.type == "master_admin" && (
               <>
                 <Edit3
                   className={cn(

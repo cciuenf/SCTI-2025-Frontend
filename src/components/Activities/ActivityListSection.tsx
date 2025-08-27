@@ -427,7 +427,9 @@ export default function ActivityListSection({
                   onRegister={handleRegister}
                   onUnregister={handleUnregister}
                   onUpdateFormOpen={() =>
-                    isEventCreator ? openCreationActivityModal(act) : null
+                    isEventCreator || isAdminStatus.type == "master_admin"
+                      ? openCreationActivityModal(act)
+                      : null
                   }
                   onDelete={handleActivityDelete}
                   onViewUsersOpen={openUsersActivityModal}
