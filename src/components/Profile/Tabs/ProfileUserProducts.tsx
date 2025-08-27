@@ -10,13 +10,11 @@ export function ProfileUserProducts() {
         'flex flex-col overflow-y-auto scrollbar-unvisible'
       )}
     >
-      <header className="flex items-center justify-between">
-        <div className="flex items-center justify-center w-full gap-3">
-          <Package className="h-15 w-15 p-2 bg-zinc-100 rounded-2xl text-zinc-700" />
-          <div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold">Meus Produtos</h2>
-            <p className="text-sm text-zinc-600">Visualize todos os seus produtos adquiridos</p>
-          </div>
+      <header className="flex items-center justify-center gap-3">
+        <Package className="h-15 w-15 p-2 bg-zinc-100 rounded-2xl text-zinc-700" />
+        <div>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold">Meus Produtos</h2>
+          <p className="text-sm text-zinc-600">Visualize todos os seus produtos adquiridos</p>
         </div>
       </header>
 

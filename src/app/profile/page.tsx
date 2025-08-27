@@ -11,6 +11,8 @@ import { handleGetUserDeviceInfos } from "@/actions/auth-actions";
 import CustomGenericTabs, { type TabItem } from "@/components/ui/Generic/CustomGenericTabs";
 import ProfileInfo from "@/components/Profile/Tabs/ProfileInfo";
 import { ProfileUserProducts } from "@/components/Profile/Tabs/ProfileUserProducts";
+import UserPurchases from "@/components/UserPurchases";
+import UserLogins from "@/components/Profile/UserLogins";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -45,27 +47,17 @@ const ProfilePage = async ({ searchParams }: Props) => {
     {
       id: "products",
       label: "Produtos",
-      content: (
-        <ProfileUserProducts />
-      ),
+      content: <ProfileUserProducts />
     },
     {
       id: "shopping",
       label: "Compras",
-      content: (
-        <div>
-          Compras
-        </div>
-      ),
+      content: <UserPurchases />
     },
     {
       id: "security",
       label: "Segurança",
-      content: (
-        <div>
-          Segurança
-        </div>
-      ),
+      content: <UserLogins refresh_token={refresh_token || ""} />
     },
   ]
 
@@ -76,21 +68,6 @@ const ProfilePage = async ({ searchParams }: Props) => {
         initialTabId={view}
         className="max-w-7xl"
       />
-          {/* <Connector
-      className="text-center flex flex-col items-center !mt-20"
-      id="info"
-    >
-      <div className="w-full flex flex-col gap-15 items-center py-10">
-        <ProfileTabs />
-        <ProfileInfos
-          user_access_info={user_access_info}
-          user_refresh_info={user_refresh_info}
-          refresh_token={refresh_token || ""}
-          currentView={view}
-          deviceInfos={deviceInfos.data}
-        />
-      </div>
-    </Connector> */}
     </div>
   );
 };
