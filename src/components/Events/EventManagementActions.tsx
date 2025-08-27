@@ -52,7 +52,7 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
   };
 
   return (
-    <section className="w-full max-w-sm mx-auto flex flex-col items-stretch gap-3">
+    <section className="w-full max-w-sm mx-auto flex flex-col items-stretch gap-3 px-4">
       <Button
         onClick={handleRegisterState}
         disabled={isLoadingRegisterState}
