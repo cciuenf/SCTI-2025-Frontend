@@ -4,6 +4,7 @@ import ProductListSection from "@/components/Products/ProductListSection";
 import CustomGenericTabs, { type TabItem } from "@/components/ui/Generic/CustomGenericTabs";
 import { useUserEvents } from "@/contexts/UserEventsProvider";
 import { Activity, Boxes, Plus } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 interface EventSlugTabManagerProps {
@@ -19,6 +20,8 @@ export default function EventSlugTabManager({
   userId,
   slug
 }: EventSlugTabManagerProps) {
+  const searchParams = useSearchParams()
+  const currentView = searchParams.get("view") || "activities"
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
   const [query, setQuery] = useState("");
   const { myEvents } = useUserEvents();
@@ -70,7 +73,12 @@ export default function EventSlugTabManager({
   ]
   return (
     <div className="flex flex-col items-center max-h-screen w-full overflow-hidden">
-      <CustomGenericTabs tabs={tabs} className="max-w-7xl" showFab={isEventCreator}/>
+      <CustomGenericTabs 
+        tabs={tabs} 
+        initialTabId={currentView} 
+        className="max-w-7xl" 
+        showFab={isEventCreator}
+      />
     </div>
   )
 }

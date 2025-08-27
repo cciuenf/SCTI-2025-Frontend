@@ -10,6 +10,7 @@ import jwt from "jsonwebtoken";
 import { handleGetUserDeviceInfos } from "@/actions/auth-actions";
 import CustomGenericTabs, { type TabItem } from "@/components/ui/Generic/CustomGenericTabs";
 import ProfileInfo from "@/components/Profile/Tabs/ProfileInfo";
+import { ProfileUserProducts } from "@/components/Profile/Tabs/ProfileUserProducts";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -45,9 +46,7 @@ const ProfilePage = async ({ searchParams }: Props) => {
       id: "products",
       label: "Produtos",
       content: (
-        <div>
-          Produtos
-        </div>
+        <ProfileUserProducts />
       ),
     },
     {

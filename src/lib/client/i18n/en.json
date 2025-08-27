@@ -69,5 +69,6 @@
   "error unregistering from event: cannot unregister from event where you bought products":
     "Não é possível remover a inscrição de um evento, o qual você comprou algum produto",
   "error removing attendance: unauthorized: only master admins, event creators, or super users can remove attendance":
-    "Apenas ADMIN Mestre, criador de evento ou super usuário podem remover presença"
+    "Apenas ADMIN Mestre, criador de evento ou super usuário podem remover presença",
+  "error getting user info: cannot gift yourself": "Não é possível dar presentes a si mesmo."
 }
