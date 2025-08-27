@@ -107,10 +107,7 @@ const ProfileInfos = ({
                   </DialogContent>
                 </Dialog>
               )}
-              <ChangeNameModalForm
-                accessData={accessTokenData}
-                setAccessData={setAccessTokenData}
-              />
+              <ChangeNameModalForm accessData={accessTokenData}/>
             </div>
             <div className="w-full my-3 md:my-0 md:w-2/5 lg:w-1/3 flex flex-col gap-3 items-center md:items-end">
               <div className="flex flex-col gap-2 items-center md:items-end justify-around">

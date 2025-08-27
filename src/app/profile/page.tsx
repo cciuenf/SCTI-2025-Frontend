@@ -1,5 +1,5 @@
-import ProfileTabs from "@/components/Profile/ProfileTabs";
-import ProfileInfos from "@/components/Profile/ProfileInfos";
+// import ProfileTabs from "@/components/Profile/ProfileTabs";
+// import ProfileInfos from "@/components/Profile/ProfileInfos";
 
 import { cookies } from "next/headers";
 import type {
@@ -27,15 +27,18 @@ const ProfilePage = async ({ searchParams }: Props) => {
   const user_refresh_info = jwt.decode(
     refresh_token as string
   ) as UserRefreshTokenJwtPayload | null;
-  const deviceInfos = await handleGetUserDeviceInfos();
-
+  const device_info = await handleGetUserDeviceInfos();
 
   const tabs: TabItem[] = [
     {
       id: "infos",
       label: "Informações",
       content: (
-        <ProfileInfo />
+        <ProfileInfo 
+          user_access_info={user_access_info} 
+          user_refresh_info={user_refresh_info} 
+          device_info={device_info}
+        />
       ),
     },
     {

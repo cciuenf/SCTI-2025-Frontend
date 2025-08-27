@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  handleForceReAuth,
   handleResendVerifyToken,
   handleVerifyToken,
 } from "@/actions/auth-actions";
@@ -65,6 +66,7 @@ const VerifyForm = ({ setIsLoading, origin }: Props) => {
 
     if (res.status == 200) {
       toast.success("Usuário verificado");
+      await handleForceReAuth();
       router.push("/events/scti");
     }
 
