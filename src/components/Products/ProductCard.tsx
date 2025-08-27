@@ -10,6 +10,8 @@ import { formatFullDate } from "@/lib/date-utils";
 type Props = {
   data: ProductResponseI;
   isEventCreator: boolean;
+  isAdminStatus: {isAdmin: boolean, type: "admin" | "master_admin" | ""}
+
   onOpenPurchaseModal?: ((data: ProductResponseI) => void) | null;
   onUpdateFormOpen?: () => void | null;
   onDelete?: (id: string) => Promise<void> | null;
@@ -18,6 +20,7 @@ type Props = {
 const ProductCard = ({
   data,
   isEventCreator,
+  isAdminStatus,
   onOpenPurchaseModal,
   onUpdateFormOpen,
   onDelete
@@ -53,13 +56,13 @@ const ProductCard = ({
             {data.is_public ? "Público" : "Privado"}
           </Badge>
           <div className="flex items-center gap-3">
-            {isEventCreator && (
+            {(isEventCreator || isAdminStatus.type == "master_admin") && (
               <>
-                <Edit3 
+                <Edit3
                   className={cn(
                     "w-5 h-5 cursor-pointer transition-transform duration-200",
                     "hover:text-accent hover:scale-125"
-                  )} 
+                  )}
                   onClick={handleEdit}
                 />
                 <ConfirmActionButton
@@ -147,7 +150,7 @@ const ProductCard = ({
           {convertNumberToBRL(data.price_int)}
         </h2>
         {onOpenPurchaseModal && (
-          <Button 
+          <Button
             onClick={handleBuyModal}
             className={cn(
               "w-full py-1 rounded-sm shadow-md cursor-pointer duration-300 transition-colors",

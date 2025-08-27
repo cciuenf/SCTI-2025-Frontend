@@ -11,9 +11,9 @@ import type { UserProductPurchasesResponseI } from "@/types/product-interfaces";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { safeTime } from "@/lib/date-utils";
+import { getAuthTokens, getUserInfo } from "@/lib/cookies";
 
-type Supporter = UserBasicInfo & UserProductPurchasesResponseI
-
+type Supporter = UserBasicInfo & UserProductPurchasesResponseI;
 
 export default async function HomePage() {
   async function getAllSupporter() {
@@ -46,11 +46,19 @@ export default async function HomePage() {
   const allSupporters = (await getAllSupporter()).filter(
     (item) => item.product_id === process.env.SUPPORTER_PRODUCT_ID
   );
+  const hasMadeLogin = async () => {
+    const { refreshToken } = await getAuthTokens();
+    if (refreshToken && refreshToken != "") return true;
+
+    return false;
+  };
+
+  const hasLogin = await hasMadeLogin();
 
   return (
     <div className="flex flex-col items-center font-spartan mx-auto">
       <ScrollManager />
-      <InfoCarousel />
+      <InfoCarousel hasLogin={hasLogin} />
       <Connector
         id="info"
         className="text-center flex flex-col items-center w-screen !mt-20"
@@ -60,15 +68,18 @@ export default async function HomePage() {
           Descubra nossa programação completa com palestras, workshops e
           atividades práticas nas mais diversas áreas da ciência e tecnologia.
         </p>
-        <div className={cn(
-          "grid justify-center md:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-2 w-full px-32",
-          "max-w-7xl"
-        )}>
+        <div
+          className={cn(
+            "grid justify-center md:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-2 w-full px-32",
+            "max-w-7xl"
+          )}
+        >
           {resultActivities && resultActivities.length > 0 ? (
             resultActivities.map((card) => (
               <ActivityCard
                 key={card.activity.ID}
                 data={card}
+                isAdminStatus={{ isAdmin: false, type: "" }}
                 isEventCreator={false}
                 isSubscribed={false}
               />
@@ -81,7 +92,11 @@ export default async function HomePage() {
         </div>
       </Connector>
       <Connector className="text-center flex flex-col items-center w-screen !mt-20">
-        <h2 className="text-4xl font-bold">Nossos Patrocinadores</h2>
+        <div className="flex items-center md:gap-5 lg:gap-10">
+          <span className="opacity-0 md:opacity-100 md:w-52 lg:w-72 h-0.5 bg-linear-to-bl to-zinc-100 from-secondary"></span>
+          <h2 className="text-4xl font-bold my-4">Nossos Patrocinadores</h2>
+          <span className="opacity-0 md:opacity-100 md:w-52 lg:w-72 h-0.5 bg-linear-to-br to-zinc-100 from-secondary"></span>
+        </div>
         <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
           Agradecemos imensamente às empresas que tornaram possível a realização
           da SCTI 2025. Conheça os parceiros que acreditam no potencial dos
@@ -91,10 +106,21 @@ export default async function HomePage() {
           <AutoScrollSponsors
             scale="scale-[90%]"
             sponsors={[
-              { text: "Alura", imagePath: "alura-light.svg" },
+              {
+                text: "RocketSeat",
+                imagePath: "rs-vertical.svg",
+                link: "https://rseat.in/scti",
+              },
+
+              {
+                text: "Alura",
+                imagePath: "alura-light.svg",
+                link: "https://www.alura.com.br",
+              },
               {
                 text: "Código de Ouro",
                 imagePath: "/img/sponsors/codigoouro.png",
+                link: "https://operacaocodigodeouro.com.br",
               },
             ]}
           />

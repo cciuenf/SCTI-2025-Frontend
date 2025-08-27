@@ -11,7 +11,13 @@ import type {
   ActivityResponseI,
   ActivityWithSlotResponseI,
 } from "@/types/activity-interface";
-import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import ActivityModalForm from "./ActivityModalForm";
 import { cn } from "@/lib/utils";
 import {
@@ -40,7 +46,8 @@ interface ActivityListSectionProps {
   user_id: string;
   currentEvent: { id: string; slug: string };
   isEventCreator: boolean;
-  isCreationModalOpen: boolean,
+  isAdminStatus: { isAdmin: boolean; type: "admin" | "master_admin" | "" };
+  isCreationModalOpen: boolean;
   setIsCreationModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -50,16 +57,22 @@ export default function ActivityListSection({
   currentEvent,
   user_id,
   isEventCreator,
+  isAdminStatus,
   isCreationModalOpen,
-  setIsCreationModalOpen
+  setIsCreationModalOpen,
 }: ActivityListSectionProps) {
   const [userTokens, setUserTokens] = useState<UserTokensResponseI[]>([]);
   const [isUsersModalOpen, setIsUsersModalOpen] = useState(false);
   const [isPresenceModalOpen, setIsPresenceModalOpen] = useState(false);
-  const [searchUsersRegistrations, setSearchUsersRegistrations] = useState(false);
+  const [searchUsersRegistrations, setSearchUsersRegistrations] =
+    useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityResponseI>();
-  const [myActivities, setMyActivities] = useState<ActivityWithSlotResponseI[]>([]);
-  const [allActivities, setAllActivities] = useState<ActivityWithSlotResponseI[]>([]);
+  const [myActivities, setMyActivities] = useState<ActivityWithSlotResponseI[]>(
+    []
+  );
+  const [allActivities, setAllActivities] = useState<
+    ActivityWithSlotResponseI[]
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [query, setQuery] = useState("");
@@ -99,7 +112,9 @@ export default function ActivityListSection({
     fetchActivities();
   }, [currentEvent.slug]);
 
-  const wrapWithEmptySlots = (a: ActivityResponseI): ActivityWithSlotResponseI => ({
+  const wrapWithEmptySlots = (
+    a: ActivityResponseI
+  ): ActivityWithSlotResponseI => ({
     activity: a,
     available_slots: {
       id: "",
@@ -197,7 +212,8 @@ export default function ActivityListSection({
     if (res.success) {
       const fromAll = allActivities.find((a) => a.activity.ID === data.ID);
       setMyActivities((prev) => {
-        if (!fromAll || prev.some((a) => a.activity.ID === data.ID)) return prev;
+        if (!fromAll || prev.some((a) => a.activity.ID === data.ID))
+          return prev;
         return [...prev, fromAll];
       });
       setAllActivities((prev) => adjustAvailability(prev, data.ID, +1));
@@ -229,9 +245,7 @@ export default function ActivityListSection({
     if (res.success) {
       setAllActivities((prev) => adjustAvailability(prev, data.ID, -1));
       setMyActivities((prev) => adjustAvailability(prev, data.ID, -1));
-      setMyActivities((prev) =>
-        prev.filter((a) => a.activity.ID !== data.ID)
-      );
+      setMyActivities((prev) => prev.filter((a) => a.activity.ID !== data.ID));
 
       if (data.has_fee) {
         setUserTokens((prev) =>
@@ -296,7 +310,8 @@ export default function ActivityListSection({
       : baseList;
 
     return [...searched].sort(
-      (a, b) => safeTime(a.activity.start_time) - safeTime(b.activity.start_time)
+      (a, b) =>
+        safeTime(a.activity.start_time) - safeTime(b.activity.start_time)
     );
   }, [baseList, query]);
 
@@ -353,11 +368,11 @@ export default function ActivityListSection({
             searchPlaceholder="Buscar..."
             title="Filtrar atividades"
             options={[
-              { value: "all",       label: "Todas",     icon: ListFilter },
-              { value: "my",        label: "Minhas",    icon: UserCheck },
+              { value: "all", label: "Todas", icon: ListFilter },
+              { value: "my", label: "Minhas", icon: UserCheck },
               { value: "available", label: "Com vagas", icon: CheckCircle },
-              { value: "free",      label: "Gratuitas", icon: Ticket },
-              { value: "paid",      label: "Pagas",     icon: DollarSign },
+              { value: "free", label: "Gratuitas", icon: Ticket },
+              { value: "paid", label: "Pagas", icon: DollarSign },
             ]}
           />
         </div>
@@ -407,11 +422,14 @@ export default function ActivityListSection({
                   key={act.ID}
                   data={wrapper}
                   isEventCreator={isEventCreator}
+                  isAdminStatus={isAdminStatus}
                   isSubscribed={isSubscribed}
                   onRegister={handleRegister}
                   onUnregister={handleUnregister}
                   onUpdateFormOpen={() =>
-                    isEventCreator ? openCreationActivityModal(act) : null
+                    isEventCreator || isAdminStatus.type == "master_admin"
+                      ? openCreationActivityModal(act)
+                      : null
                   }
                   onDelete={handleActivityDelete}
                   onViewUsersOpen={openUsersActivityModal}

@@ -18,4 +18,5 @@ export interface ErrorResponseI {
 export interface SponsorInfoI {
   text?: string;
   imagePath?: string;
+  link?: string
 }

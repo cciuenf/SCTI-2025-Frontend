@@ -27,6 +27,7 @@ import { Boxes, ListFilter, Search } from "lucide-react";
 interface ProductListSectionProps {
   currentEvent: { id: string; slug: string };
   isEventCreator: boolean;
+  isAdminStatus: {isAdmin: boolean, type: "admin" | "master_admin" | ""}
   isCreationModalOpen: boolean,
   setIsCreationModalOpen: Dispatch<SetStateAction<boolean>>;
 }
@@ -34,6 +35,7 @@ interface ProductListSectionProps {
 export default function ProductListSection({
   currentEvent,
   isEventCreator,
+  isAdminStatus,
   isCreationModalOpen,
   setIsCreationModalOpen,
 }: ProductListSectionProps) {
@@ -42,7 +44,7 @@ export default function ProductListSection({
   const [allProducts, setAllProducts] = useState<ProductResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter(); 
+  const router = useRouter();
   const [query, setQuery] = useState("");
 
   const { selectPaymentMethod } = useMercadoPago();
@@ -108,12 +110,12 @@ export default function ProductListSection({
 
   const handlePaymentSelector = async (pay: IPaymentFormData, buyableProduct: ProductBuyDataI) => {
     const result = await selectPaymentMethod(
-      pay, 
-      currentEvent.slug, 
-      selectedProduct, 
+      pay,
+      currentEvent.slug,
+      selectedProduct,
       buyableProduct
     );
-    if (result.data != null && "product_id" in result.data) handleProductPurchase(result.data);    
+    if (result.data != null && "product_id" in result.data) handleProductPurchase(result.data);
     return result;
   };
 
@@ -192,9 +194,10 @@ export default function ProductListSection({
                 key={product.ID}
                 data={product}
                 isEventCreator={isEventCreator}
+                isAdminStatus={isAdminStatus}
                 onOpenPurchaseModal={openPurchaseProductModal}
                 onUpdateFormOpen={() =>
-                  isEventCreator ? openCreationProductModal(product) : null
+                  isEventCreator || isAdminStatus.type == "master_admin" ? openCreationProductModal(product) : null
                 }
                 onDelete={handleProductDelete}
               />
