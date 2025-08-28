@@ -1,7 +1,7 @@
 import { handleGetSlugCreatedEvent } from "@/actions/event-actions";
 import EventManagementActions from "@/components/Events/EventManagementActions";
 import EventSlugTabManager from "@/components/Events/Slug/EventSlugTabManager";
-import { getUserInfo } from "@/lib/cookies";
+import { getAdminStatus, getUserInfo } from "@/lib/cookies";
 import { formatEventDateRange, normalizeDate } from "@/lib/date-utils";
 import { cn } from "@/lib/utils";
 import { Calendar, MapPin, Users } from "lucide-react";
@@ -15,8 +15,10 @@ const SlugEventPage = async (props: Props) => {
   const { slug } = await props.params;
   if (slug.toUpperCase() !== "SCTI") redirect("/events/scti");
 
-  const user_info = await getUserInfo()
-  const isEventCreator = user_info?.is_event_creator || user_info?.is_super || false;
+  const user_info = await getUserInfo();
+  const user_admin_status = await getAdminStatus();
+  const isEventCreator =
+    user_info?.is_event_creator || user_info?.is_super || false;
 
   const eventRes = await handleGetSlugCreatedEvent(slug);
   if (!eventRes || !eventRes.data) redirect("/events");
@@ -65,7 +67,11 @@ const SlugEventPage = async (props: Props) => {
           </div>
         </dl>
       </section>
-      <EventManagementActions isEventCreator={isEventCreator} event={eventRes.data}/>
+      <EventManagementActions 
+        isAdminStatus={user_admin_status}
+        isEventCreator={isEventCreator} 
+        event={eventRes.data}
+      />
       <section className="max-w-3xl mx-auto px-4 container my-8">
         <h2 className="text-2xl md:text-3xl font-bold text-secondary mb-3">Sobre o Evento</h2>
         <hr className="w-12 border-2 border-accent mx-auto rounded-full"/>
@@ -76,6 +82,7 @@ const SlugEventPage = async (props: Props) => {
         </div>
       </section>
       <EventSlugTabManager 
+        isAdminStatus={user_admin_status}
         isEventCreator={isEventCreator}
         eventId={eventRes.data.ID}
         slug={slug}

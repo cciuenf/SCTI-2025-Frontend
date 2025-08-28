@@ -2,6 +2,7 @@
 import { cn } from "@/lib/utils";
 import type { SponsorInfoI } from "@/types/utility-interfaces";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useMemo, useRef } from 'react';
 
 interface Props {
@@ -21,6 +22,7 @@ const Sponsor = ({
   info: {
     text = "Empresa X",
     imagePath = "/SCTI.png",
+    link = ""
   }
 }: Props) => {
   const chars = useMemo(() => {
@@ -58,6 +60,7 @@ const Sponsor = ({
 
   return (
     <div className={`relative w-72 h-72 ${scale} shrink-0 rounded-full border-4 border-secondary`}>
+      <a href={link}>
       <svg
         viewBox="0 0 288 288"
         width="300"
@@ -95,6 +98,7 @@ const Sponsor = ({
           className="w-32 h-auto"
         />
       </div>
+      </a>
     </div>
   )
 }

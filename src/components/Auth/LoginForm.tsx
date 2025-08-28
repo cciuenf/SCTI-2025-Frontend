@@ -1,11 +1,11 @@
 import { type Dispatch, type SetStateAction } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  type LoginFormDataI, 
-  loginFormSchema, 
-  type SignUpFormDataI, 
-  type SignUpFormDataToSendI, 
-  signUpFormSchema 
+import {
+  type LoginFormDataI,
+  loginFormSchema,
+  type SignUpFormDataI,
+  type SignUpFormDataToSendI,
+  signUpFormSchema
 } from "@/schemas/auth-schema";
 import CustomGenericForm from "../ui/Generic/CustomGenericForm";
 import { runWithToast } from "@/lib/client/run-with-toast";
@@ -56,7 +56,7 @@ export default function LoginForm({
         {
           loading: "Realizando o Login...",
           success: () => {
-            router.push("/profile?view=infos");
+            router.push("/events/scti");
             return "Login bem-sucedido!"
           },
           error: () => "Erro ao realizar o login"
@@ -69,7 +69,7 @@ export default function LoginForm({
   return (
     <div className="w-full">
       {type == "Login" ? (
-        <CustomGenericForm<LoginFormDataI> 
+        <CustomGenericForm<LoginFormDataI>
           schema={loginFormSchema}
           fields={[
             {
@@ -94,7 +94,7 @@ export default function LoginForm({
           submittingLabel="Logando..."
         />
       ) : (
-        <CustomGenericForm<SignUpFormDataI> 
+        <CustomGenericForm<SignUpFormDataI>
           schema={signUpFormSchema}
           fields={[
             {

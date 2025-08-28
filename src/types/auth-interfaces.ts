@@ -22,7 +22,7 @@ export interface UserAccessTokenJwtPayload extends UserBasicInfo {
   name: string;
   last_name: string;
   email: string;
-  // admin_status: {}
+  admin_status: string
   is_verified: boolean;
   is_event_creator: boolean;
   is_super: boolean;

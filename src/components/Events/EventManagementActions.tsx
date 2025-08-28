@@ -12,10 +12,11 @@ import { useRouter } from "next/navigation";
 
 interface Props {
   isEventCreator: boolean;
+  isAdminStatus: { isAdmin: boolean, type: "admin" | "master_admin" | "" }
   event: EventResponseI;
 }
 
-const EventManagementActions = ({ isEventCreator, event }: Props) => {
+const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props) => {
   const [isEditEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isLoadingRegisterState, setIsLoadingRegisterState] = useState(false);
   const {
@@ -69,7 +70,7 @@ const EventManagementActions = ({ isEventCreator, event }: Props) => {
         {isSubscribed ? <UserX className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
         {isSubscribed ? "Cancelar inscrição" : "Inscrever-se"}
       </Button>
-      {isEventCreator && (
+      {(isEventCreator || isAdminStatus.type == "master_admin") && (
         <Button
           onClick={() => setIsEventModalOpen(true)}
           title="Editar evento"

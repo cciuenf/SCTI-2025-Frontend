@@ -8,7 +8,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { getAuthTokens, getUserInfo, isEventCreator } from "@/lib/cookies";
+import {
+  getAdminStatus,
+  getAuthTokens,
+  getUserInfo,
+  isEventCreator,
+} from "@/lib/cookies";
 import { Calendar, Home, LayoutDashboard, User, FolderDot } from "lucide-react";
 
 import Link from "next/link";
@@ -40,6 +45,7 @@ const items = {
 export async function SiteSidebar() {
   const { accessToken, refreshToken } = await getAuthTokens();
   const is_creator = await isEventCreator();
+  const is_admin = await getAdminStatus();
   const user = await getUserInfo();
 
   return (
@@ -66,16 +72,21 @@ export async function SiteSidebar() {
               <SidebarGroupLabel>Minha SCTI</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {items.events.map((item) => ((item.only_admin && is_creator) || !item.only_admin) && (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild>
-                        <Link href={item.url}>
-                          <item.icon />
-                          <span>{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
+                  {items.events.map(
+                    (item) =>
+                      ((item.only_admin &&
+                        (is_creator || is_admin.type == "master_admin")) ||
+                        !item.only_admin) && (
+                        <SidebarMenuItem key={item.title}>
+                          <SidebarMenuButton asChild>
+                            <Link href={item.url}>
+                              <item.icon />
+                              <span>{item.title}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      )
+                  )}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -91,7 +102,9 @@ export async function SiteSidebar() {
                   <SidebarMenuButton asChild>
                     <Link href="/profile?view=infos">
                       <User />
-                      <span className="truncate">{user?.name} {user?.last_name}</span>
+                      <span className="truncate">
+                        {user?.name} {user?.last_name}
+                      </span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
