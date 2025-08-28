@@ -127,7 +127,7 @@ export default function CustomGenericTabs({
       )}
     >
       {/* Tabs Header */}
-      <div className="relative overflow-x-auto">
+      <div className="relative overflow-x-auto w-full">
         {!equalize && (
           <>
             <div className="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-background to-transparent" />
@@ -171,7 +171,7 @@ export default function CustomGenericTabs({
                   <motion.span
                     layoutId="tab-underline"
                     className="absolute -bottom-1 left-2 right-2 h-0.5 rounded-full bg-foreground"
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    transition={{ type: "tween", duration: 0.18, ease: "easeOut" }}
                   />
                 )}
               </button>
