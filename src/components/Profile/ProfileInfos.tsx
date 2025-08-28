@@ -1,9 +1,8 @@
 "use client";
 import React from "react";
 import { Button } from "../ui/button";
-import { MailCheckIcon, LogOut, PenIcon, Monitor } from "lucide-react";
+import { MailCheckIcon, LogOut} from "lucide-react";
 
-import ProductListSection from "../Products/ProductListSection";
 import {
   Dialog,
   DialogContent,
@@ -11,8 +10,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import { handleGetRefreshTokens, handleLogout } from "@/actions/auth-actions";
-import {
+import { handleLogout } from "@/actions/auth-actions";
+import type {
   UserAccessTokenJwtPayload,
   UserRefreshTokenJwtPayload,
 } from "@/types/auth-interfaces";
@@ -20,18 +19,20 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { clearAuthTokens, getAuthTokens } from "@/lib/cookies";
+import { clearAuthTokens } from "@/lib/cookies";
 import UserPurchases from "../UserPurchases";
 import VerifyForm from "../VerifyForm";
 import ChangeNameModalForm from "./ChangeNameModalForm";
-import UserDataView from "./UserDataView";
 import UserLogins from "./UserLogins";
 import ChangePasswordModal from "./ChangePasswordModal";
+import { runWithToast } from "@/lib/client/run-with-toast";
+import UserProducts from "../UserProducts";
 
 type Props = {
   currentView: string;
   user_access_info: UserAccessTokenJwtPayload | null;
   user_refresh_info: UserRefreshTokenJwtPayload | null;
+  refresh_token: string;
   deviceInfos:
     | { os: string | undefined; browser: string | undefined }
     | { os: undefined; browser: undefined };
@@ -41,12 +42,10 @@ const ProfileInfos = ({
   currentView,
   user_access_info,
   user_refresh_info,
+  refresh_token,
   deviceInfos,
 }: Props) => {
-  const [mustShowVerify, setMustShowVerify] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [accessTokenData, setAccessTokenData] =
-    useState<UserAccessTokenJwtPayload | null>();
+  const [accessTokenData, setAccessTokenData] = useState<UserAccessTokenJwtPayload | null>();
 
   const router = useRouter();
 
@@ -62,17 +61,18 @@ const ProfileInfos = ({
   }
 
   const handleLogoutSubmit = async () => {
-    const res = await handleLogout();
-    await clearAuthTokens();
-    const { accessToken, refreshToken } = await getAuthTokens();
-
-    if (res.success && !accessToken && !refreshToken) {
+    const res = await runWithToast(
+      handleLogout(),
+      {
+        loading: "Encerrando sessão...",
+        success: () => "Sessão encerrada com sucesso!",
+        error: () => "Erro ao encerrar sessão!",
+      }
+    );
+    if(res.success) {
+      await clearAuthTokens();
       router.push("/");
-      toast.success("Usuario deslogado com sucesso!");
-      return;
     }
-    toast.error("Erro ao deslogar usuário!");
-    return;
   };
 
   return (
@@ -102,8 +102,6 @@ const ProfileInfos = ({
                   <DialogContent>
                     <DialogTitle></DialogTitle>
                     <VerifyForm
-                      setMustShowVerify={setMustShowVerify}
-                      setIsLoading={setIsLoading}
                       origin="profile"
                     />
                   </DialogContent>
@@ -138,21 +136,14 @@ const ProfileInfos = ({
             </div>
           </div>
         </>
-        // <UserDataView/>
       )}
       {currentView == "products" && (
         <>
           <h2 className="text-2xl md:text-3xl lg:text-4xl">Meus Produtos</h2>
           <p className="text-sm md:text-base font-light">
-            Visualize todos os seus produtos
+            Visualize todos os seus produtos comprados
           </p>
-          <ProductListSection
-            currentEvent={{
-              id: "eb5af25f-2368-4503-a160-5a117a771b5a",
-              slug: "SCTI",
-            }}
-            isEventCreator={accessTokenData.is_event_creator}
-          />
+          <UserProducts />
         </>
       )}
 
@@ -176,7 +167,7 @@ const ProfileInfos = ({
           <p className="text-sm md:text-base font-light">
             Monitore os acessos à sua conta
           </p>
-          <UserLogins />
+          <UserLogins refresh_token={refresh_token} />
         </>
       )}
     </div>

@@ -19,10 +19,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import type { UseFormReturn } from "react-hook-form";
 
 type Props = {
   inputName: string;
-  form: any;
+  form: UseFormReturn;
   label: string;
 };
 
@@ -35,7 +36,7 @@ export function DateTimePicker({ inputName, form, label }: Props) {
 
   function handleTimeChange(type: "hour" | "minute" | "ampm", value: string) {
     const currentDate = form.getValues(inputName) || new Date();
-    let newDate = new Date(currentDate);
+    const newDate = new Date(currentDate);
 
     if (type === "hour") {
       const hour = parseInt(value, 10);

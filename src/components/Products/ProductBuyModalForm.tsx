@@ -1,30 +1,33 @@
 "use client";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import CustomGenericForm, {
-  FieldConfig,
+  type FieldConfig,
 } from "../ui/Generic/CustomGenericForm";
-import { ProductPurchasesResponseI, ProductResponseI } from "@/types/product-interfaces";
+import type {
+  PaymentResult,
+  ProductResponseI,
+} from "@/types/product-interfaces";
 import { convertNumberToBRL } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProductBuyDataI, productBuySchema } from "@/schemas/product-schema";
-
-import { initMercadoPago } from '@mercadopago/sdk-react';
-import { useEffect, useState } from "react";
+import { type ProductBuyDataI, productBuySchema } from "@/schemas/product-schema";
 import { ProductPaymentModalForm } from "./ProductPaymentModalForm";
+import { useState } from "react";
+import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
+import { runWithToast } from "@/lib/client/run-with-toast";
+import { canGiveAGift } from "@/actions/product-actions";
 
 const ProductBuyModalForm: React.FC<{
   slug: string;
   product: ProductResponseI;
   open: boolean;
   setOpen: (open: boolean) => void;
-  onProductPurchase: (newProduct: ProductPurchasesResponseI) => void;
-}> = ({ slug, product, open, setOpen, onProductPurchase }) => {
+  handlePaymentSelector: (
+    pay: IPaymentFormData,
+    buyableProduct: ProductBuyDataI
+  ) => Promise<{data: PaymentResult | null, id: string | null }>;
+}> = ({ slug, product, open, setOpen, handlePaymentSelector }) => {
   const [buyableProduct, setBuyableProduct] = useState<ProductBuyDataI | null>(null);
-  const [isLoadingPayment, setIsLoadingPayment] = useState(false);
-  useEffect(() => {
-    initMercadoPago(process.env.NEXT_PUBLIC_API_KEY_MERCADO!, {locale: "pt-BR"});
-  }, [])
 
   const form = useForm<ProductBuyDataI>({
     resolver: zodResolver(productBuySchema),
@@ -42,9 +45,9 @@ const ProductBuyModalForm: React.FC<{
     { name: "is_gift", label: "É um presente?", type: "switch" as const },
     {
       name: "gifted_to_email",
-      label: "E-mail do alvo",
-      placeholder: "teste@gmail.com",
-      type: "text" as const,
+      label: "Usuário que será presenteado",
+      placeholder: "usuarioprivilegiado@gmail.com",
+      type: "email" as const,
       disabledWhen: {
         field: "is_gift",
         value: false,
@@ -59,41 +62,20 @@ const ProductBuyModalForm: React.FC<{
   ];
 
   const handleSubmit = async (data: ProductBuyDataI) => {
+    if(data.is_gift) {
+      const res = await runWithToast(
+        canGiveAGift({ email: data.gifted_to_email, product_id: product.ID, quantity: data.quantity }),
+        {
+          loading: "Verificando se o usuário pode receber o presente",
+          success: () => "O presente pode ser enviado!",
+          error: () => "Presente não pode ser enviado!"
+        }
+      )
+      if(!res.data) return;
+
+    }
     setBuyableProduct(data);
-    setIsLoadingPayment(true);
-  };
-
-  // const handleSubmit = async (data: ProductBuyDataI) => {
-  //   const result = await handleBuyProduct(
-  //     { ...data, product_id: product.ID },
-  //     slug
-  //   );
-  //   if (result?.success && result.data && onProductPurchase) {
-  //     toast.success(`Produto comprado com sucesso!`);
-  //     setOpen(false);
-  //     onProductPurchase(result.data.purchase);
-  //     return;
-  //   }
-
-  //   if (!result.success && result.message) {
-  //     const errorReason = result.message.split(":");
-
-  //     switch (errorReason[1].trim()) {
-  //       case "user is not registered to this event":
-  //         toast.error(
-  //           "Você precisa se inscrever no evento antes de comprar um produto!"
-  //         );
-  //         break;
-  //       default:
-  //         toast.error("Erro desconhecido ao tentar comprar produto!");
-  //     }
-  //   }
-  // };
-
-
-  const onPaymentFormIsReady = () => {
-    setIsLoadingPayment(false);
-   };
+  }
 
   return (
     <CustomGenericModal
@@ -103,23 +85,22 @@ const ProductBuyModalForm: React.FC<{
       onOpenChange={(open) => {setOpen(open); setBuyableProduct(null);} }
       trigger={null}
     >
-      <div className="flex flex-col gap-4">
-        <div className="text-lg font-semibold text-gray-700">
-          Preço Total: {convertNumberToBRL(totalPrice)}
-        </div>
-        {buyableProduct ? (
-          <ProductPaymentModalForm
-            buyableProduct={buyableProduct}
-            product={product}
-            onReady={(onPaymentFormIsReady)}
-            slug={slug}
-            open={open}
-            onOpenChange={setOpen}
-            price={totalPrice}
-            onProductPurchase={onProductPurchase}
-            onBuyableChange={setBuyableProduct}
-          />
-        ) : (
+      {buyableProduct ? (
+        <ProductPaymentModalForm
+          buyableProduct={buyableProduct}
+          product={product}
+          slug={slug}
+          open={open}
+          onOpenChange={setOpen}
+          price={totalPrice}
+          onBuyableChange={setBuyableProduct}
+          handlePaymentSelector={handlePaymentSelector}
+        />
+      ) : (
+        <div className="flex flex-col gap-4">
+          <div className="text-lg text-center font-semibold text-gray-700">
+            Preço Total: {convertNumberToBRL(totalPrice)}
+          </div>
           <CustomGenericForm<ProductBuyDataI>
             schema={productBuySchema}
             fields={fields}
@@ -128,9 +109,10 @@ const ProductBuyModalForm: React.FC<{
             onCancel={() => setOpen(false)}
             form={form}
             submitLabel="Realizar Pedido"
+            submittingLabel="Processando..."
           />
-        ) }
-      </div>
+        </div>
+      )}
     </CustomGenericModal>
   );
 };

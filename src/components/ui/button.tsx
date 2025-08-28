@@ -26,7 +26,9 @@ const buttonVariants = cva(
         sidebar: "text-accent hover:scale-115 border-0 bg-transparent",
         hour: "bg-accent border-background text-primary-foreground",
         profile: "bg-transparent rounded-[5px] py-1 px-2.5 border-secondary text-xl hover:tracking-wide",
-        edit: "bg-secondary text-zinc-100 rounded-[5px] py-2 px-2.5 text-xl hover:tracking-wider"
+        edit: "bg-secondary text-zinc-100 rounded-[5px] py-2 px-2.5 text-xl hover:tracking-wider",
+        home: "bg-transparent text-zinc-100 border-zinc-100 hover:bg-zinc-100 hover:text-purple-600 hover:border-none",
+        day: "px-5 bg-blue-100/80 text-secondary font-medium rounded-4xl"
 
       },
       size: {
@@ -34,6 +36,7 @@ const buttonVariants = cva(
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
         icon: "size-9",
+        day: "w-9 h-7"
       },
     },
     defaultVariants: {

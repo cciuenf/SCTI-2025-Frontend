@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { User, CreditCard, BoxIcon, LockIcon } from "lucide-react";
-type Props = {};
 
-const ProfileTabs = (props: Props) => {
+const ProfileTabs = () => {
   const [currentView, setCurrentView] = useState<string>("");
   const router = useRouter();
   const params = useSearchParams();
@@ -18,7 +17,7 @@ const ProfileTabs = (props: Props) => {
 
   useEffect(() => {
     if (view && view != "") setCurrentView(view);
-  }, []);
+  }, [view]);
 
   return (
     <div className="w-4/5 flex items-center justify-around border-1 border-secondary bg-secondary rounded-md p-1 gap-1">

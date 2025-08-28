@@ -58,6 +58,10 @@
     -webkit-appearance: none;
     margin: 0;
   }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
 }
 
 :root {
@@ -91,7 +95,7 @@
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground:oklch(0.83 0.1684 99.11);
+  --sidebar-accent-foreground: oklch(0.83 0.1684 99.11);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 }
@@ -146,5 +150,40 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  .scrollbar-unvisible::-webkit-scrollbar {
+    @apply w-0 duration-200;
+  }
+
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+    @apply duration-200;
+  }
+
+  ::-webkit-scrollbar:horizontal {
+    @apply w-1 h-1 rounded-md;
+  }
+
+  ::-webkit-scrollbar-track:horizontal {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb:horizontal {
+    @apply bg-secondary rounded-md w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-secondary;
+    @apply transition-colors;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-accent;
+  }
+
+  [data-scroll-locked] {
+    @apply !mr-0 !overflow-auto;
   }
 }

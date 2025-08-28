@@ -1,14 +1,8 @@
 "use client";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RefObject, useRef } from "react";
+import { type RefObject, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,27 +10,25 @@ import {
   handleResendVerifyToken,
   handleVerifyToken,
 } from "@/actions/auth-actions";
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 
 type Props = {
-  setMustShowVerify?: Dispatch<SetStateAction<boolean>>;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setIsLoading?: Dispatch<SetStateAction<boolean>>;
   origin: "signup" | "profile";
 };
 
 const verifyFormSchema = z.object({
-  digit_1: z.string().max(1).min(1),
-  digit_2: z.string().max(1).min(1),
-  digit_3: z.string().max(1).min(1),
-  digit_4: z.string().max(1).min(1),
-  digit_5: z.string().max(1).min(1),
-  digit_6: z.string().max(1).min(1),
+  digit_1: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_2: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_3: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_4: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_5: z.string().max(1).min(1, "Precisa ser preenchido"),
+  digit_6: z.string().max(1).min(1, "Precisa ser preenchido"),
 });
 
-const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
+const VerifyForm = ({ setIsLoading, origin }: Props) => {
   const verifyForm = useForm<z.infer<typeof verifyFormSchema>>({
     resolver: zodResolver(verifyFormSchema),
     defaultValues: {
@@ -67,13 +59,13 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
     digit_6,
   }: z.infer<typeof verifyFormSchema>) => {
     const token = digit_1.concat(digit_2, digit_3, digit_4, digit_5, digit_6);
-    setIsLoading(true);
+    if (setIsLoading) setIsLoading(true);
     const res = await handleVerifyToken(token);
-    setIsLoading(false);
+    if (setIsLoading) setIsLoading(false);
 
     if (res.status == 200) {
       toast.success("Usuário verificado");
-      router.push("/profile");
+      router.push("/events/scti");
     }
 
     if (res.status != 200) {
@@ -112,6 +104,36 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
     }
   };
 
+  const handlePasteFromClipboard = async () => {
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+      const digits = clipboardText.replace(/\D/g, "").slice(0, 6);
+
+      if (digits.length === 6) {
+        verifyForm.setValue("digit_1", digits[0]);
+        verifyForm.setValue("digit_2", digits[1]);
+        verifyForm.setValue("digit_3", digits[2]);
+        verifyForm.setValue("digit_4", digits[3]);
+        verifyForm.setValue("digit_5", digits[4]);
+        verifyForm.setValue("digit_6", digits[5]);
+        verifyRef.current?.focus();
+      } else {
+        toast.error(
+          "O conteúdo da área de transferência não parece ser um código válido."
+        );
+      }
+    } catch (error) {
+      if (error instanceof Error && error.name === "NotAllowedError") {
+        console.error("Falha ao ler a área de transferência: ");
+        toast.error(
+          "Permissão para acessar a área de transferência foi negada."
+        );
+      } else {
+        toast.error(`Não foi possível colar o conteúdo.`);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col justify-around items-center gap-3 max-w-md w-full h-60 p-3 rounded-md">
       <Form {...verifyForm}>
@@ -138,8 +160,11 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -165,8 +190,11 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -192,8 +220,11 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -219,8 +250,11 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -246,8 +280,11 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -273,8 +310,11 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
                       name={field.name}
                       value={field.value}
                       maxLength={1}
+                      type="number"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       className={
-                        "text-center text-xl border-1 border-accent text-accent valid:bg-secondary valid:border-secondary duration-500 selection:text-foreground  rounded-md py-6"
+                        "text-center text-xl border-1 border-secondary text-secondary valid:bg-secondary valid:text-zinc-100 duration-500 selection:text-foreground  rounded-md py-6"
                       }
                     />
                   </FormControl>
@@ -282,13 +322,35 @@ const VerifyForm = ({ setMustShowVerify, setIsLoading, origin }: Props) => {
               )}
             />
           </div>
-          <Button ref={verifyRef}>Verificar</Button>
+          <div className="w-full flex justify-around items-center">
+            <Button ref={verifyRef} variant={"yellow"}>
+              Verificar Conta
+            </Button>
+            <Button
+              variant={"yellow"}
+              className="w-30"
+              type="button"
+              onClick={handlePasteFromClipboard}
+            >
+              Colar
+            </Button>
+          </div>
           {origin == "signup" ? (
-            <Button type="button" variant={"outline"} onClick={() => verifyAfter()}>
+            <Button
+              type="button"
+              variant={"outline"}
+              onClick={() => verifyAfter()}
+            >
               Deixar para depois
             </Button>
           ) : (
-            <Button type="button" onClick={resendVerifyToken}>Reenviar Código</Button>
+            <Button
+              type="button"
+              variant={"yellow"}
+              onClick={resendVerifyToken}
+            >
+              Reenviar Código
+            </Button>
           )}
         </form>
       </Form>

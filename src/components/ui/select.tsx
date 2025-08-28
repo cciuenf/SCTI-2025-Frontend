@@ -24,11 +24,12 @@ interface SelectProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   value?: string;
   onValueChange: (value: string) => void;
   placeholder?: string;
+  searchPlaceholder?: string;
   className?: string;
 }
 
 export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
-  ({ options, value, onValueChange, placeholder = "Select an option", className, ...props }, ref) => {
+  ({ options, value, onValueChange, placeholder = "Select an option", searchPlaceholder = "Search...", className, ...props }, ref) => {
     const [open, setOpen] = React.useState(false);
 
     const selectedOption = options.find((o) => o.value === value);
@@ -40,7 +41,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             ref={ref}
             {...props}
             className={cn(
-              "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit",
+              "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit hover:text-inherit",
               className
             )}
             onClick={() => setOpen(!open)}
@@ -60,7 +61,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
         </PopoverTrigger>
         <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
           <Command>
-            <CommandInput placeholder="Search..." />
+            <CommandInput placeholder={searchPlaceholder} />
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>

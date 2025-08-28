@@ -1,42 +1,40 @@
-import { UserAccessTokenJwtPayload } from "@/types/auth-interfaces";
-import jwt from "jsonwebtoken";
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-import { format, isSameDay, isSameMonth, isSameYear } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import jwt from 'jsonwebtoken';
+import type { UserRefreshTokenJwtPayload } from "@/types/auth-interfaces";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-
-export function isAccessTokenExpired(token: string | null) {
-  if(!token) return false;
-  const user_info = jwt.decode(token) as UserAccessTokenJwtPayload | null
-  const expiresAt = new Date(user_info?.exp ?? "");
-  if(isNaN(expiresAt.getTime()) || expiresAt.getTime() <= new Date().getTime()) return true;
+  return twMerge(clsx(inputs));
 }
 
 export function convertNumberToBRL(value: number) {
-  return (value / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+  return (value / 100).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 }
 
-export function formatFullDate(dateString: string) {
-  const formatted = format(dateString, "d MMM',' yyyy 'às' HH:mm", { locale: ptBR });
-  return formatted
+export function getActivityRequirements(reqs: string) {
+  const arr = reqs.trim().split(",").sort();
+  return arr;
 }
 
-export function formatEventDateRange(start_date: Date, end_date: Date) {
-  const sameDay = isSameDay(start_date, end_date);
-  const sameMonth = isSameMonth(start_date, end_date);
-  const sameYear = isSameYear(start_date, end_date);
+export function getUserParticipationPercentage(
+  totalActivities: string,
+  attendedActivities: string
+) {
+  const total = Number(totalActivities);
+  const attended = Number(attendedActivities);
 
-  if (sameDay) return format(start_date, "dd 'de' MMMM, yyyy", { locale: ptBR });
-  if (sameMonth && sameYear)
-    return `${format(start_date, "dd", { locale: ptBR })}-${format(end_date, "dd 'de' MMMM, yyyy", { locale: ptBR })}`;
-  return `${format(start_date, "dd/MM/yyyy")} até ${format(end_date, "dd/MM/yyyy")}`;
+  if(!Number.isFinite(total) || total <= 0) return "0%";
+  const percentage = (attended / total) * 100;
+  return `${percentage.toFixed(2)}%`
 }
 
-export function formatEventTimeRange(start_date: Date, end_date: Date) {
-  if (isSameDay(start_date, end_date)) return `${format(start_date, "HH:mm")} - ${format(end_date, "HH:mm")}`;
-  return "Horários em dias diferentes";
+export function isRefreshTokenExpired(token: string | null) {
+  if (!token) return false;
+  const user_info = jwt.decode(token) as UserRefreshTokenJwtPayload | null;
+  const expiresAt = new Date(user_info?.exp ?? "");
+  if (isNaN(expiresAt.getTime()) || expiresAt.getTime() <= new Date().getTime())
+    return true;
 }

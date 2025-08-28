@@ -1,6 +1,6 @@
 "use server";
 
-import {
+import type {
   AuthCredentialsI,
   RefreshTokenI,
   UserAccessTokenJwtPayload,
@@ -11,186 +11,47 @@ import { getAuthTokens, setAuthTokens } from "@/lib/cookies";
 import { headers } from "next/headers";
 import {UAParser} from "ua-parser-js";
 import jwt from "jsonwebtoken";
+import { actionRequest } from "./_utils";
+import type { LoginFormDataI, SignUpFormDataToSendI } from "@/schemas/auth-schema";
 
-export async function handleLoginSubmit({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) {
-  try {
-    const res = await fetchWrapper<AuthCredentialsI>("login", {
-      method: "POST",
-      body: JSON.stringify({ email: email, password: password }),
-    });
-
-    await setAuthTokens(
-      res.result.data.access_token,
-      res.result.data.refresh_token
-    );
-    return { success: true };
-  } catch (err: unknown) {
-    if (err instanceof FetchError) {
-      return err.message, err.status;
-    } else {
-      console.error("Erro ao realizar o login: ", err);
-      return "Erro desconhecido ao realizar o login";
-    }
-  }
+export async function handleLoginSubmit({ email, password }: LoginFormDataI) {
+  const res = await actionRequest<LoginFormDataI, AuthCredentialsI>("/login", { 
+    withAuth: false,
+    method: "POST",
+    body: { email, password },
+  });
+  if (res.success && res.data) await setAuthTokens(res.data.access_token, res.data.refresh_token);
+  return res;
 }
 
-export async function handleSignUp({
-  name,
-  last_name,
-  email,
-  password,
-}: {
-  name: string;
-  last_name: string;
-  email: string;
-  password: string;
-}) {
-  try {
-    const res = await fetchWrapper<AuthCredentialsI>("register", {
-      method: "POST",
-      body: JSON.stringify({
-        name: name,
-        last_name: last_name,
-        email: email,
-        password: password,
-      }),
-    });
-
-    await setAuthTokens(
-      res.result.data.access_token,
-      res.result.data.refresh_token
-    );
-  } catch (err: unknown) {
-    if (err instanceof FetchError) {
-      console.error("Erro ao realizar o login: ", err.message);
-      return err.message;
-    } else {
-      console.error("Erro ao realizar o login: ", err);
-      return "Erro desconhecido ao realizar o login";
-    }
-  }
-
-  return await handleIsVerified();
+export async function handleSignUp({ name, last_name, email, password, is_uenf, uenf_semester }: SignUpFormDataToSendI) {
+  const res = await actionRequest<SignUpFormDataToSendI, AuthCredentialsI>("/register", { 
+    withAuth: false,
+    method: "POST",
+    body: { name, last_name, email, password, is_uenf, uenf_semester: parseInt(uenf_semester as string) },
+  });
+  if (res.success && res.data) await setAuthTokens(res.data.access_token, res.data.refresh_token);
+  const is_verified = await handleIsVerified();
+  return {success: res.success && typeof is_verified !== "string", data: null, message: res.message}
 }
 
 export async function handleLogout() {
-  try {
-    const { accessToken, refreshToken } = await getAuthTokens();
-    const res = await fetchWrapper<RefreshTokenI[]>("logout", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return {
-      success: true,
-      data: res.result.data,
-      message: res.result.message,
-    };
-  } catch (err: unknown) {
-    if (err instanceof FetchError) {
-      console.error("Erro ao resgatar os tokens: ", err.message);
-      return { success: false, data: [], message: err.message };
-    } else {
-      console.error("Erro ao resgatar os tokens: ", err);
-      return {
-        success: false,
-        data: [],
-        message: "Erro desconhecido ao resgatar os tokens",
-      };
-    }
-  }
+  return await actionRequest<null, RefreshTokenI[]>("/logout", { method: "POST" });
 }
 
 export async function handleGetRefreshTokens() {
-  try {
-    const { accessToken, refreshToken } = await getAuthTokens();
-    const res = await fetchWrapper<RefreshTokenI[]>("refresh-tokens", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return {
-      success: true,
-      data: res.result.data,
-      message: res.result.message,
-    };
-  } catch (err: unknown) {
-    if (err instanceof FetchError) {
-      console.error("Erro ao resgatar os tokens: ", err.message);
-      return { success: false, data: [], message: err.message };
-    } else {
-      console.error("Erro ao resgatar os tokens: ", err);
-      return {
-        success: false,
-        data: [],
-        message: "Erro desconhecido ao resgatar os tokens",
-      };
-    }
-  }
+  return await actionRequest<null, RefreshTokenI[]>("/refresh-tokens");
 }
 
 export async function handleRevokeToken(token: string) {
-  try {
-    const { accessToken, refreshToken } = await getAuthTokens();
-    const res = await fetchWrapper("revoke-refresh-token", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-      body: JSON.stringify({ refresh_token: token }),
-    });
-    return res.result;
-  } catch (err: unknown) {
-    if (err instanceof FetchError) {
-      console.error("Erro ao resgatar os tokens: ", err.message);
-      return { success: false, message: "Não foi possível remover o token" };
-    } else {
-      console.error("Erro ao resgatar os tokens: ", err);
-      return {
-        success: false,
-        message: "Erro desconhecido ao resgatar os tokens",
-      };
-    }
-  }
+  return await actionRequest<{ refresh_token: string }, null>("/revoke-refresh-token", { 
+    method: "POST", 
+    body: { refresh_token: token }
+  });
 }
 
-export async function handleVerifyTokens(): Promise<{
-  status: number;
-  message: string;
-}> {
-  try {
-    const { accessToken, refreshToken } = await getAuthTokens();
-    const res = await fetchWrapper("verify-tokens", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-    });
-    return { status: res.status, message: "Você está autenticado!" };
-  } catch (err: unknown) {
-    if (err instanceof FetchError) {
-      console.error("Erro ao verificar autenticação: ", err.message);
-      return { status: err.status, message: err.message };
-    } else {
-      console.error("Erro ao verificar autenticação: ", err);
-      return {
-        status: 500,
-        message: "Erro desconhecido ao verificar autenticação",
-      };
-    }
-  }
+export async function handleVerifyTokens() {
+  return actionRequest<null, null>("secure-verify-tokens", { method: "POST", verify: false });
 }
 
 export async function handleIsVerified(): Promise<boolean | string> {
@@ -218,7 +79,7 @@ export async function handleVerifyToken(token: string) {
   }
 
   try {
-    const res = await fetchWrapper("verify-account", {
+    await fetchWrapper("verify-account", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -251,7 +112,7 @@ export async function handleResendVerifyToken() {
   }
 
   try {
-    const res = await fetchWrapper("resend-verification-code", {
+    await fetchWrapper("resend-verification-code", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -275,65 +136,38 @@ export async function handleResendVerifyToken() {
 }
 
 export async function handleChangeName(name: string, last_name: string) {
-  const { accessToken, refreshToken } = await getAuthTokens();
+  return await actionRequest<{name: string, last_name: string}, null>(
+    "/change-name", 
+    { 
+      method: "POST",
+      body: { name, last_name }
+    }
+  );
+}
 
-  if (!accessToken || !refreshToken) {
-    console.error("Erro na checagem de tokens");
-    return { status: 401, msg: "Erro na checagem de tokens" };
-  }
-
-  try {
-    const res = await fetchWrapper("change-name", {
+export async function handleForceReAuth() {
+  return await actionRequest<{name: string, last_name: string}, null>("/force-reauth", 
+    { 
       method: "POST",
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Refresh: `Bearer ${refreshToken}`,
-      },
-      body: JSON.stringify({ name: name, last_name: last_name }),
-    });
-    return { status: 200, msg: "Nome alterado" };
-  } catch (error: unknown) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao alterar nome: ", error.message);
-      return { status: error.status, message: error.message };
-    } else {
-      console.error("Erro ao alterar nome: ", error);
-      return {
-        status: 500,
-        message: "Erro desconhecido ao alterar nome",
-      };
-    }
-  }
+        "X-Force-ReAuth": process.env.FORCE_REAUTH || ""
+      }
+    },
+  );
 }
 
 export async function handleForgotPassword(email: string) {
-
-  try {
-    const res = await fetchWrapper("forgot-password", {
-      method: "POST",
-
-      body: JSON.stringify({ email: email }),
-    });
-
-    return { status: res.status, msg: "Email enviado para alterar senha" };
-  } catch (error: unknown) {
-    if (error instanceof FetchError) {
-      console.error("Erro ao iniciar processo de alteração de senha: ", error.message);
-      return { status: error.status, message: error.message };
-    } else {
-      console.error("Erro ao iniciar processo de alteração de senha: ", error);
-      return {
-        status: 500,
-        message: "Erro desconhecido",
-      };
-    }
-  }
+  return await actionRequest<{email: string}, null>("/forgot-password", { 
+    withAuth: false,
+    method: "POST",
+    body: { email }
+  });
 }
 
 
 export async function handleChangePassword(password: string, token: string) {
   try {
-    const res = await fetchWrapper(`change-password?token=${token}`, {
+    await fetchWrapper(`change-password?token=${token}`, {
       method: "POST",
       body: JSON.stringify({ new_password: password }),
     });

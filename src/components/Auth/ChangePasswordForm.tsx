@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import CustomGenericForm, {
-  FieldConfig,
+  type FieldConfig,
 } from "../ui/Generic/CustomGenericForm";
 import { handleChangePassword } from "@/actions/auth-actions";
 import { zodResolver } from "@hookform/resolvers/zod";

@@ -11,3 +11,11 @@ API_BASE_URL=http://localhost:8080
 # Mercado Pago Public Key
 
 NEXT_PUBLIC_API_KEY_MERCADO="Api Key"
+
+# To return all data form the supporters
+
+SUPPORTER_PRODUCT_ID="Product ID"
+
+# Token para forçar o refresh
+
+FORCE_REAUTH="Token de refresh"

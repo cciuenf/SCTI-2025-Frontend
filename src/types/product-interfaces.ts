@@ -1,10 +1,10 @@
 export interface ProductBuyCredentialsI {
   product_id: string,
   quantity: number,
-  payment_method_id: string, // visa | master | etc...
-  payment_method_type: string, // pix
-  payment_method_token: string, // token
-  payment_method_installments: number, // installments
+  payment_method_id?: string, // visa | master | etc...
+  payment_method_type?: string, // pix
+  payment_method_token?: string, // token
+  payment_method_installments?: number, // installments
   is_gift: boolean,
   gifted_to_email: string,
 }
@@ -15,6 +15,7 @@ export interface ProductResponseI {
   description: string,
   price_int: number,
   quantity: number,
+  token_quantity?: number;
   is_physical_item: boolean,
   is_public: boolean,
   is_blocked: boolean,
@@ -38,6 +39,25 @@ export interface ProductPurchasesResponseI {
   purchased_at: string,
 }
 
+export interface UserProductPurchasesResponseI {
+  id: string,
+  user_id: string;
+  product_id: string,
+  purchase_id: string,
+  quantity: number,
+  received_as_gift: boolean,
+  gifted_from_id: string,
+}
+
+export interface ProductPixPurchaseResponseI {
+  id: string,
+  payment_method: PaymentMeyhodI,
+  status: string,
+  callback_url?: string;
+}
+
+export type PaymentResult = ProductPixPurchaseResponseI | ProductPurchasesResponseI;
+
 export interface ProductPurchasesResourceResponseI {
   id: string,
   transactions: TransactionResponseI,
@@ -49,6 +69,12 @@ export interface TransactionResponseI {
 
 export interface PaymentResponseI {
   id: string,
+  payment_method: PaymentMeyhodI
+}
+
+export interface PaymentMeyhodI {
+  id: string,
+  ticket_url: string,
 }
 
 export interface UserTokensResponseI {
@@ -65,4 +91,10 @@ interface AccessTargetsI {
   id: string,
   is_event: boolean,
   target_id: string,
+}
+
+export interface CanGiftRequestI {
+  email: string,
+  product_id: string,
+  quantity: number,
 }

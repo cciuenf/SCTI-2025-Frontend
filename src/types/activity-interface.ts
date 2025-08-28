@@ -4,6 +4,8 @@ export interface ActivityResponseI {
   speaker: string,
   type: string;
   description: string,
+  requirements: string,
+  level: string,
   location: string,
   has_fee: boolean,
   event_id: string,
@@ -16,6 +18,20 @@ export interface ActivityResponseI {
   standalone_slug: string,
   start_time: string,
   end_time: string,
+}
+
+interface AvailableSlotsI {
+  id: string,
+  total_capacity: number,
+  current_occupancy: number,
+  available_slots: number,
+  has_unlimited_slots: boolean,
+  is_full: boolean,
+}
+
+export interface ActivityWithSlotResponseI {
+  activity: ActivityResponseI,
+  available_slots: AvailableSlotsI
 }
 
 export interface ActivityRegistrationI {

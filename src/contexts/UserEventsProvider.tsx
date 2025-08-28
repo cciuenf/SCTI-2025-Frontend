@@ -1,19 +1,28 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { EventResponseI } from "@/types/event-interfaces";
-import { toast } from "sonner";
-import { handleDeleteSlugCreatedEvents, handleGetEvents, handleGetUserSubscribedEvents, handleRegisterFromEvent, handleUnresgiterFromEvent } from "@/actions/event-actions";
+import type { EventResponseI } from "@/types/event-interfaces";
+import { 
+  handleDeleteSlugCreatedEvents, 
+  handleDemoteUserInEvent, 
+  handleGetEvents, 
+  handleGetUserSubscribedEvents, 
+  handlePromoteUserInEvent, 
+  handleRegisterFromEvent, 
+  handleUnresgiterFromEvent 
+} from "@/actions/event-actions";
+import { runWithToast } from "@/lib/client/run-with-toast";
 
 interface UserEventsContextData {
   allEvents: EventResponseI[];
   myEvents: EventResponseI[];
-  loading: boolean;
+  isLoading: boolean;
   refreshEvents: () => Promise<void>;
   handleEventCreate: (newEvent: EventResponseI) => void;
   handleEventUpdate: (updatedEvent: EventResponseI) => void;
   handleEventDelete: (slug: string) => Promise<void>;
   handleRegister: (slug: string) => Promise<void>;
   handleUnregister: (slug: string) => Promise<void>;
+  handleUserEventRole: (slug: string, email: string, willPromote: boolean) => Promise<void>;
 }
 
 const UserEventsContext = createContext<UserEventsContextData | undefined>(undefined);
@@ -21,23 +30,23 @@ const UserEventsContext = createContext<UserEventsContextData | undefined>(undef
 export const UserEventsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [allEvents, setAllEvents] = useState<EventResponseI[]>([]);
   const [myEvents, setMyEvents] = useState<EventResponseI[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchEvents = async () => {
-    try {
-      setLoading(true);
-      const [allEventsData, myEventsData] = await Promise.all([
-        handleGetEvents(),
-        handleGetUserSubscribedEvents(),
-      ]);
-      setAllEvents(allEventsData?.data || []);
-      setMyEvents(myEventsData?.data || []);
-    } catch (error) {
-      console.error("Erro ao carregar eventos:", error);
-      toast.error("Erro ao carregar eventos");
-    } finally {
-      setLoading(false);
-    }
+    // const id = toast.loading('Carregando Eventos...');
+    const [allEventsData, myEventsData] = await Promise.all([
+      handleGetEvents(),
+      handleGetUserSubscribedEvents(),
+    ]);
+    setAllEvents(allEventsData.data || []);
+    setMyEvents(myEventsData.data || []);
+
+    // if (allEventsData.success && myEventsData.success)
+    //   toast.success('Eventos carregados com sucesso!', { id });
+    // else if(!allEventsData.success && !myEventsData.success) 
+    //   toast.error("Erro ao carregar os eventos", { id });
+    // else toast.error('Falha ao carregar algum dos eventos', { id });
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -58,53 +67,77 @@ export const UserEventsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, []);
 
   const handleEventDelete = useCallback(async (slug: string) => {
-    const res = await handleDeleteSlugCreatedEvents(slug);
+    const res = await runWithToast(
+      handleDeleteSlugCreatedEvents(slug),
+      {
+        loading: 'Apagando evento...',
+        success: () => `Evento: ${slug} apagado com sucesso!`,
+        error: () => `Erro ao apagar o evento: ${slug}`,
+      }
+    );
     if (res.success) {
       setAllEvents(prevEvents => prevEvents.filter(e => e.Slug !== slug));
       setMyEvents(prevEvents => prevEvents.filter(e => e.Slug !== slug));
-      toast.success("Evento apagado com sucesso!");
-    } else {
-      toast.error("Erro ao apagar o evento");
     }
   }, []);
 
   const handleRegister = useCallback(async (slug: string) => {
-    const res = await handleRegisterFromEvent(slug);
-    if (res.success) {
+    const res = await runWithToast(
+      handleRegisterFromEvent(slug),
+      {
+        loading: `Realizando a inscrição no evento: ${slug}...`,
+        success: () => 'Inscrição realizada com sucesso!',
+        error: () => 'Erro ao se inscrever no evento:',
+      }
+    )
+    if(res.success) {
       const event = allEvents.find(e => e.Slug === slug);
       if (event && !myEvents.some(e => e.Slug === slug)) {
         setAllEvents(prev => prev.map(e => e.Slug === slug ? {...e, participant_count: e.participant_count + 1} : e));
         setMyEvents(prev => [...prev, {...event, participant_count: event.participant_count + 1}]);
-        toast.success("Inscrição realizada com sucesso!");
       }
-    } else {
-      toast.error("Erro ao se inscrever no evento");
     }
   }, [allEvents, myEvents]);
 
   const handleUnregister = useCallback(async (slug: string) => {
-    const res = await handleUnresgiterFromEvent(slug);
-    if (res.success) {
+    const res = await runWithToast(
+      handleUnresgiterFromEvent(slug),
+      {
+        loading: `Removendo a inscrição do evento: ${slug}...`,
+        success: () => 'Inscrição cancelada com sucesso!',
+        error: () => 'Erro ao cancelar inscrição no evento:',
+      }
+    )
+    if(res.success) {
       const event = allEvents.find(e => e.Slug === slug);
       setMyEvents(prev => prev.filter(e => e.Slug !== slug));
       if(event) setAllEvents(prev => prev.map(e => e.Slug === slug ? {...e, participant_count: e.participant_count - 1} : e));
-      toast.success("Inscrição cancelada com sucesso!");
-    } else {
-      toast.error("Erro ao cancelar inscrição no evento");
     }
-  }, [allEvents, myEvents]);
+  }, [allEvents]);
+
+  const handleUserEventRole = useCallback(async (slug: string, email: string, willPromote: boolean) => {
+    await runWithToast(
+      willPromote ? handlePromoteUserInEvent(slug, email) : handleDemoteUserInEvent(slug, email),
+      {
+        loading: `Alterando o papel do usuário no evento: ${slug}...`,
+        success: () => willPromote ? 'Usuário promovido com sucesso!' : 'Usuário rebaixado com sucesso!',
+        error: () => `Erro ao alterar o papel do usuário no evento: ${slug}`,
+      }
+    );
+  }, []);
 
   return (
     <UserEventsContext.Provider value={{
       allEvents,
       myEvents,
-      loading,
+      isLoading,
       refreshEvents: fetchEvents,
       handleEventCreate,
       handleEventUpdate,
       handleEventDelete,
       handleRegister,
       handleUnregister,
+      handleUserEventRole
     }}>
       {children}
     </UserEventsContext.Provider>
