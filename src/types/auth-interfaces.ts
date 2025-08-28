@@ -15,6 +15,8 @@ export interface UserBasicInfo {
   LastName: string;
   Email: string;
   last_name?: string;
+  is_uenf?: boolean;
+  uenf_semester?: string;
 }
 
 export interface UserAccessTokenJwtPayload extends UserBasicInfo {
