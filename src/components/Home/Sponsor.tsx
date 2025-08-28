@@ -2,7 +2,6 @@
 import { cn } from "@/lib/utils";
 import type { SponsorInfoI } from "@/types/utility-interfaces";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useMemo, useRef } from 'react';
 
 interface Props {

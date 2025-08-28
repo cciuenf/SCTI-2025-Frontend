@@ -11,7 +11,7 @@ import type { UserProductPurchasesResponseI } from "@/types/product-interfaces";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { safeTime } from "@/lib/date-utils";
-import { getAuthTokens, getUserInfo } from "@/lib/cookies";
+import { getAuthTokens } from "@/lib/cookies";
 
 type Supporter = UserBasicInfo & UserProductPurchasesResponseI;
 

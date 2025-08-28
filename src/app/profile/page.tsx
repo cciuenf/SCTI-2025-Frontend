@@ -1,6 +1,3 @@
-// import ProfileTabs from "@/components/Profile/ProfileTabs";
-// import ProfileInfos from "@/components/Profile/ProfileInfos";
-
 import { cookies } from "next/headers";
 import type {
   UserAccessTokenJwtPayload,
