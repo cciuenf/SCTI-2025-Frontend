@@ -39,6 +39,8 @@ export function isRefreshTokenExpired(token: string | null) {
 
   if (user_info?.exp instanceof Date) {
     expiresAt = user_info.exp;
+  } else if (typeof user_info?.exp === "number") {
+    expiresAt = new Date(user_info.exp * 1000); // seconds -> ms
   } else if (typeof user_info?.exp === "string") {
     if (/^\d+$/.test(user_info.exp)) {
       expiresAt = new Date(parseInt(user_info.exp, 10) * 1000);
