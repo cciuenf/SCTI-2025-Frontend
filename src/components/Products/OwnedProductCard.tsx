@@ -29,20 +29,18 @@ export default function OwnedProductCard({
         'transition-all hover:shadow-md hover:border-zinc-300'
       )}
     >
-      {(isBlocked || isHidden) && (
-        <div className="mb-2 flex items-center gap-2">
-          {isBlocked && (
-            <span className="inline-flex items-center rounded-full bg-red-50 px-2.5 py-1 text-xs font-medium text-red-700">
-              <Ban className="mr-1 h-3.5 w-3.5" /> Bloqueado
-            </span>
-          )}
-          {isHidden && (
-            <span className="inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-700">
-              <EyeOff className="mr-1 h-3.5 w-3.5" /> Oculto
-            </span>
-          )}
-        </div>
-      )}
+      <div className="mb-2 flex items-center gap-2">
+        {isBlocked && (
+          <span className="inline-flex items-center rounded-full bg-red-50 px-2.5 py-1 text-xs font-medium text-red-700">
+            <Ban className="mr-1 h-3.5 w-3.5" /> Bloqueado
+          </span>
+        )}
+        {isHidden && (
+          <span className="inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-700">
+            <EyeOff className="mr-1 h-3.5 w-3.5" /> Oculto
+          </span>
+        )}
+      </div>
 
       {/* Header */}
       <div className="mb-3 flex items-start gap-3">

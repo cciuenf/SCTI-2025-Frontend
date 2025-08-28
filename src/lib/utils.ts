@@ -35,12 +35,10 @@ export function getUserParticipationPercentage(
 export function isRefreshTokenExpired(token: string | null) {
   if (!token) return false;
   const user_info = jwt.decode(token) as UserRefreshTokenJwtPayload | null;
-    let expiresAt: Date | null = null;
+  let expiresAt: Date | null = null;
 
   if (user_info?.exp instanceof Date) {
     expiresAt = user_info.exp;
-  } else if (typeof user_info?.exp === "number") {
-    expiresAt = new Date(user_info.exp * 1000); // seconds -> ms
   } else if (typeof user_info?.exp === "string") {
     if (/^\d+$/.test(user_info.exp)) {
       expiresAt = new Date(parseInt(user_info.exp, 10) * 1000);
@@ -50,7 +48,6 @@ export function isRefreshTokenExpired(token: string | null) {
     }
   }
   expiresAt = normalizeDate(expiresAt);
-  console.log(expiresAt)
 
   if (!expiresAt || expiresAt.getTime() <= new Date().getTime()) return true;
 }
