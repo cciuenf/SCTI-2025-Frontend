@@ -25,8 +25,8 @@ const buttonVariants = cva(
           "hover:bg-accent hover:text-primary-foreground dark:hover:bg-accent/50",
         sidebar: "text-accent hover:scale-115 border-0 bg-transparent",
         hour: "bg-accent border-background text-primary-foreground",
-        profile: "bg-transparent rounded-[5px] py-1 px-2.5 border-secondary text-xl hover:tracking-wide",
-        edit: "bg-secondary text-zinc-100 rounded-[5px] py-2 px-2.5 text-xl hover:tracking-wider",
+        profile: "bg-transparent rounded-[5px] py-1 px-2.5 border-secondary text-xl hover:border-red-400",
+        edit: "bg-white text-secondary rounded-[5px] py-2 px-2.5 text-xl hover:bg-zinc-200 transition-colors duration-200",
         home: "bg-transparent text-zinc-100 border-zinc-100 hover:bg-zinc-100 hover:text-purple-600 hover:border-none",
         day: "px-5 bg-blue-100/80 text-secondary font-medium rounded-4xl"
 

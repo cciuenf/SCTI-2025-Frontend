@@ -74,10 +74,9 @@ export async function handleGetAllUserProducts() {
   return actionRequest<null, ProductResponseI[]>("/user-products");
 }
 
-// // TO DO:
-// export async function handleGetAllUserProductsRelation() {
-//   return actionRequest<null, ProductResponseI[]>("/user-products-relation");
-// }
+export async function handleGetAllUserProductsRelation() {
+  return actionRequest<null, UserProductPurchasesResponseI[]>("/user-products-relation");
+}
 
 export async function handleGetAllUserProductsPurchases() {
   return actionRequest<null, ProductPurchasesResponseI[]>("/user-purchases");

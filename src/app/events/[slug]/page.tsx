@@ -1,9 +1,9 @@
 import { handleGetSlugCreatedEvent } from "@/actions/event-actions";
 import EventManagementActions from "@/components/Events/EventManagementActions";
 import EventSlugTabManager from "@/components/Events/Slug/EventSlugTabManager";
-import Connector from "@/components/ui/Generic/Connector";
 import { getAdminStatus, getUserInfo } from "@/lib/cookies";
 import { formatEventDateRange, normalizeDate } from "@/lib/date-utils";
+import { cn } from "@/lib/utils";
 import { Calendar, MapPin, Users } from "lucide-react";
 import { redirect } from "next/navigation";
 
@@ -23,50 +23,72 @@ const SlugEventPage = async (props: Props) => {
   const eventRes = await handleGetSlugCreatedEvent(slug);
   if (!eventRes || !eventRes.data) redirect("/events");
 
+  const cardCls = cn(
+    "group flex flex-col items-center justify-center p-4 h-36 flex-1 min-w-52",
+    "rounded-xl border border-gray-200 bg-gray-50",
+    "hover:bg-gray-100 hover:shadow-sm",
+    "focus-within:ring-2 focus-within:ring-accent/40 focus-within:border-accent",
+    "transition-all duration-300"
+  );
+
+  const iconCls = "w-9 h-9 p-1.5 rounded-full bg-accent/90 text-secondary mb-2";
+  const titleCls = "text-[11px] font-semibold text-amber-600 uppercase tracking-wider mb-1";
+  const valueCls = "text-sm font-bold text-secondary text-center";
+
   return (
-    <Connector className="flex flex-col mx-auto items-center justify-center !mt-20 text-center">
-      <h1 className="xl:text-6xl text-4xl font-bold mt-20">
-        {eventRes?.data.Name}
-      </h1>
-      <div className="w-full flex mt-4 mb-6 justify-center items-center flex-col gap-2 xs:flex-row xs:gap-10 px-4 text-sm">
-        <p className="flex items-center gap-2">
-          <Calendar className="text-accent" size={16} />
-          {formatEventDateRange(
-            normalizeDate(eventRes?.data.start_date),
-            normalizeDate(eventRes?.data.end_date)
-          )}
-        </p>
-        <p className="flex items-center gap-2">
-          <MapPin className="text-accent" size={16} /> {eventRes?.data.location}
-        </p>
-        <p className="flex items-center gap-2">
-          <Users className="text-accent" size={16} />{" "}
-          {eventRes?.data.participant_count || 0} participantes
-        </p>
+    <div className="flex flex-col items-center justify-center text-center min-h-screen h-full">
+      <div className="max-w-5xl mx-auto mt-8 text-center">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 leading-tight text-secondary">
+          {eventRes?.data.Name}
+        </h1>
+        <hr className="w-24 border-2 border-accent mx-auto rounded-full"/>
       </div>
-      <h2 className="xl:text-3xl text-lg text-secondary font-bold mt-2">
-        Sobre o Evento
-      </h2>
-      <p className="text-center max-w-[80%] font-light mt-2">
-        {eventRes?.data.description}
-      </p>
-      <div className="flex flex-wrap justify-center gap-4 px-2 my-6">
-        {eventRes?.data && (
-          <EventManagementActions
-            isAdminStatus={user_admin_status}
-            isEventCreator={isEventCreator}
-            event={eventRes.data}
-          />
-        )}
-      </div>
-      <EventSlugTabManager
+      <section
+        aria-label="Destaques do evento"
+        className="mx-auto mt-6 mb-8 max-w-4xl px-2"
+      >
+        <dl className="flex flex-wrap justify-center gap-3">
+          <div className={cardCls} tabIndex={0} role="group" aria-label="Data do evento">
+            <Calendar className={iconCls} aria-hidden />
+            <dt className={titleCls}>Data</dt>
+            <dd className={valueCls}>{formatEventDateRange(normalizeDate(eventRes?.data.start_date), normalizeDate(eventRes?.data.end_date))}</dd>
+          </div>
+
+          <div className={cardCls} tabIndex={0} role="group" aria-label="Local do evento">
+            <MapPin className={iconCls} aria-hidden />
+            <dt className={titleCls}>Local</dt>
+            <dd className={cn(valueCls, "line-clamp-2")}>{eventRes.data.location}</dd>
+          </div>
+
+          <div className={cardCls} tabIndex={0} role="group" aria-label="Participantes">
+            <Users className={iconCls} aria-hidden />
+            <dt className={titleCls}>Participantes</dt>
+            <dd className={`${valueCls} !text-lg`}>{eventRes.data.participant_count || 0}</dd>
+          </div>
+        </dl>
+      </section>
+      <EventManagementActions 
+        isAdminStatus={user_admin_status}
+        isEventCreator={isEventCreator} 
+        event={eventRes.data}
+      />
+      <section className="max-w-3xl mx-auto px-4 container my-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-secondary mb-3">Sobre o Evento</h2>
+        <hr className="w-12 border-2 border-accent mx-auto rounded-full"/>
+        <div className="bg-white rounded-lg p-6 mt-6 shadow-sm border border-gray-200">
+          <p className="text-slate-600 text-base leading-relaxed text-justify">
+            {eventRes.data.description}
+          </p>
+        </div>
+      </section>
+      <EventSlugTabManager 
         isAdminStatus={user_admin_status}
         isEventCreator={isEventCreator}
         eventId={eventRes.data.ID}
         slug={slug}
         userId={user_info?.id || ""}
       />
-    </Connector>
+    </div>
   );
 };
 
