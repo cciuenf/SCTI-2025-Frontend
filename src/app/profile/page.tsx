@@ -12,7 +12,7 @@ import CustomGenericTabs, { type TabItem } from "@/components/ui/Generic/CustomG
 import ProfileInfo from "@/components/Profile/Tabs/ProfileInfo";
 import { ProfileUserProducts } from "@/components/Profile/Tabs/ProfileUserProducts";
 import UserPurchases from "@/components/UserPurchases";
-import UserLogins from "@/components/Profile/UserLogins";
+import UserLogins from "@/components/Profile/Tabs/UserLogins";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>

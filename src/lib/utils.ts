@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import jwt from 'jsonwebtoken';
 import type { UserRefreshTokenJwtPayload } from "@/types/auth-interfaces";
+import { normalizeDate } from "./date-utils";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -34,7 +35,22 @@ export function getUserParticipationPercentage(
 export function isRefreshTokenExpired(token: string | null) {
   if (!token) return false;
   const user_info = jwt.decode(token) as UserRefreshTokenJwtPayload | null;
-  const expiresAt = new Date(user_info?.exp ?? "");
-  if (isNaN(expiresAt.getTime()) || expiresAt.getTime() <= new Date().getTime())
-    return true;
+    let expiresAt: Date | null = null;
+
+  if (user_info?.exp instanceof Date) {
+    expiresAt = user_info.exp;
+  } else if (typeof user_info?.exp === "number") {
+    expiresAt = new Date(user_info.exp * 1000); // seconds -> ms
+  } else if (typeof user_info?.exp === "string") {
+    if (/^\d+$/.test(user_info.exp)) {
+      expiresAt = new Date(parseInt(user_info.exp, 10) * 1000);
+    } else {
+      const d = new Date(user_info.exp);
+      expiresAt = isNaN(d.getTime()) ? null : d;
+    }
+  }
+  expiresAt = normalizeDate(expiresAt);
+  console.log(expiresAt)
+
+  if (!expiresAt || expiresAt.getTime() <= new Date().getTime()) return true;
 }
