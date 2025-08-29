@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { UserRefreshTokenJwtPayload } from "@/types/auth-interfaces";
 import { Monitor, Smartphone, Power, Shield } from "lucide-react";
 import {
@@ -26,8 +26,7 @@ interface UserLoginI {
 }
 
 const UserLogins = ({ refresh_token }: Props) => {
-  const [userLogins, setUserLogins] = useState<UserLoginI[]>();
-  const [lastDeleted, setLastDeleted] = useState<string | null>(null);
+  const [userLogins, setUserLogins] = useState<UserLoginI[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -40,40 +39,37 @@ const UserLogins = ({ refresh_token }: Props) => {
     if (res.success && refresh_token === login.token) {
       await clearAuthTokens();
       router.push("/");
-    } else if (res.success) {
-      setLastDeleted(login.token);
-    }
+    } else if (res.success) getLogins(false);
   };
 
+  const getLogins = useCallback(async (enableLoading: boolean = true) => {
+    if(enableLoading) setIsLoading(true);
+    try {
+      const res = await handleGetRefreshTokens();
+      const transformed: UserLoginI[] = (res.data || [])
+        .map((i) => ({
+          token: i.token_str,
+          payload: jwt.decode(i.token_str) as UserRefreshTokenJwtPayload | null,
+        }))
+        .filter((r) => r.payload)
+        .sort((a, b) => {
+          const da = new Date(a.payload!.last_used).getTime();
+          const db = new Date(b.payload!.last_used).getTime();
+          return db - da;
+        });
+
+      transformed.sort((a, b) =>
+        a.token === refresh_token ? -1 : b.token === refresh_token ? 1 : 0
+      );
+      setUserLogins(transformed);
+    } finally {
+      if(enableLoading) setIsLoading(false);
+    }
+  },[refresh_token]);
+
   useEffect(() => {
-    const getLogins = async () => {
-      setIsLoading(true);
-      try {
-        const res = await handleGetRefreshTokens();
-        const transformed: UserLoginI[] = (res.data || [])
-          .map((i) => ({
-            token: i.token_str,
-            payload: jwt.decode(i.token_str) as UserRefreshTokenJwtPayload | null,
-          }))
-          .filter((r) => r.payload)
-          .sort((a, b) => {
-            const da = new Date(a.payload!.last_used).getTime();
-            const db = new Date(b.payload!.last_used).getTime();
-            return db - da;
-          });
-
-        // atual no topo
-        transformed.sort((a, b) =>
-          a.token === refresh_token ? -1 : b.token === refresh_token ? 1 : 0
-        );
-
-        setUserLogins(transformed);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     getLogins();
-  }, [lastDeleted, refresh_token]);
+  }, [refresh_token, getLogins]);
 
   if (isLoading)
     return (

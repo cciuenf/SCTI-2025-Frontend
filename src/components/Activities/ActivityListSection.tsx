@@ -356,6 +356,7 @@ export default function ActivityListSection({
   const clearFilters = () => {
     setQuery("");
     setFilter("all");
+    setDateFilter("all");
   };
 
   if (isLoading) {

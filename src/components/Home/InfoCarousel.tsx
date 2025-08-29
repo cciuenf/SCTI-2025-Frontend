@@ -44,7 +44,10 @@ const InfoCarousel = ({ hasLogin }: Props) => {
       }}
       plugins={[Autoplay({ delay: 5000 }), Fade()]}
     >
-      <div className="absolute bg-secondary/80 inset-0 z-10 flex flex-col items-center justify-between">
+      <div className={cn(
+        "absolute inset-0 z-10 flex flex-col items-center justify-between",
+        "bg-gradient-to-t from-secondary via-secondary/80 to-secondary/80 from-0% via-20% to-100%"
+      )}>
         <div className="text-center flex flex-col items-center font-medium">
           <Image
             src="/img/home/SCTI.png"
