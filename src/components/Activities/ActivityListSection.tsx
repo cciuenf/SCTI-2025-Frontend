@@ -308,7 +308,7 @@ export default function ActivityListSection({
     let max = -Infinity;
 
     for (const w of baseList) {
-      const s = safeTime(w.activity.start_time); // string -> ms via sua função
+      const s = safeTime(w.activity.start_time);
       if (s < min) min = s;
       if (s > max) max = s;
     }
