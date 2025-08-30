@@ -60,7 +60,7 @@ export default async function HomePage() {
       <InfoCarousel hasLogin={hasLogin} />
       <Connector
         id="info"
-        className="text-center flex flex-col items-center w-screen !mt-20"
+        className="text-center flex flex-col items-center w-full !mt-20"
         topWaves={baseWaves}
       >
         <h2 className="text-4xl font-bold">Atividades da Semana</h2>
@@ -71,7 +71,7 @@ export default async function HomePage() {
         <ActivitiesList activities={resultActivities || []}/>
       </Connector>
       <Connector 
-        className="text-center flex flex-col items-center w-screen !mt-20"
+        className="text-center flex flex-col items-center w-full !mt-20"
         topWaves={alternativeInverseWaves}
       >
         <div className="flex items-center md:gap-5 lg:gap-10">
@@ -140,7 +140,7 @@ export default async function HomePage() {
         </p>
       </div>
       <Connector 
-        className="text-center w-screen h-screen !my-0"
+        className="text-center w-full h-screen !my-0"
         bottomWaves={baseWaves}
       >
         <iframe
