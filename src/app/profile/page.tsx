@@ -59,7 +59,7 @@ const ProfilePage = async ({ searchParams }: Props) => {
   ]
 
   return (
-    <div className="flex flex-col items-center max-h-screen w-full overflow-hidden mt-16 sm:mt-8">
+    <div className="flex flex-col items-center max-h-screen w-full overflow-hidden">
       <CustomGenericTabs
         tabs={tabs}
         initialTabId={view}
