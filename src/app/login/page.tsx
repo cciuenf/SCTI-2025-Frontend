@@ -3,11 +3,10 @@ import { handleLoginSubmit, handleSignUp } from "@/actions/auth-actions";
 import { useState } from "react";
 
 import LoginForm from "@/components/Auth/LoginForm";
-import { Loader2 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import ForgotPasswordForm from "@/components/Auth/ForgotPasswordForm";
 import VerifyForm from "@/components/VerifyForm";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -18,7 +17,7 @@ export default function Login() {
   if (isLoading) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
-        <Loader2 className="animate-spin w-15 h-15 text-yellow-300" />
+        <LoadingSpinner size="xl" spinnerClassName="border-yellow-300 border-t-transparent border-6"/>
       </div>
     );
   }
@@ -45,29 +44,36 @@ export default function Login() {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center gap-3">
-      <div className="border-1 border-primary shadow-xs p-5 rounded-md flex flex-col items-center justify-around gap-3 min-w-[320px] h-[80vh] min-h-[580px] overflow-y-auto md:w-[440px] lg:w-[480px]">
-        {mustShowVerify ? (
+    <section className="h-full w-full flex justify-center items-center overflow-hidden p-2">
+      <div
+        className={cn(
+          "relative w-[clamp(320px,88vw,480px)] h-[600px]",
+          "flex flex-col justify-start items-center p-5 gap-5",
+          "border-1 border-primary shadow-xs rounded-md overflow-y-auto",
+        )}
+      >
+       {mustShowVerify ? (
           <VerifyForm
             setIsLoading={setIsLoading}
             origin="signup"
           />
         ) : (
           <>
-            <div className="w-full flex items-center justify-around border-1 border-foreground">
+            <div className="w-full flex items-center justify-around">
               <div
                 className={cn(
                   "w-1/2 text-center cursor-pointer py-3 duration-300 hover:bg-secondary hover:text-zinc-100",
+                  "border-1 border-r-0 border-foreground rounded-md rounded-r-none",
                   isLogin && "bg-secondary text-zinc-100"
                 )}
                 onClick={() => setIsLogin(true)}
               >
                 <h2>Login</h2>
               </div>
-              <Separator orientation="vertical" className="bg-secondary" />
               <div
                 className={cn(
                   "w-1/2 text-center cursor-pointer py-3 duration-300 hover:bg-secondary hover:text-zinc-100",
+                  "border-1 border-l-0 border-foreground rounded-md rounded-l-none",
                   !isLogin && "bg-secondary text-zinc-100"
                 )}
                 onClick={() => setIsLogin(false)}
@@ -82,7 +88,7 @@ export default function Login() {
                 </h2>
                 <LoginForm
                   key="login-form"
-                  type={"Login"}
+                  type="Login"
                   handleLoginSubmit={handleLoginSubmit}
                   setIsLoading={setIsLoading}
                 />
@@ -101,7 +107,7 @@ export default function Login() {
                 </h2>
 
                 <LoginForm
-                  type={"Sign Up"}
+                  type="Sign Up"
                   handleSignUpSubmit={handleSignUp}
                   setMustShowVerify={setMustShowVerify}
                   setIsLoading={setIsLoading}
@@ -111,6 +117,6 @@ export default function Login() {
           </>
         )}
       </div>
-    </div>
+    </section>
   );
 }
