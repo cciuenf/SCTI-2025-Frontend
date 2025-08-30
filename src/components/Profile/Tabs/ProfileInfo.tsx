@@ -15,6 +15,8 @@ import { runWithToast } from "@/lib/client/run-with-toast";
 import { handleLogout } from "@/actions/auth-actions";
 import { clearAuthTokens } from "@/lib/cookies";
 
+import { QRCodeCanvas } from "qrcode.react"
+
 interface Props {
   user_access_info: UserAccessTokenJwtPayload | null
   user_refresh_info: UserRefreshTokenJwtPayload | null
@@ -129,6 +131,14 @@ export default function ProfileInfo({
               <div className="text-xs text-slate-500">Navegador</div>
               <div className="font-medium">{device_info?.browser ?? "—"}</div>
             </div>
+          </div>
+          <div className="w-full flex flex-col justify-center items-center">
+            <h5 className="text-sm font-medium mb-2">QR-Code do Evento</h5>
+            <QRCodeCanvas 
+              value={user_access_info.id} 
+              size={150}
+              className="p-2 border border-accent rounded-sm"
+            />
           </div>
         </div>
       </div>
