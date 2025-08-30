@@ -9,12 +9,10 @@ export default function OwnedProductCard({
   p,
   qty,
   giftedCount,
-  hasUnlimited,
 }: {
   p: ProductResponseI;
   qty: number;
   giftedCount: number;
-  hasUnlimited: boolean;
 }) {
   const isBlocked = p.is_blocked;
   const isHidden = p.is_hidden;
@@ -95,7 +93,7 @@ export default function OwnedProductCard({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {hasUnlimited ? <InfinityIcon className="h-4 w-4 text-zinc-700" /> : <Package className="h-4 w-4 text-zinc-700" />}
+          <Package className="h-4 w-4 text-zinc-700" />
           <div className="flex flex-col">
             <span className="text-zinc-500">Quantidade</span>
             <span className="font-medium text-zinc-800">{qty}</span>

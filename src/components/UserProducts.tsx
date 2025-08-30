@@ -81,7 +81,6 @@ export default function UserProducts() {
           p={product}
           qty={qty}
           giftedCount={gifted}
-          hasUnlimited={product.has_unlimited_quantity}
         />
       ))}
     </div>
