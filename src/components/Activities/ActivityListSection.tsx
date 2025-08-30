@@ -351,7 +351,7 @@ export default function ActivityListSection({
   }, [baseList, query, dateFilter]);
 
   const availableTokensCount = userTokens.filter((t) => !t.is_used).length;
-  const hasFilters = filter !== "all" || query.trim().length > 0;
+  const hasFilters = filter !== "all" || dateFilter !== "all" || query.trim().length > 0;
 
   const clearFilters = () => {
     setQuery("");

@@ -1,7 +1,6 @@
 import InfoCarousel from "@/components/Home/InfoCarousel";
 import Connector from "@/components/ui/Generic/Connector";
 import { handleGetAllEventActivities } from "@/actions/activity-actions";
-import ActivityCard from "@/components/Activities/ActivityCard";
 import AutoScrollSponsors from "@/components/Home/AutoScrollSponsors";
 import ScrollManager from "@/components/ScrollManager";
 import { handleGetAllPurchasedProducts } from "@/actions/product-actions";
@@ -9,10 +8,9 @@ import { handleGetUsersInfo } from "@/actions/user-actions";
 import type { UserBasicInfo } from "@/types/auth-interfaces";
 import type { UserProductPurchasesResponseI } from "@/types/product-interfaces";
 import React from "react";
-import { cn } from "@/lib/utils";
-import { safeTime } from "@/lib/date-utils";
 import { getAuthTokens } from "@/lib/cookies";
 import { alternativeInverseWaves, baseWaves } from "@/presets/waves/presets";
+import { ActivitiesList } from "@/components/Home/ActivitiesList";
 
 type Supporter = UserBasicInfo & UserProductPurchasesResponseI;
 
@@ -41,9 +39,9 @@ export default async function HomePage() {
     return unified;
   }
   const resultActivities = (await handleGetAllEventActivities("scti")).data;
-  resultActivities?.sort(
-    (a, b) => safeTime(a.activity.start_time) - safeTime(b.activity.start_time)
-  );
+  // resultActivities?.sort(
+  //   (a, b) => safeTime(a.activity.start_time) - safeTime(b.activity.start_time)
+  // );
   const allSupporters = (await getAllSupporter()).filter(
     (item) => item.product_id === process.env.SUPPORTER_PRODUCT_ID
   );
@@ -66,32 +64,11 @@ export default async function HomePage() {
         topWaves={baseWaves}
       >
         <h2 className="text-4xl font-bold">Atividades da Semana</h2>
-        <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
+        <p className="text-base text-center font-light sm:w-1/2 px-4 mb-2">
           Descubra nossa programação completa com palestras, workshops e
           atividades práticas nas mais diversas áreas da ciência e tecnologia.
         </p>
-        <div
-          className={cn(
-            "grid justify-center md:grid-cols-2 lg:grid-cols-3 sm:gap-10 gap-2 w-full px-32",
-            "max-w-7xl"
-          )}
-        >
-          {resultActivities && resultActivities.length > 0 ? (
-            resultActivities.map((card) => (
-              <ActivityCard
-                key={card.activity.ID}
-                data={card}
-                isAdminStatus={{ isAdmin: false, type: "" }}
-                isEventCreator={false}
-                isSubscribed={false}
-              />
-            ))
-          ) : (
-            <p className="col-span-full text-center text-gray-500">
-              Nenhuma atividade disponível no momento.
-            </p>
-          )}
-        </div>
+        <ActivitiesList activities={resultActivities || []}/>
       </Connector>
       <Connector 
         className="text-center flex flex-col items-center w-screen !mt-20"
@@ -102,7 +79,7 @@ export default async function HomePage() {
           <h2 className="text-4xl font-bold my-4">Nossos Patrocinadores</h2>
           <span className="opacity-0 md:opacity-100 md:w-52 lg:w-72 h-0.5 bg-linear-to-br to-zinc-100 from-secondary"></span>
         </div>
-        <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
+        <p className="text-base text-center font-light sm:w-1/2 px-4 mb-10">
           Agradecemos imensamente às empresas que tornaram possível a realização
           da SCTI 2025. Conheça os parceiros que acreditam no potencial dos
           estudantes universitários.
@@ -135,7 +112,7 @@ export default async function HomePage() {
           <h2 className="text-4xl font-bold my-4">Nossos Apoiadores</h2>
           <span className="opacity-0 md:opacity-100 md:w-52 lg:w-72 h-0.5 bg-linear-to-br to-zinc-100 from-secondary"></span>
         </div>
-        <p className="text-md text-center font-light sm:w-1/2 px-4 mb-10">
+        <p className="text-base text-center font-light sm:w-1/2 px-4 mb-10">
           Expressamos profunda gratidão a todos que contribuíram com o evento
           por meio de doações voluntárias. Ficamos felizes em tocar seus
           corações com o nosso propósito.
@@ -154,9 +131,9 @@ export default async function HomePage() {
           )}
         </div>
       </Connector>
-      <div className="w-full flex flex-col justify-center items-center">
+      <div className="w-full flex flex-col justify-center items-center text-center">
         <h2 className="text-4xl font-bold">Localização do Evento</h2>
-        <p className="text-md text-center font-light sm:w-1/2 px-4">
+        <p className="text-base font-light sm:w-1/2 px-4">
           A SCTI 2025 acontece no campus da UENF, em Campos dos Goytacazes (RJ),
           onde serão realizados todos os workshops, palestras e exposições do
           evento.

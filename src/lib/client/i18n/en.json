@@ -74,5 +74,7 @@
   "error promoting user: cannot promote event creator or super user":
     "Não é possível promover criador de evento ou super usuário",
   "error demoting user: cannot demote event creator or super user":
-    "Não é possível rebaixar criador de evento ou super usuário"
+    "Não é possível rebaixar criador de evento ou super usuário",
+  "error promoting user: user is already a master admin": 
+  "O usuário já é um ADMIN Mestre, não é possível o promover mais"
 }
