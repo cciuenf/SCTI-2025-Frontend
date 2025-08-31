@@ -12,11 +12,13 @@ import type { ActivityRegistrationI } from "@/types/activity-interface";
 import type { UserBasicInfo } from "@/types/auth-interfaces";
 
 interface Props {
+  mode?: "presence" | "status";
   setSelectedUserId: Dispatch<SetStateAction<string>>;
   userRegistrations?: (UserBasicInfo & ActivityRegistrationI)[];
 }
 
 export default function CameraComponent({
+  mode = "presence",
   setSelectedUserId,
   userRegistrations,
 }: Props) {
@@ -169,15 +171,16 @@ export default function CameraComponent({
 
   const handleScan = (qrId: string) => {
     const isInActivity = usersIdInActivity?.some((userId) => userId == qrId);
+    if(mode === "presence") {
+      if (isInActivity) {
+        toast.success("Usuário encontrado na atividade!");
+        setSelectedUserId(qrId);
+      }
 
-    if (isInActivity) {
-      toast.success("Usuário encontrado na atividade!");
-      setSelectedUserId(qrId);
+      if (!isInActivity) toast.error("Usuário não encontrado na atividade!");
+      return;
     }
-
-    if (!isInActivity) {
-      toast.error("Usuário não encontrado na atividade!");
-    }
+    setSelectedUserId(qrId);
   };
 
   const stopCamera = () => {

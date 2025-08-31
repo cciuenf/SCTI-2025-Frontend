@@ -1,14 +1,19 @@
 "use client";
 
-import { Pencil, UserPlus, UserX } from "lucide-react";
+import { CheckCircle, Pencil, UserPlus, UserX } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useUserEvents } from "@/contexts/UserEventsProvider";
 import LoadingSpinner from "../Loading/LoadingSpinner";
 import type { EventResponseI } from "@/types/event-interfaces";
 import EventModalForm from "./EventModalForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import CustomGenericModal from "../ui/Generic/CustomGenericModal";
+import { handleIsPaidByUser } from "@/actions/event-actions";
+import CameraComponent from "../CameraComponent";
+import ResultOverlay from "../ResultOverlay";
+import { runWithToast } from "@/lib/client/run-with-toast";
 
 interface Props {
   isEventCreator: boolean;
@@ -19,6 +24,9 @@ interface Props {
 const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props) => {
   const [isEditEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isLoadingRegisterState, setIsLoadingRegisterState] = useState(false);
+  const [isCheckPaidModalOpen, setIsCheckPaidModalOpen] = useState(false);
+  const [userIdToCheck, setUserIdToCheck] = useState<string>("");
+  const [isPaymentDone, setIsPaymentDone] = useState<boolean | null>(null);
   const {
     myEvents,
     allEvents,
@@ -29,6 +37,23 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
   } = useUserEvents();
   const updatedEvent = allEvents.find((e) => e.Slug === event.Slug) || event;
   const router = useRouter();
+
+  useEffect(() => {
+    const verifyIfIsPaid = async () => {
+      if(userIdToCheck.length > 0) {
+        const res = await runWithToast(handleIsPaidByUser(event.Slug, userIdToCheck));
+        setIsPaymentDone(res.data || false); 
+      }
+    }
+    verifyIfIsPaid();
+  }, [event.Slug, userIdToCheck]);
+
+  const onPaymentModalClose = (open: boolean | null) => {
+    if(open === null) {
+      setUserIdToCheck("");
+      setIsPaymentDone(null);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -85,6 +110,21 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
           Editar
         </Button>
       )}
+      {(isEventCreator || isAdminStatus.isAdmin) && (
+        <Button
+          onClick={() => setIsCheckPaidModalOpen(true)}
+          title="Foi Pago?"
+          variant="outline"
+          className={cn(
+            "inline-flex w-full items-center justify-center gap-2",
+            "h-10 px-3 text-sm font-medium rounded-md shadow-sm transition-colors",
+            "text-gray-800 border border-secondary hover:border-accent"
+          )}
+        >
+          <CheckCircle className="w-4 h-4" />
+          Verificar se foi pago
+        </Button>
+      )}
       <EventModalForm
         event={updatedEvent}
         isCreating={false}
@@ -92,6 +132,25 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
         setOpen={setIsEventModalOpen}
         onEventUpdate={handleEventUpdate}
       />
+
+      <CustomGenericModal
+        title="Verfique se o usuário pagou"
+        open={isCheckPaidModalOpen}
+        onOpenChange={setIsCheckPaidModalOpen}
+        trigger={null}
+      >
+        <CameraComponent
+          setSelectedUserId={setUserIdToCheck}
+          mode="status"
+        />
+      </CustomGenericModal>
+      {isPaymentDone !== null && 
+        <ResultOverlay
+          approved={isPaymentDone || false}
+          open={isPaymentDone != null}
+          onOpenChange={onPaymentModalClose}
+        />
+      }
     </section>
   );
 };
