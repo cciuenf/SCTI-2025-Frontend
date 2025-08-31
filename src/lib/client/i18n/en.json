@@ -76,5 +76,8 @@
   "error demoting user: cannot demote event creator or super user":
     "Não é possível rebaixar criador de evento ou super usuário",
   "error promoting user: user is already a master admin": 
-  "O usuário já é um ADMIN Mestre, não é possível o promover mais"
+  "O usuário já é um ADMIN Mestre, não é possível o promover mais",
+  "user is not registered to event": "O usuário não está registrado no evento",
+  "user doesnt have event ticket": "O usuário não tem o ticket do evento!",
+  "unauthorized: only admins can get is-paid status": "Essa função é apenas para ADMIN"
 }
