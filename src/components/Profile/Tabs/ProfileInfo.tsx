@@ -137,7 +137,7 @@ export default function ProfileInfo({
             <QRCodeCanvas 
               value={user_access_info.id} 
               size={150}
-              className="p-2 border border-accent rounded-sm"
+              className="p-2 border border-accent rounded-sm !w-full !h-full md:!w-40 md!h-auto"
             />
           </div>
         </div>

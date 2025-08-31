@@ -13,7 +13,6 @@ import CustomGenericModal from "../ui/Generic/CustomGenericModal";
 import { handleIsPaidByUser } from "@/actions/event-actions";
 import CameraComponent from "../CameraComponent";
 import ResultOverlay from "../ResultOverlay";
-import { runWithToast } from "@/lib/client/run-with-toast";
 
 interface Props {
   isEventCreator: boolean;
@@ -41,7 +40,7 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
   useEffect(() => {
     const verifyIfIsPaid = async () => {
       if(userIdToCheck.length > 0) {
-        const res = await runWithToast(handleIsPaidByUser(event.Slug, userIdToCheck));
+        const res = await handleIsPaidByUser(event.Slug, userIdToCheck);
         setIsPaymentDone(res.data || false); 
       }
     }
@@ -68,11 +67,10 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
   const handleRegisterState = async () => {
     if (!handleRegister || !handleUnregister) return;
     setIsLoadingRegisterState(true);
-    if (isSubscribed) {
-      await handleUnregister(updatedEvent.Slug);
-    } else {
-      await handleRegister(updatedEvent.Slug);
-    }
+    
+    if (isSubscribed) await handleUnregister(updatedEvent.Slug);
+    else await handleRegister(updatedEvent.Slug);
+    
     setIsLoadingRegisterState(false);
     router.push(`/events/${updatedEvent}`); // This needs to improve
   };

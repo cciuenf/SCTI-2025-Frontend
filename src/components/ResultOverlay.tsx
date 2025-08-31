@@ -69,9 +69,7 @@ export default function ResultOverlay({
               transition={{ delay: 0.16, duration: 0.3, ease: "easeOut" }}
               className="text-white/85 text-lg md:text-2xl drop-shadow"
             >
-              {approved
-                ? "Acesso liberado"
-                : "Acesso negado — toque na tela para fechar"}
+              {approved ? "Acesso liberado" : "Acesso negado"}
             </motion.span>
 
             {!!autoCloseMs && !prefersReduced && (
