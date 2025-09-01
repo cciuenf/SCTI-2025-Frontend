@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
@@ -25,18 +25,19 @@ const buttonVariants = cva(
           "hover:bg-accent hover:text-primary-foreground dark:hover:bg-accent/50",
         sidebar: "text-accent hover:scale-115 border-0 bg-transparent",
         hour: "bg-accent border-background text-primary-foreground",
-        profile: "bg-transparent rounded-[5px] py-1 px-2.5 border-secondary text-xl hover:border-red-400",
+        profile:
+          "bg-transparent rounded-[5px] py-1 px-2.5 border-secondary text-xl hover:border-red-400",
         edit: "bg-white text-secondary rounded-[5px] py-2 px-2.5 text-xl hover:bg-zinc-200 transition-colors duration-200",
         home: "bg-transparent text-zinc-100 border-zinc-100 hover:bg-zinc-100 hover:text-purple-600 hover:border-none",
-        day: "px-5 bg-blue-100/80 text-secondary font-medium rounded-4xl"
-
+        team: "bg-purple-600 text-zinc-100 border-purple-600 border-1 hover:bg-transparent hover:border-purple-600 hover:text-purple-600",
+        day: "px-5 bg-blue-100/80 text-secondary font-medium rounded-4xl",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
         icon: "size-9",
-        day: "w-9 h-7"
+        day: "w-9 h-7",
       },
     },
     defaultVariants: {
