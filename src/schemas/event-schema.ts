@@ -25,3 +25,9 @@ export const eventRoleSchema = z.object({
 });
 
 export type EventRoleDataI = z.infer<typeof eventRoleSchema>;
+
+export const eventCoffeeBreakSchema = z.object({
+  name: z.string().min(4, "Nome inválido")
+});
+
+export type EventCoffeeBreakDataI = z.infer<typeof eventCoffeeBreakSchema>;

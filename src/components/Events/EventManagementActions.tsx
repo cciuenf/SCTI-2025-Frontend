@@ -137,6 +137,7 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
         onOpenChange={setIsCheckPaidModalOpen}
         trigger={null}
       >
+        
         <CameraComponent
           setSelectedUserId={setUserIdToCheck}
           mode="status"
