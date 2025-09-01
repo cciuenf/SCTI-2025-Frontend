@@ -9,8 +9,8 @@ const page = () => {
       className="text-center flex flex-col items-center !mt-20"
       id="info"
     >
-      <div className="w-full max-w-7xl flex flex-col items-center gap-3">
-        <h1 className="font-bold text-5xl">Time SCTI 2025</h1>
+      <div className="w-full max-w-7xl flex flex-col items-center gap-3 py-5">
+        <h1 className="font-bold text-5xl"> Organizadores SCTI 2025</h1>
         <h2 className="font-light text-xl text-center">
           Conheça a nossa equipe de colaboradores!
         </h2>
