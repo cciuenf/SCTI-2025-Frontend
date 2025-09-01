@@ -1,0 +1,153 @@
+[
+  {
+    "name": "Sophia",
+    "last_name": "Hoffman",
+    "function": "Presidenta e desenvolvedora",
+    "photo": "/collabs/photos/sophia-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/eric-hoffmann-%F0%9F%8C%88-269132241/"
+    },
+    "social_2": {
+      "icon": "github",
+      "url": "https://github.com/MintzyG"
+    }
+  },
+  {
+    "name": "Vinicius",
+    "last_name": "Hissa",
+    "function": "Vice-Presidente e Líder de palestras e minicursos",
+    "photo": "/collabs/photos/vinicius-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "www.linkedin.com/in/vinícius-hissa-azevedo-95448a304"
+    },
+    "social_2": {
+      "icon": "github",
+      "url": "https://www.instagram.com/viniciushissa/"
+    }
+  },
+  {
+    "name": "Juan",
+    "last_name": "Cristo",
+    "function": "Desenvolvedor e colaborador de palestras e minicursos",
+    "photo": "/collabs/photos/juan-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://linkedin.com/in/juan-cristo"
+    },
+    "social_2": {
+      "icon": "github",
+      "url": "https://github.com/juanzeen"
+    }
+  },
+  {
+    "name": "Marcos Vinícios",
+    "last_name": "Dias Ferreira",
+    "function": "Desenvolvedor",
+    "photo": "/collabs/photos/marcos-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/marcos-dias-f"
+    },
+    "social_2": {
+      "icon": "instagram",
+      "url": "https://www.instagram.com/marcos_dias_f"
+    }
+  },
+  {
+    "name": "Frederico",
+    "last_name": "Sader",
+    "function": "Colaborador de palestras e minicursos",
+    "photo": "/collabs/photos/frederico-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/fred-sader/"
+    },
+    "social_2": {
+      "icon": "github",
+      "url": "https://github.com/Fredsader"
+    }
+  },
+  {
+    "name": "Maria Eduarda",
+    "last_name": "Sampaio",
+    "function": "Líder do design e identidade visual",
+    "photo": "/collabs/photos/maria-eduarda-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/maria-eduarda-sampaio-zampirolo-1b6505206?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
+    },
+    "social_2": {
+      "icon": "instagram",
+      "url": "https://www.instagram.com/mariaeduardasampaio_?igsh=MW11bzV5ODZvdTJodg%3D%3D&utm_source=qr"
+    }
+  },
+  {
+    "name": "Estefânio",
+    "last_name": "S. Ribeiro",
+    "function": "Colaborador design e identidade visual",
+    "photo": "/collabs/photos/estefanio-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/estefânio-silva-5319b2133"
+    },
+    "social_2": {
+      "icon": "instagram",
+      "url": "https://www.instagram.com/_stuxi"
+    }
+  },
+  {
+    "name": "Diogo",
+    "last_name": "Siqueira",
+    "function": "Colaborador design e identidade visual",
+    "photo": "/collabs/photos/diogo-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/diogo-santos-0a89ab381/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+    },
+    "social_2": {
+      "icon": "instagram",
+      "url": "https://www.instagram.com/siqsdiogo?igsh=MXhscGQ1NGYxMXlzZw%3D%3D"
+    }
+  },
+  {
+    "name": "Maria Luiza",
+    "last_name": "Souza da Silva",
+    "function": "Líder patrocínios e coffee break",
+    "photo": "/collabs/photos/maria-luiza-photo.png",
+    "social_1": {
+      "icon": "instagram",
+      "url": "https://www.instagram.com/maluiza.souza?igsh=YjZwOTh0c2dqbjR6&utm_source=qr"
+    },
+    "social_2": null
+  },
+  {
+    "name": "Paulo Fernando",
+    "last_name": "P. Junior",
+    "function": "Colaborador patrocínios e coffee break",
+    "photo": "/collabs/photos/paulo-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/paulo-fernando-pereira-junior-78909b2a6"
+    },
+    "social_2": {
+      "icon": "instagram",
+      "url": "https://www.instagram.com/paulofer02_?igsh=MWxoOG1tNHNkcm42Ng=="
+    }
+  },
+  {
+    "name": "Bárbara",
+    "last_name": "Teodoro de Sá",
+    "function": "Colaboradora patrocínios e coffee break",
+    "photo": "/collabs/photos/barbara-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/barbara-teodoro-sa?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+    },
+    "social_2": {
+      "icon": "instagram",
+      "url": "https://www.instagram.com/barb.sa?igsh=MWlmcnllanRpOG9xYw=="
+    }
+  }
+]
