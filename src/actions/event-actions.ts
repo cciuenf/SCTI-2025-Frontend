@@ -111,3 +111,10 @@ export async function handleDemoteUserInEvent(slug: string, email: string) {
     body: { email },
   });
 }
+
+export async function handleIsPaidByUser(slug: string, id: string) {
+  return actionRequest<{id: string}, boolean>(`/events/${slug}/is-paid`, {
+    method: "POST",
+    body: { id },
+  });
+}

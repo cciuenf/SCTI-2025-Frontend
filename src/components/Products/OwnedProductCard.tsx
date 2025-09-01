@@ -9,12 +9,10 @@ export default function OwnedProductCard({
   p,
   qty,
   giftedCount,
-  hasUnlimited,
 }: {
   p: ProductResponseI;
   qty: number;
   giftedCount: number;
-  hasUnlimited: boolean;
 }) {
   const isBlocked = p.is_blocked;
   const isHidden = p.is_hidden;
@@ -53,7 +51,7 @@ export default function OwnedProductCard({
             <Eye className="h-6 w-6 text-zinc-700" />
           )}
         </div>
-        <div className="min-w-0">
+        <div className="flex-1 min-w-0">
           <h3 className="truncate text-lg font-semibold text-zinc-900">{p.name}</h3>
           <p className="line-clamp-2 text-sm text-zinc-600">{p.description}</p>
         </div>
@@ -95,10 +93,10 @@ export default function OwnedProductCard({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {hasUnlimited ? <InfinityIcon className="h-4 w-4 text-zinc-700" /> : <Package className="h-4 w-4 text-zinc-700" />}
+          <Package className="h-4 w-4 text-zinc-700" />
           <div className="flex flex-col">
             <span className="text-zinc-500">Quantidade</span>
-            <span className="font-medium text-zinc-800">{hasUnlimited ? 'Ilimitada' : qty}</span>
+            <span className="font-medium text-zinc-800">{qty}</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -117,15 +115,13 @@ export default function OwnedProductCard({
         </div>
 
         {/* Tokens */}
-        {p.token_quantity && (
-          <div className="col-span-2 flex items-center gap-2 rounded-lg bg-primary/20 px-3 py-2">
-            <Coins className="h-4 w-4 text-accent" />
-            <div className="flex flex-col">
-              <span className="text-zinc-500 text-xs">Tokens</span>
-              <span className="font-medium">{p.token_quantity}</span>
-            </div>
+        <div className="col-span-2 flex items-center gap-2 rounded-lg bg-primary/20 px-3 py-2">
+          <Coins className="h-4 w-4 text-accent" />
+          <div className="flex flex-col">
+            <span className="text-zinc-500 text-xs">Tokens</span>
+            <span className="font-medium">{p.token_quantity || "Não fornece nenhum token"}</span>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

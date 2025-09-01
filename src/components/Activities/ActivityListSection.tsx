@@ -308,7 +308,7 @@ export default function ActivityListSection({
     let max = -Infinity;
 
     for (const w of baseList) {
-      const s = safeTime(w.activity.start_time); // string -> ms via sua função
+      const s = safeTime(w.activity.start_time);
       if (s < min) min = s;
       if (s > max) max = s;
     }
@@ -351,7 +351,7 @@ export default function ActivityListSection({
   }, [baseList, query, dateFilter]);
 
   const availableTokensCount = userTokens.filter((t) => !t.is_used).length;
-  const hasFilters = filter !== "all" || query.trim().length > 0;
+  const hasFilters = filter !== "all" || dateFilter !== "all" || query.trim().length > 0;
 
   const clearFilters = () => {
     setQuery("");

@@ -21,7 +21,7 @@ const Connector = ({
 
   return (
     <div className="min-h-screen w-full overflow-hidden relative" id={id}>
-      <div className="w-screen flex items-center absolute top-0 pointer-events-none">
+      <div className="w-screen min-w-[320px] flex items-center absolute top-0 pointer-events-none">
         <WaveCanvasWorker
           height={240}
           waves={topWaves}
@@ -33,7 +33,7 @@ const Connector = ({
       <div className={cn("h-full w-full my-20 lg:my-32", className)}>
         {children}
       </div>
-      <div className="w-screen flex items-center absolute bottom-0 pointer-events-none">
+      <div className="w-screen min-w-[320px] flex items-center absolute bottom-0 pointer-events-none">
         <WaveCanvasWorker
           height={240}
           waves={bottomWaves}

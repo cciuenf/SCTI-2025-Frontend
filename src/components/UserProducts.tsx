@@ -47,15 +47,13 @@ export default function UserProducts() {
       .map((p) => {
         const agg = qtyByProduct.get(p.ID);
         if (!agg && !p.has_unlimited_quantity) return null;
-        const qty = p.has_unlimited_quantity ? 0 : (agg?.total ?? 0);
+        const qty = agg?.total ?? 0;
         const gifted = agg?.gifted ?? 0;
-        const hasAny = p.has_unlimited_quantity || qty > 0;
-        return hasAny ? { product: p, qty, gifted } : null;
+        return qty > 0 ? { product: p, qty, gifted } : null;
       })
       .filter(Boolean) as { product: ProductResponseI; qty: number; gifted: number }[];
   }, [products, qtyByProduct]);
   if (isLoading) return <CardSkeleton count={6} />;
-
 
   if (userProducts.length === 0) {
     return (
@@ -83,7 +81,6 @@ export default function UserProducts() {
           p={product}
           qty={qty}
           giftedCount={gifted}
-          hasUnlimited={product.has_unlimited_quantity}
         />
       ))}
     </div>
