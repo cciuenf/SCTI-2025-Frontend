@@ -2,7 +2,7 @@
   {
     "name": "Sophia",
     "last_name": "Hoffman",
-    "function": "Presidenta e desenvolvedora",
+    "role": "Presidenta e desenvolvedora",
     "photo": "/collabs/photos/sophia-photo.png",
     "social_1": {
       "icon": "linkedin",
@@ -16,21 +16,21 @@
   {
     "name": "Vinicius",
     "last_name": "Hissa",
-    "function": "Vice-Presidente e Líder de palestras e minicursos",
+    "role": "Vice-Presidente e Líder de palestras e minicursos",
     "photo": "/collabs/photos/vinicius-photo.png",
     "social_1": {
       "icon": "linkedin",
       "url": "www.linkedin.com/in/vinícius-hissa-azevedo-95448a304"
     },
     "social_2": {
-      "icon": "github",
+      "icon": "instagram",
       "url": "https://www.instagram.com/viniciushissa/"
     }
   },
   {
     "name": "Juan",
     "last_name": "Cristo",
-    "function": "Desenvolvedor e colaborador de palestras e minicursos",
+    "role": "Desenvolvedor e colaborador de palestras e minicursos",
     "photo": "/collabs/photos/juan-photo.png",
     "social_1": {
       "icon": "linkedin",
@@ -43,22 +43,36 @@
   },
   {
     "name": "Marcos Vinícios",
-    "last_name": "Dias Ferreira",
-    "function": "Desenvolvedor",
+    "last_name": "Ferreira",
+    "role": "Desenvolvedor",
     "photo": "/collabs/photos/marcos-photo.png",
     "social_1": {
       "icon": "linkedin",
       "url": "https://www.linkedin.com/in/marcos-dias-f"
     },
     "social_2": {
-      "icon": "instagram",
-      "url": "https://www.instagram.com/marcos_dias_f"
+      "icon": "github",
+      "url": "https://github.com/SoraAsc"
+    }
+  },
+  {
+    "name": "Filipe Samuel",
+    "last_name": "Pires",
+    "role": "Colaborador de palestras e minicursos",
+    "photo": "/collabs/photos/filipe-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/filipe-samuel-pires/"
+    },
+    "social_2": {
+      "icon": "github",
+      "url": "https://github.com/Filipe-Samuel-p"
     }
   },
   {
     "name": "Frederico",
     "last_name": "Sader",
-    "function": "Colaborador de palestras e minicursos",
+    "role": "Colaborador de palestras e minicursos",
     "photo": "/collabs/photos/frederico-photo.png",
     "social_1": {
       "icon": "linkedin",
@@ -70,9 +84,23 @@
     }
   },
   {
+    "name": "Mateus",
+    "last_name": "Magalhães",
+    "role": "Colaborador de palestras e minicursos",
+    "photo": "/collabs/photos/mateus-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/mmcferreira/"
+    },
+    "social_2": {
+      "icon": "instagram",
+      "url": "https://www.instagram.com/mmcferreira_/"
+    }
+  },
+  {
     "name": "Maria Eduarda",
     "last_name": "Sampaio",
-    "function": "Líder do design e identidade visual",
+    "role": "Líder do design e identidade visual",
     "photo": "/collabs/photos/maria-eduarda-photo.png",
     "social_1": {
       "icon": "linkedin",
@@ -84,23 +112,9 @@
     }
   },
   {
-    "name": "Estefânio",
-    "last_name": "S. Ribeiro",
-    "function": "Colaborador design e identidade visual",
-    "photo": "/collabs/photos/estefanio-photo.png",
-    "social_1": {
-      "icon": "linkedin",
-      "url": "https://www.linkedin.com/in/estefânio-silva-5319b2133"
-    },
-    "social_2": {
-      "icon": "instagram",
-      "url": "https://www.instagram.com/_stuxi"
-    }
-  },
-  {
     "name": "Diogo",
     "last_name": "Siqueira",
-    "function": "Colaborador design e identidade visual",
+    "role": "Colaborador de design e identidade visual",
     "photo": "/collabs/photos/diogo-photo.png",
     "social_1": {
       "icon": "linkedin",
@@ -112,34 +126,37 @@
     }
   },
   {
+    "name": "Estefânio",
+    "last_name": "Ribeiro",
+    "role": "Colaborador de design e identidade visual",
+    "photo": "/collabs/photos/estefanio-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/estefânio-silva-5319b2133"
+    },
+    "social_2": {
+      "icon": "instagram",
+      "url": "https://www.instagram.com/_stuxi"
+    }
+  },
+  {
     "name": "Maria Luiza",
-    "last_name": "Souza da Silva",
-    "function": "Líder patrocínios e coffee break",
+    "last_name": "Souza",
+    "role": "Líder de patrocínios e coffee break",
     "photo": "/collabs/photos/maria-luiza-photo.png",
     "social_1": {
       "icon": "instagram",
       "url": "https://www.instagram.com/maluiza.souza?igsh=YjZwOTh0c2dqbjR6&utm_source=qr"
     },
-    "social_2": null
-  },
-  {
-    "name": "Paulo Fernando",
-    "last_name": "P. Junior",
-    "function": "Colaborador patrocínios e coffee break",
-    "photo": "/collabs/photos/paulo-photo.png",
-    "social_1": {
-      "icon": "linkedin",
-      "url": "https://www.linkedin.com/in/paulo-fernando-pereira-junior-78909b2a6"
-    },
     "social_2": {
-      "icon": "instagram",
-      "url": "https://www.instagram.com/paulofer02_?igsh=MWxoOG1tNHNkcm42Ng=="
+      "icon": "",
+      "url": ""
     }
   },
   {
     "name": "Bárbara",
-    "last_name": "Teodoro de Sá",
-    "function": "Colaboradora patrocínios e coffee break",
+    "last_name": "Sá",
+    "role": "Colaboradora de patrocínios e coffee break",
     "photo": "/collabs/photos/barbara-photo.png",
     "social_1": {
       "icon": "linkedin",
@@ -148,6 +165,20 @@
     "social_2": {
       "icon": "instagram",
       "url": "https://www.instagram.com/barb.sa?igsh=MWlmcnllanRpOG9xYw=="
+    }
+  },
+  {
+    "name": "Paulo Fernando",
+    "last_name": "Pereira",
+    "role": "Colaborador de patrocínios e coffee break",
+    "photo": "/collabs/photos/paulo-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/paulo-fernando-pereira-junior-78909b2a6"
+    },
+    "social_2": {
+      "icon": "instagram",
+      "url": "https://www.instagram.com/paulofer02_?igsh=MWxoOG1tNHNkcm42Ng=="
     }
   }
 ]
