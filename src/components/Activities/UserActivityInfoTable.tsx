@@ -11,7 +11,7 @@ import type { ActivityRegistrationI } from "@/types/activity-interface";
 import { handleGetUsersInfo } from "@/actions/user-actions";
 import type { ActionResult } from "@/actions/_utils";
 import { runWithToast } from "@/lib/client/run-with-toast";
-import { formatFullDate } from "@/lib/date-utils";
+import { formatFullDate, safeTime } from "@/lib/date-utils";
 
 interface Props {
   activityId: string;
@@ -62,7 +62,15 @@ const UserActivityInfoTable = ({
       ...users[idx]
     }));
 
-    return { success: true, data: combined, message: 'Usuários carregados' };
+    const sortedData = [...combined].sort((a, b) => {
+      const field = isRegistrations ? "registered_at" : "attended_at";
+      const dateA = safeTime(a[field] || "");
+      const dateB = safeTime(b[field] || "")
+
+      return dateA - dateB;
+    });
+
+    return { success: true, data: sortedData, message: 'Usuários carregados' };
   }, [activityId, isRegistrations, slug]);
 
   const fetchUsers = useCallback(async () => {
