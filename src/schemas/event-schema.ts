@@ -27,7 +27,11 @@ export const eventRoleSchema = z.object({
 export type EventRoleDataI = z.infer<typeof eventRoleSchema>;
 
 export const eventCoffeeBreakSchema = z.object({
-  name: z.string().min(4, "Nome inválido")
-});
+  start_date: z.date().or(z.string()),
+  end_date: z.date().or(z.string()),
+}).refine((data) => new Date(data.start_date) < new Date(data.end_date), {
+  message: "A data de início precisa ser anterior a data de fim.",
+  path: ["end_date"],
+});;
 
 export type EventCoffeeBreakDataI = z.infer<typeof eventCoffeeBreakSchema>;

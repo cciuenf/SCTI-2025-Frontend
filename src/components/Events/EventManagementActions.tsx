@@ -5,14 +5,18 @@ import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useUserEvents } from "@/contexts/UserEventsProvider";
 import LoadingSpinner from "../Loading/LoadingSpinner";
-import type { EventResponseI } from "@/types/event-interfaces";
+import type { EventCoffeeBreakResponseI, EventResponseI } from "@/types/event-interfaces";
 import EventModalForm from "./EventModalForm";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import CustomGenericModal from "../ui/Generic/CustomGenericModal";
-import { handleIsPaidByUser } from "@/actions/event-actions";
+import { handleGetAllCoffeeBreak, handleGetAllRegistrationsFromCoffee, handleRegisterUserInCoffeeBreak, handleUnregisterUserInCoffeeBreak } from "@/actions/event-actions";
 import CameraComponent from "../CameraComponent";
-import ResultOverlay from "../ResultOverlay";
+import EventCoffeeBreakForm from "./EventCoffeeBreakForm";
+import { Select } from "../ui/select";
+import { formatBRDateTime, safeTime } from "@/lib/date-utils";
+import { runWithToast } from "@/lib/client/run-with-toast";
+// import { runWithToast } from "@/lib/client/run-with-toast";
 
 interface Props {
   isEventCreator: boolean;
@@ -24,8 +28,16 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
   const [isEditEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isLoadingRegisterState, setIsLoadingRegisterState] = useState(false);
   const [isCheckPaidModalOpen, setIsCheckPaidModalOpen] = useState(false);
-  const [userIdToCheck, setUserIdToCheck] = useState<string>("");
-  const [isPaymentDone, setIsPaymentDone] = useState<boolean | null>(null);
+  // const [userIdToCheck, setUserIdToCheck] = useState<string>("c9822666-b1c0-48ac-a1bd-ad5703ceff97");
+  const [userIdToCheck, setUserIdToCheck] = useState<string>("16e134ae-95fb-412e-94e2-03ae7d21c430");
+  // const [userIdToCheck, setUserIdToCheck] = useState<string>("9ebcabc1-eaf0-4484-94aa-6969750f8c1f");
+  // const [userIdToCheck, setUserIdToCheck] = useState<string>("e62cb1d4-eddc-4af4-8ddc-c07b9485ff27");
+
+  const [selectedCoffeeId, setSelectedCoffeeId] = useState<string>("");
+  const [coffeeBreaks, setCoffeBreaks] = useState<EventCoffeeBreakResponseI[]>([])
+  const [isLoadingCoffeeRegistrations, setIsLoadingCoffeeRegistrations] = useState(false);
+  const [isMutating, setIsMutating] = useState(false);
+
   const {
     myEvents,
     allEvents,
@@ -37,22 +49,29 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
   const updatedEvent = allEvents.find((e) => e.Slug === event.Slug) || event;
   const router = useRouter();
 
-  useEffect(() => {
-    const verifyIfIsPaid = async () => {
-      if(userIdToCheck.length > 0) {
-        const res = await handleIsPaidByUser(event.Slug, userIdToCheck);
-        setIsPaymentDone(res.data || false); 
-      }
-    }
-    verifyIfIsPaid();
-  }, [event.Slug, userIdToCheck]);
 
-  const onPaymentModalClose = (open: boolean | null) => {
-    if(open === null) {
-      setUserIdToCheck("");
-      setIsPaymentDone(null);
+  useEffect(() => {
+    const loadAllCoffeBreaks = async () => {
+      const res = await handleGetAllCoffeeBreak(event.Slug);
+      setCoffeBreaks(res.data || []);
     }
-  }
+    loadAllCoffeBreaks();
+  }, [event.Slug]);
+
+  const loadAllCoffeBreaksRegistrations = useCallback(async () => {
+    setIsLoadingCoffeeRegistrations(true);
+    const res = await handleGetAllRegistrationsFromCoffee(event.Slug, selectedCoffeeId);
+    if(res.success && res.data != null) {
+      setCoffeBreaks(prevCoffees =>
+        prevCoffees.map(e => ({...e, registrations: res.data || []}))
+      );
+    }
+    setIsLoadingCoffeeRegistrations(false);
+  }, [event.Slug, selectedCoffeeId]);
+
+  useEffect(() => {
+    if(selectedCoffeeId.length > 0) loadAllCoffeBreaksRegistrations();
+  }, [event.Slug, loadAllCoffeBreaksRegistrations, selectedCoffeeId])
 
   if (isLoading) {
     return (
@@ -63,6 +82,40 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
   }
 
   const isSubscribed = myEvents.find((e) => e.Slug === updatedEvent.Slug);
+  const currentCoffee = coffeeBreaks.find(c => c.id === selectedCoffeeId);
+  console.log(currentCoffee);
+  const currentRegistration = currentCoffee?.registrations?.find(
+    r => r.user_id === userIdToCheck
+  );
+  const isValidated = Boolean(currentRegistration?.attended_at);
+  const buttonLabel = isValidated ? "Remover validação" : "Validar";
+
+  const handleCoffeeCreated = (newCoffee: EventCoffeeBreakResponseI) => {
+    setCoffeBreaks(prevCoffees => [...prevCoffees, newCoffee]);
+  }
+
+  const handleCoffeeUpdated = (updatedCoffee: EventCoffeeBreakResponseI) => {
+    setCoffeBreaks(prevCoffees =>
+      prevCoffees.map(e => e.id === updatedCoffee.id ? updatedCoffee : e)
+    );
+  }
+
+  const handleCoffeeValidation = async () => {
+    if (!selectedCoffeeId || !userIdToCheck.trim()) return;
+    const wasValidated = Boolean(currentRegistration?.attended_at);
+    setIsMutating(true);
+    await runWithToast(
+      wasValidated ? handleUnregisterUserInCoffeeBreak(event.Slug, userIdToCheck, selectedCoffeeId) :
+        handleRegisterUserInCoffeeBreak(event.Slug, userIdToCheck, selectedCoffeeId),
+      { 
+        loading: `${wasValidated ? "Desregistrado" : "Registrando"} o usuário no Coffee`,
+        success: () => `Usuário ${wasValidated ? "desregistrado" : "registrado"} no Coffee`,
+        error: () => `Erro ao ${wasValidated ? "desregistrar" : "registrar"} o Usuário no Coffee`
+      }
+    );
+    setIsMutating(false);
+    await loadAllCoffeBreaksRegistrations();
+  }
 
   const handleRegisterState = async () => {
     if (!handleRegister || !handleUnregister) return;
@@ -137,19 +190,44 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
         onOpenChange={setIsCheckPaidModalOpen}
         trigger={null}
       >
-        
-        <CameraComponent
-          setSelectedUserId={setUserIdToCheck}
-          mode="status"
+        <Select 
+          placeholder="Selecione..."
+          value={selectedCoffeeId}
+          options={[
+            { label: "Apenas Criação", value: "" },
+            ...coffeeBreaks.map((item) => ({
+              label: formatBRDateTime(safeTime(item.start_date)),
+              value: item.id,
+            }))
+          ]}
+          onValueChange={setSelectedCoffeeId}
         />
+        <EventCoffeeBreakForm
+          key={selectedCoffeeId || "new"} 
+          isCreating={coffeeBreaks.find(item => item.id === selectedCoffeeId) ? false : true}
+          slug={event.Slug}
+          coffee={coffeeBreaks.find(item => item.id === selectedCoffeeId)}
+          onCoffeeCreate={handleCoffeeCreated}
+          onCoffeeUpdate={handleCoffeeUpdated}
+        />
+        {selectedCoffeeId.length > 0 &&
+          <>
+            <CameraComponent
+              setSelectedUserId={setUserIdToCheck}
+              mode="status"
+            />
+            <Button 
+              type="button" 
+              variant="default" 
+              className="min-w-28 h-12" 
+              disabled={userIdToCheck.trim().length === 0 || isLoadingCoffeeRegistrations || isMutating}
+              onClick={() => handleCoffeeValidation()}
+            >
+              {buttonLabel}
+            </Button>
+          </> 
+        }
       </CustomGenericModal>
-      {isPaymentDone !== null && 
-        <ResultOverlay
-          approved={isPaymentDone || false}
-          open={isPaymentDone != null}
-          onOpenChange={onPaymentModalClose}
-        />
-      }
     </section>
   );
 };
