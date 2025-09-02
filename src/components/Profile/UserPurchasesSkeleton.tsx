@@ -11,7 +11,7 @@ import { Skeleton } from "../ui/skeleton";
 
 const UserPurchasesSkeleton = () => {
   return (
-    <div className="w-8/10">
+    <div className="w-full mt-8">
       <Table>
         <TableHeader>
           <TableRow>

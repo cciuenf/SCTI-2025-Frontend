@@ -102,6 +102,7 @@ const UserActivityInfoTable = ({
           <TableRow>
             <TableHead>Nome</TableHead>
             <TableHead>E-mail</TableHead>
+            <TableHead>UENF?</TableHead>
             <TableHead>{isRegistrations ? "Se Registrou" : "Participou"} em</TableHead>
           </TableRow>
         </TableHeader>
@@ -112,7 +113,7 @@ const UserActivityInfoTable = ({
             </TableRow>
             : usersRegistrations.length === 0 ? 
               <TableRow>
-                <TableCell colSpan={3}>
+                <TableCell colSpan={4}>
                   Nenhum usuário {isRegistrations ? "registrado" : "que participou"} encontrado
                 </TableCell>
               </TableRow>  
@@ -120,6 +121,7 @@ const UserActivityInfoTable = ({
               <TableRow key={u.user_id}>
                 <TableCell>{u.Name} {u.last_name}</TableCell>
                 <TableCell>{u.Email}</TableCell>
+                <TableCell>{u.is_uenf ? `${u.uenf_semester}º Semestre` : "-"}</TableCell>
                 <TableCell>
                   {isRegistrations 
                     ? formatFullDate(u.registered_at) 

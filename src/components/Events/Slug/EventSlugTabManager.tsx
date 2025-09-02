@@ -4,7 +4,9 @@ import ProductListSection from "@/components/Products/ProductListSection";
 import CustomGenericTabs, {
   type TabItem,
 } from "@/components/ui/Generic/CustomGenericTabs";
+import { useUserEvents } from "@/contexts/UserEventsProvider";
 import { Activity, Boxes, Plus } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 interface EventSlugTabManagerProps {
@@ -22,16 +24,17 @@ export default function EventSlugTabManager({
   userId,
   slug,
 }: EventSlugTabManagerProps) {
+  const searchParams = useSearchParams()
+  const currentView = searchParams.get("view") || "activities"
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const { myEvents } = useUserEvents();
+  const isUserRegistered = (myEvents.find(item => item.ID === eventId) && true) || false;
 
   const handlePrivilege = () => {
-    if (isEventCreator) {
-      return true;
-    }
-
-    if (isAdminStatus.isAdmin && isAdminStatus.type == "master_admin") {
-      return true;
-    }
+    if (isEventCreator) return true;
+    
+    if (isAdminStatus.isAdmin && isAdminStatus.type == "master_admin") return true;
 
     return false;
   };
@@ -50,6 +53,8 @@ export default function EventSlugTabManager({
           user_id={userId}
           isCreationModalOpen={isCreationModalOpen}
           setIsCreationModalOpen={setIsCreationModalOpen}
+          query={query}
+          setQuery={setQuery}
         />
       ),
       icon: <Activity />,
@@ -69,6 +74,9 @@ export default function EventSlugTabManager({
           isAdminStatus={isAdminStatus}
           isCreationModalOpen={isCreationModalOpen}
           setIsCreationModalOpen={setIsCreationModalOpen}
+          query={query}
+          setQuery={setQuery}
+          isUserRegistered={isUserRegistered}
         />
       ),
       icon: <Boxes />,
@@ -80,9 +88,10 @@ export default function EventSlugTabManager({
     },
   ];
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="flex flex-col items-center max-h-screen w-full overflow-hidden">
       <CustomGenericTabs
         tabs={tabs}
+        initialTabId={currentView} 
         className="max-w-7xl"
         showFab={mustShowFab}
       />

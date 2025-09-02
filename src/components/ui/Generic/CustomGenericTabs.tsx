@@ -122,12 +122,12 @@ export default function CustomGenericTabs({
   return (
     <div
       className={cn(
-        "w-full min-w-[320px] h-screen",
+        "w-full min-w-[320px] h-full",
         className
       )}
     >
       {/* Tabs Header */}
-      <div className="relative">
+      <div className="relative overflow-x-auto w-full">
         {!equalize && (
           <>
             <div className="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-background to-transparent" />
@@ -171,7 +171,7 @@ export default function CustomGenericTabs({
                   <motion.span
                     layoutId="tab-underline"
                     className="absolute -bottom-1 left-2 right-2 h-0.5 rounded-full bg-foreground"
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    transition={{ type: "tween", duration: 0.18, ease: "easeOut" }}
                   />
                 )}
               </button>
@@ -182,7 +182,7 @@ export default function CustomGenericTabs({
       </div>
 
       {/* Content Panel */}
-      <div className="relative">
+      <div className="relative h-screen">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab?.id}
@@ -193,7 +193,7 @@ export default function CustomGenericTabs({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18 }}
-            className="min-h-[120px]"
+            className="min-h-[120px] h-full"
           >
             {activeTab?.content}
           </motion.div>

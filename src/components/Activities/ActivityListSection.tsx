@@ -37,18 +37,20 @@ import PresenceManagmentModalForm from "./PresenceManagementModalForm";
 import { runWithToast } from "@/lib/client/run-with-toast";
 import { handleGetAllUserTokens } from "@/actions/product-actions";
 import type { UserTokensResponseI } from "@/types/product-interfaces";
-import { safeTime } from "@/lib/date-utils";
+import { formatBR, safeTime, startOfLocalDay, toLocalDateKey } from "@/lib/date-utils";
 import { Input } from "../ui/input";
 import { Select } from "../ui/select";
 import Link from "next/link";
 
 interface ActivityListSectionProps {
-  user_id: string;
-  currentEvent: { id: string; slug: string };
-  isEventCreator: boolean;
+  user_id: string,
+  currentEvent: { id: string; slug: string },
+  isEventCreator: boolean,
   isAdminStatus: { isAdmin: boolean; type: "admin" | "master_admin" | "" };
   isCreationModalOpen: boolean;
-  setIsCreationModalOpen: Dispatch<SetStateAction<boolean>>;
+  setIsCreationModalOpen: Dispatch<SetStateAction<boolean>>,
+  query: string,
+  setQuery: Dispatch<SetStateAction<string>>,
 }
 
 type FilterKey = "all" | "my" | "free" | "paid" | "available";
@@ -60,6 +62,8 @@ export default function ActivityListSection({
   isAdminStatus,
   isCreationModalOpen,
   setIsCreationModalOpen,
+  query,
+  setQuery,
 }: ActivityListSectionProps) {
   const [userTokens, setUserTokens] = useState<UserTokensResponseI[]>([]);
   const [isUsersModalOpen, setIsUsersModalOpen] = useState(false);
@@ -75,8 +79,8 @@ export default function ActivityListSection({
   >([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterKey>("all");
+  const [dateFilter, setDateFilter] = useState<string>("all");
 
   useEffect(() => {
     const fetchUserTokens = async () => {
@@ -297,6 +301,34 @@ export default function ActivityListSection({
     }
   }, [filter, allActivities, myActivities]);
 
+  const { minTs, maxTs } = useMemo(() => {
+    if (!baseList.length) return { minTs: 0, maxTs: 0 };
+
+    let min = Infinity;
+    let max = -Infinity;
+
+    for (const w of baseList) {
+      const s = safeTime(w.activity.start_time);
+      if (s < min) min = s;
+      if (s > max) max = s;
+    }
+    return { minTs: startOfLocalDay(min), maxTs: startOfLocalDay(max) };
+  }, [baseList]);
+
+  const dayOptions = useMemo(() => {
+    if (!minTs || !maxTs || !isFinite(minTs) || !isFinite(maxTs)) return [];
+    const days: { value: string; label: string }[] = [];
+
+    for (let cur = minTs; cur <= maxTs; ) {
+      days.push({ value: toLocalDateKey(cur), label: formatBR(cur) });
+      const d = new Date(cur);
+      d.setDate(d.getDate() + 1);
+      cur = d.getTime();
+    }
+    return days;
+  }, [minTs, maxTs]);
+
+
   const filteredSortedActivities = useMemo(() => {
     const q = query.trim().toLowerCase();
     const searched = q.length
@@ -309,18 +341,22 @@ export default function ActivityListSection({
         })
       : baseList;
 
-    return [...searched].sort(
-      (a, b) =>
-        safeTime(a.activity.start_time) - safeTime(b.activity.start_time)
+    const byDay = dateFilter === "all"
+      ? searched
+      : searched.filter((w) => toLocalDateKey(safeTime(w.activity.start_time)) === dateFilter);
+
+    return [...byDay].sort(
+      (a, b) => safeTime(a.activity.start_time) - safeTime(b.activity.start_time)
     );
-  }, [baseList, query]);
+  }, [baseList, query, dateFilter]);
 
   const availableTokensCount = userTokens.filter((t) => !t.is_used).length;
-  const hasFilters = filter !== "all" || query.trim().length > 0;
+  const hasFilters = filter !== "all" || dateFilter !== "all" || query.trim().length > 0;
 
   const clearFilters = () => {
     setQuery("");
     setFilter("all");
+    setDateFilter("all");
   };
 
   if (isLoading) {
@@ -336,14 +372,15 @@ export default function ActivityListSection({
   }
 
   return (
-    <>
+    <section className="h-full flex flex-col">
       <div
         className={cn(
-          "flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3",
-          "w-full mt-2 justify-center items-center"
+          "shrink-0",
+          "flex flex-col sm:flex-row items-stretch flex-wrap sm:items-center gap-2 sm:gap-3",
+          "w-full mt-2 justify-center items-center py-3 px-4"
         )}
       >
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-56">
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -354,6 +391,24 @@ export default function ActivityListSection({
             )}
           />
           <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+        </div>
+
+        <div className="w-52">
+          <Select
+            value={dateFilter}
+            onValueChange={(v) => setDateFilter(v)}
+            className={cn(
+              "h-10 w-full border border-zinc-300 bg-white px-3",
+              "outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
+            )}
+            placeholder="Filtrar por data"
+            searchPlaceholder="Buscar data..."
+            title="Filtrar por data"
+            options={[
+              { value: "all", label: "Todas as datas", icon: ListFilter },
+              ...dayOptions.map((d) => ({ value: d.value, label: d.label, icon: Calendar })),
+            ]}
+          />
         </div>
 
         <div className="w-46">
@@ -406,8 +461,8 @@ export default function ActivityListSection({
       {filteredSortedActivities.length !== 0 ? (
         <div
           className={cn(
-            "relative w-full h-full max-h-screen pb-48 sm:pb-24",
-            "overflow-clip overflow-y-auto scrollbar-unvisible overscroll-contain"
+            "relative w-full flex-1 mb-20",
+            "overflow-y-auto scrollbar-unvisible"
           )}
         >
           <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 p-6">
@@ -524,6 +579,6 @@ export default function ActivityListSection({
         open={isPresenceModalOpen}
         setOpen={setIsPresenceModalOpen}
       />
-    </>
+    </section>
   );
 }

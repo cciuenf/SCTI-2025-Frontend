@@ -5,13 +5,15 @@ interface LoadingSpinnerProps {
   variant?: "default" | "dots" | "pulse" | "bars";
   text?: string;
   className?: string;
+  spinnerClassName?: string;
 }
 
 const LoadingSpinner = ({ 
   size = "md", 
   variant = "default", 
   text,
-  className 
+  className,
+  spinnerClassName,
 }: LoadingSpinnerProps) => {
   const sizeClasses = {
     sm: "w-4 h-4",
@@ -42,7 +44,8 @@ const LoadingSpinner = ({
         return (
           <div className={cn(
             "rounded-full bg-current animate-pulse",
-            sizeClasses[size]
+            sizeClasses[size],
+            spinnerClassName
           )} />
         );
       
@@ -61,7 +64,8 @@ const LoadingSpinner = ({
         return (
           <div className={cn(
             "border-2 border-current border-t-transparent rounded-full animate-spin",
-            sizeClasses[size]
+            sizeClasses[size],
+            spinnerClassName
           )} />
         );
     }

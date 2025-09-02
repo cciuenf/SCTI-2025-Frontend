@@ -193,8 +193,7 @@ export async function handleGetUserDeviceInfos() {
     const parser = new UAParser(userAgent);
     const os = parser.getOS()
     const browser = parser.getBrowser()
-    return { status: 200, data: { os: os.name, browser: browser.name } }
+    return { os: os.name || "Unknown", browser: browser.name || "Unknown" }
   }
-
-  return {status: 404, data: {}}
+  return { os: "Unknown", browser: "Unknown"}
 }

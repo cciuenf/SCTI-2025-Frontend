@@ -44,7 +44,10 @@ const InfoCarousel = ({ hasLogin }: Props) => {
       }}
       plugins={[Autoplay({ delay: 5000 }), Fade()]}
     >
-      <div className="absolute bg-secondary/80 inset-0 z-10 flex flex-col items-center justify-between">
+      <div className={cn(
+        "absolute inset-0 z-10 flex flex-col items-center justify-between",
+        "bg-gradient-to-t from-secondary via-secondary/80 to-secondary/80 from-0% via-20% to-100%"
+      )}>
         <div className="text-center flex flex-col items-center font-medium">
           <Image
             src="/img/home/SCTI.png"
@@ -64,6 +67,7 @@ const InfoCarousel = ({ hasLogin }: Props) => {
           Explore o futuro através da ciência e tecnologia. Participe de
           palestras, workshops e demonstrações que moldarão o amanhã.
         </h2>
+        <div className="flex flex-col gap-3">
         <div className="flex justify-center items-center gap-6">
           {hasLogin ? (
             <Button className="w-36" asChild variant="home">
@@ -77,7 +81,11 @@ const InfoCarousel = ({ hasLogin }: Props) => {
           <Button className="w-36" asChild variant="home">
             <Link href="#info">Saiba Mais</Link>
           </Button>
-        </div>
+          </div>
+          <Button asChild variant="team">
+            <Link href={"team"}>Conheça a Equipe!</Link>
+          </Button>
+       </div>
         <div className="w-full flex justify-center items-center flex-col lg:flex-row gap-4 lg:gap-0 lg:justify-around">
           <div className="flex items-end justify-center">
             <Calendar className="text-purple-700 mr-1" />

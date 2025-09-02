@@ -4,15 +4,13 @@ import { handleLogout } from "@/actions/auth-actions";
 import { LogOut } from "lucide-react";
 import React from "react";
 import { SidebarMenuButton } from "../ui/sidebar";
-import { clearAuthTokens, getAuthTokens } from "@/lib/cookies";
+import { clearAuthTokens } from "@/lib/cookies";
 import {useRouter} from "next/navigation";
 import { runWithToast } from "@/lib/client/run-with-toast";
 
 const LogoutButton = () => {
   const router = useRouter()
-  const handleLogoutAction = async () => {
-    const { accessToken, refreshToken } = await getAuthTokens();
-    
+  const handleLogoutAction = async () => {    
     await runWithToast(
       handleLogout(),
       {
@@ -22,7 +20,7 @@ const LogoutButton = () => {
       }
     );
     await clearAuthTokens();
-    if(!accessToken && !refreshToken) router.push("/");
+    router.push("/");
   };
 
   return (

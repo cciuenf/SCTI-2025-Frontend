@@ -141,7 +141,10 @@ const EventListSection = ({ isEventCreator, isAdminStatus }: Props) => {
       />
       <UserEventRoleManager
         slug={selectedEvent?.Slug || ""}
-        open={isEventRoleModalOpen && isEventCreator}
+        open={
+          isEventRoleModalOpen && 
+          (isEventCreator || (isAdminStatus.isAdmin && isAdminStatus.type == "master_admin"))
+        }
         setOpen={setIsEventRoleModalOpen}
         onRoleChange={handleUserEventRole}
         willPromote={willPromoteUser}
