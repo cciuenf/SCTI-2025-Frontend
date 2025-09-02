@@ -16,6 +16,7 @@ import EventCoffeeBreakForm from "./EventCoffeeBreakForm";
 import { Select } from "../ui/select";
 import { formatBRDateTime, safeTime } from "@/lib/date-utils";
 import { runWithToast } from "@/lib/client/run-with-toast";
+import UserCoffeeInfoTable from "./Slug/UserCoffeeInfoTable";
 // import { runWithToast } from "@/lib/client/run-with-toast";
 
 interface Props {
@@ -28,15 +29,13 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
   const [isEditEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isLoadingRegisterState, setIsLoadingRegisterState] = useState(false);
   const [isCheckPaidModalOpen, setIsCheckPaidModalOpen] = useState(false);
-  // const [userIdToCheck, setUserIdToCheck] = useState<string>("c9822666-b1c0-48ac-a1bd-ad5703ceff97");
-  const [userIdToCheck, setUserIdToCheck] = useState<string>("16e134ae-95fb-412e-94e2-03ae7d21c430");
-  // const [userIdToCheck, setUserIdToCheck] = useState<string>("9ebcabc1-eaf0-4484-94aa-6969750f8c1f");
-  // const [userIdToCheck, setUserIdToCheck] = useState<string>("e62cb1d4-eddc-4af4-8ddc-c07b9485ff27");
+  const [userIdToCheck, setUserIdToCheck] = useState<string>("");
 
   const [selectedCoffeeId, setSelectedCoffeeId] = useState<string>("");
   const [coffeeBreaks, setCoffeBreaks] = useState<EventCoffeeBreakResponseI[]>([])
   const [isLoadingCoffeeRegistrations, setIsLoadingCoffeeRegistrations] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
+  const [isUsersModalOpen, setIsUsersModalOpen] = useState(false);
 
   const {
     myEvents,
@@ -58,19 +57,28 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
     loadAllCoffeBreaks();
   }, [event.Slug]);
 
-  const loadAllCoffeBreaksRegistrations = useCallback(async () => {
+  const loadAllCoffeBreaksRegistrations = useCallback(async (coffeeId: string) => {
+    if (!coffeeId) return;
     setIsLoadingCoffeeRegistrations(true);
-    const res = await handleGetAllRegistrationsFromCoffee(event.Slug, selectedCoffeeId);
-    if(res.success && res.data != null) {
-      setCoffeBreaks(prevCoffees =>
-        prevCoffees.map(e => ({...e, registrations: res.data || []}))
+
+    const res = await handleGetAllRegistrationsFromCoffee(event.Slug, coffeeId);
+    console.log(res);
+    if (res.success && res.data != null) {
+      setCoffeBreaks(prev =>
+        prev.map(cb =>
+          cb.id === coffeeId
+            ? { ...cb, registrations: res.data ?? [] }
+            : cb
+        )
       );
     }
+
     setIsLoadingCoffeeRegistrations(false);
-  }, [event.Slug, selectedCoffeeId]);
+  }, [event.Slug]);
+
 
   useEffect(() => {
-    if(selectedCoffeeId.length > 0) loadAllCoffeBreaksRegistrations();
+    if(selectedCoffeeId.length > 0) loadAllCoffeBreaksRegistrations(selectedCoffeeId);
   }, [event.Slug, loadAllCoffeBreaksRegistrations, selectedCoffeeId])
 
   if (isLoading) {
@@ -83,11 +91,12 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
 
   const isSubscribed = myEvents.find((e) => e.Slug === updatedEvent.Slug);
   const currentCoffee = coffeeBreaks.find(c => c.id === selectedCoffeeId);
-  console.log(currentCoffee);
   const currentRegistration = currentCoffee?.registrations?.find(
     r => r.user_id === userIdToCheck
   );
-  const isValidated = Boolean(currentRegistration?.attended_at);
+  const isValidated = Boolean(currentRegistration);//Boolean(currentRegistration?.attended_at);
+  console.log(currentRegistration);
+  console.log(isValidated);
   const buttonLabel = isValidated ? "Remover validação" : "Validar";
 
   const handleCoffeeCreated = (newCoffee: EventCoffeeBreakResponseI) => {
@@ -102,19 +111,21 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
 
   const handleCoffeeValidation = async () => {
     if (!selectedCoffeeId || !userIdToCheck.trim()) return;
-    const wasValidated = Boolean(currentRegistration?.attended_at);
+    console.log(isValidated);
+    console.log(currentCoffee)
+    console.log(currentRegistration)
     setIsMutating(true);
     await runWithToast(
-      wasValidated ? handleUnregisterUserInCoffeeBreak(event.Slug, userIdToCheck, selectedCoffeeId) :
+      isValidated ? handleUnregisterUserInCoffeeBreak(event.Slug, userIdToCheck, selectedCoffeeId) :
         handleRegisterUserInCoffeeBreak(event.Slug, userIdToCheck, selectedCoffeeId),
       { 
-        loading: `${wasValidated ? "Desregistrado" : "Registrando"} o usuário no Coffee`,
-        success: () => `Usuário ${wasValidated ? "desregistrado" : "registrado"} no Coffee`,
-        error: () => `Erro ao ${wasValidated ? "desregistrar" : "registrar"} o Usuário no Coffee`
+        loading: `${isValidated ? "Desregistrado" : "Registrando"} o usuário no Coffee`,
+        success: () => `Usuário ${isValidated ? "desregistrado" : "registrado"} no Coffee`,
+        error: () => `Erro ao ${isValidated ? "desregistrar" : "registrar"} o Usuário no Coffee`
       }
     );
+    await loadAllCoffeBreaksRegistrations(selectedCoffeeId);
     setIsMutating(false);
-    await loadAllCoffeBreaksRegistrations();
   }
 
   const handleRegisterState = async () => {
@@ -225,6 +236,11 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
             >
               {buttonLabel}
             </Button>
+            <UserCoffeeInfoTable
+              registrations={currentCoffee?.registrations || []}
+              open={isUsersModalOpen}
+              setOpen={setIsUsersModalOpen}
+            />
           </> 
         }
       </CustomGenericModal>
