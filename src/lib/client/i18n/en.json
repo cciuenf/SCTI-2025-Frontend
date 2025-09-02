@@ -79,5 +79,19 @@
   "O usuário já é um ADMIN Mestre, não é possível o promover mais",
   "user is not registered to event": "O usuário não está registrado no evento",
   "user doesnt have event ticket": "O usuário não tem o ticket do evento!",
-  "unauthorized: only admins can get is-paid status": "Essa função é apenas para ADMIN"
+  "unauthorized: only admins can get is-paid status": "Essa função é apenas para ADMIN",
+  "deleted event": "Evento deletado",
+  "user already registered to this coffee": "O usuário já está registrado nesse coffee",
+  "could not get user product": "Não foi possível identificar o produto",
+  "registered to coffee": "Usuário registrado no Coffee Break",
+  "unregistered from coffee": "Usuário foi desregistrado do Coffee Break",
+  "coffee does not belong to this event": "Esse Coffee Break não pertence a esse evento",
+  "user is not registered to this coffee": "O usuário não está registrado nesse Coffee Break",
+  "error unregistering from coffee: error checking if user is registered to coffee":
+    "Erro ao verificar se o usuário está inscrito no coffee",
+  "error registering to coffee: user doesnt have event ticket": "O usuário não tem o ticket do evento!",
+  "error registering to coffee: user is not registered to event": "O usuário não está registrado no evento!",
+  "error registering to coffee: user already registered to this coffee": "O usuário já está registrado no coffee",
+  "error unregistering from coffee: user is not registered to this coffee":
+    "O usuário não está registrado no coffee"
 }

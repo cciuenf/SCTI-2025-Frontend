@@ -28,3 +28,23 @@ export interface EventSubscriptionResponseI {
   message: string;
   success: boolean
 }
+
+export interface EventCoffeeBreakResponseI {
+  id: string;
+  event_id: string;
+  start_date: string;
+  end_date: string;
+  registrations?: EventCoffeeRegistrationsI[]
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EventCoffeeRegistrationsI {
+  coffee_id: string;
+  user_id: string;
+  attended_at: string | null;
+}
+
+// UnregisterFromCoffeeRequest
+// user_id
+// coffee_id

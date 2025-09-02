@@ -180,5 +180,19 @@
       "icon": "instagram",
       "url": "https://www.instagram.com/paulofer02_?igsh=MWxoOG1tNHNkcm42Ng=="
     }
+  },
+  {
+    "name": "José Arthur",
+    "last_name": "Mulatinho",
+    "role": "Colaborador de patrocínios e coffee break",
+    "photo": "/collabs/photos/jose-arthur-photo.png",
+    "social_1": {
+      "icon": "linkedin",
+      "url": "https://www.linkedin.com/in/jose-arthur"
+    },
+    "social_2": {
+      "icon": "github",
+      "url": "https://github.com/jamm2k"
+    }
   }
 ]
