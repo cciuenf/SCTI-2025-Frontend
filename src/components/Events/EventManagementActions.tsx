@@ -17,7 +17,6 @@ import { Select } from "../ui/select";
 import { formatBRDateTime, safeTime } from "@/lib/date-utils";
 import { runWithToast } from "@/lib/client/run-with-toast";
 import UserCoffeeInfoTable from "./Slug/UserCoffeeInfoTable";
-// import { runWithToast } from "@/lib/client/run-with-toast";
 
 interface Props {
   isEventCreator: boolean;
@@ -139,6 +138,16 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
     router.push(`/events/${updatedEvent}`); // This needs to improve
   };
 
+  const baseOptions = coffeeBreaks.map((item) => ({
+    label: formatBRDateTime(safeTime(item.start_date)),
+    value: item.id,
+  }));
+
+  const options = (isEventCreator || isAdminStatus.type === "master_admin")
+    ? [{ label: "Apenas Criação", value: "" }, ...baseOptions]
+    : baseOptions;
+
+
   return (
     <section className="w-full max-w-sm mx-auto flex flex-col items-stretch gap-3 px-4">
       <Button
@@ -204,23 +213,20 @@ const EventManagementActions = ({ isEventCreator, isAdminStatus, event }: Props)
         <Select 
           placeholder="Selecione..."
           value={selectedCoffeeId}
-          options={[
-            { label: "Apenas Criação", value: "" },
-            ...coffeeBreaks.map((item) => ({
-              label: formatBRDateTime(safeTime(item.start_date)),
-              value: item.id,
-            }))
-          ]}
+          options={options}
+          className="max-h-12"
           onValueChange={setSelectedCoffeeId}
         />
-        <EventCoffeeBreakForm
-          key={selectedCoffeeId || "new"} 
-          isCreating={coffeeBreaks.find(item => item.id === selectedCoffeeId) ? false : true}
-          slug={event.Slug}
-          coffee={coffeeBreaks.find(item => item.id === selectedCoffeeId)}
-          onCoffeeCreate={handleCoffeeCreated}
-          onCoffeeUpdate={handleCoffeeUpdated}
-        />
+        {(isEventCreator || isAdminStatus.type === "master_admin") &&
+          <EventCoffeeBreakForm
+            key={selectedCoffeeId || "new"} 
+            isCreating={coffeeBreaks.find(item => item.id === selectedCoffeeId) ? false : true}
+            slug={event.Slug}
+            coffee={coffeeBreaks.find(item => item.id === selectedCoffeeId)}
+            onCoffeeCreate={handleCoffeeCreated}
+            onCoffeeUpdate={handleCoffeeUpdated}
+          />
+        }
         {selectedCoffeeId.length > 0 &&
           <>
             <CameraComponent
