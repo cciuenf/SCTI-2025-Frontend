@@ -93,5 +93,6 @@
   "error registering to coffee: user is not registered to event": "O usuário não está registrado no evento!",
   "error registering to coffee: user already registered to this coffee": "O usuário já está registrado no coffee",
   "error unregistering from coffee: user is not registered to this coffee":
-    "O usuário não está registrado no coffee"
+    "O usuário não está registrado no coffee",
+  "error marking attendance: activity has already ended": "A atividade já terminou"
 }
