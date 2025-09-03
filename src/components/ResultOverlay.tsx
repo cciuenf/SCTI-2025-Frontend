@@ -5,22 +5,24 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 interface ResultOverlayProps {
   open: boolean | null;
-  onOpenChange: (open: boolean | null) => void;
+  onOpenChange: (open: boolean) => void;
   approved: boolean;
   autoCloseMs?: number;
+  children: React.ReactNode;
 }
 
 export default function ResultOverlay({
   open,
   onOpenChange,
   approved,
-  autoCloseMs = 3000,
+  autoCloseMs,
+  children
 }: ResultOverlayProps) {
   const prefersReduced = useReducedMotion();
 
   useEffect(() => {
     if (!open || !autoCloseMs) return;
-    const t = setTimeout(() => onOpenChange(null), autoCloseMs);
+    const t = setTimeout(() => onOpenChange(false), autoCloseMs);
     return () => clearTimeout(t);
   }, [open, autoCloseMs, onOpenChange]);
 
@@ -40,7 +42,7 @@ export default function ResultOverlay({
             "transform-gpu will-change-transform will-change-opacity will-change-filter",
             bgClass,
           ].join(" ")}
-          onClick={() => onOpenChange(null)}
+          // onClick={() => onOpenChange(false)}
           role="button"
           tabIndex={0}
         >
@@ -53,7 +55,8 @@ export default function ResultOverlay({
           />
 
           <div className="relative flex flex-col items-center justify-center gap-6 px-6 text-center select-none">
-            <motion.span
+            {children}
+            {/* <motion.span
               initial={{ opacity: 0, y: prefersReduced ? 0 : 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08, duration: 0.28, ease: "easeOut" }}
@@ -82,7 +85,7 @@ export default function ResultOverlay({
                   transition={{ duration: autoCloseMs / 1000, ease: "linear" }}
                 />
               </div>
-            )}
+            )} */}
           </div>
         </motion.div>
       )}

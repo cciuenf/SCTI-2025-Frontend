@@ -53,3 +53,7 @@ export function isRefreshTokenExpired(token: string | null) {
 
   if (!expiresAt || expiresAt.getTime() <= new Date().getTime()) return true;
 }
+
+export function getRandomIndex(max: number = 1) {
+  return Math.floor(Math.random() * max)
+}
