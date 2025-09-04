@@ -6,9 +6,9 @@ import type { UserBasicInfo } from "@/types/auth-interfaces";
 import { handleGetUsersWhoParticipateInActivity } from "@/actions/activity-actions";
 import type { ActionResult } from "@/actions/_utils";
 import { handleGetUsersInfo } from "@/actions/user-actions";
-import { runWithToast } from "@/lib/client/run-with-toast";
 import { getRandomIndex } from "@/lib/utils";
-
+import NameRoller from "./NameRoller";
+import LoadingSpinner from "../Loading/LoadingSpinner";
 
 interface Props {
   activityId: string;
@@ -19,10 +19,9 @@ interface Props {
 
 type Combined = UserBasicInfo & ActivityRegistrationI;
 
-
 export default function UserActivityPrizeDraw({ activityId, slug, open, onOpenChange }: Props) {
-  const [usersRegistrations, setUsersRegistrations] = useState<Combined[]>([]);
   const [loading, setLoading] = useState(true);
+  const [usersRegistrations, setUsersRegistrations] = useState<Combined[]>([]);
   const [winner, setWinner] = useState<Combined | null>(null);
 
   const loadRegistrationsWithUsers = useCallback(async (): Promise<ActionResult<Combined[]>> => {
@@ -50,23 +49,13 @@ export default function UserActivityPrizeDraw({ activityId, slug, open, onOpenCh
       ...users[idx]
     }));
 
-    // TODO: Mostrar todos os usuários antes de mostrar o vencedor na animação. Demorar tipo 0.1s por usuário e increementaando para cada até chegar no últimp
-    // o nome do usuário começa pequeno centro e cresce até desaparecer e nisso vem o próximo.
-
     return { success: true, data: combined, message: 'Usuários carregados' };
   }, [activityId, slug]);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
 
-    const res = await runWithToast(
-      loadRegistrationsWithUsers(),
-      {
-        loading: 'Carregando usuários...',
-        success: () => 'Usuários carregados',
-        error: () => 'Erro ao carregar usuários',
-      }
-    );
+    const res = await loadRegistrationsWithUsers();
     if (res.success && res.data) {
       setUsersRegistrations(res.data);
       setWinner(res.data[getRandomIndex(res.data.length)]);
@@ -82,16 +71,31 @@ export default function UserActivityPrizeDraw({ activityId, slug, open, onOpenCh
     }
   }, [open, fetchUsers]);
 
+  if (loading) return (
+    <ResultOverlay
+      open={open}
+      onOpenChange={onOpenChange}
+    >
+      <LoadingSpinner size="xl"/>
+    </ResultOverlay>
+  ) 
+
   return (
     <ResultOverlay
       open={open}
       onOpenChange={onOpenChange}
-      approved={true}
     >
-      <div>
-        {/* <h1>Sorteio realizado com sucesso</h1> */}
-        {/* <p>O sorteio foi realizado com sucesso</p> */}
-      </div>
+      <NameRoller
+        users={usersRegistrations}
+        winner={winner}
+        minCount={120}
+        durationSec={18}
+        onExit={() => onOpenChange(false)}
+        onReplay={async () => {
+          setUsersRegistrations([]);
+          await fetchUsers();
+        }}
+      />
     </ResultOverlay>
   )
 }
