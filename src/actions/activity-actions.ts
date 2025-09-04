@@ -113,6 +113,16 @@ export async function handleGetUsersWhoParticipateInActivity(
   );
 }
 
+// Only for log
+export async function handleMarkActivityUserWinner(
+  data: { id: string, name: string },
+  slug: string
+) {
+  return actionRequest<null, null>(
+    `/events/${slug}/winner/${data.id}/${data.name}`
+  );
+}
+
 export async function handleGetActivitiesWhichUserParticipate() {
   return actionRequest<null, ActivityResponseI[]>(
     `/user-attended-activities`,

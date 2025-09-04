@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import ResultOverlay from "../ResultOverlay";
 import type { ActivityRegistrationI } from "@/types/activity-interface";
 import type { UserBasicInfo } from "@/types/auth-interfaces";
-import { handleGetUsersWhoParticipateInActivity } from "@/actions/activity-actions";
+import { handleGetUsersWhoParticipateInActivity, handleMarkActivityUserWinner } from "@/actions/activity-actions";
 import type { ActionResult } from "@/actions/_utils";
 import { handleGetUsersInfo } from "@/actions/user-actions";
 import { getRandomIndex } from "@/lib/utils";
@@ -58,11 +58,16 @@ export default function UserActivityPrizeDraw({ activityId, slug, open, onOpenCh
     const res = await loadRegistrationsWithUsers();
     if (res.success && res.data) {
       setUsersRegistrations(res.data);
-      setWinner(res.data[getRandomIndex(res.data.length)]);
+      const winner = res.data[getRandomIndex(res.data.length)];
+      setWinner(winner);
+      handleMarkActivityUserWinner(
+        {id: activityId, name: `${winner.Name} ${winner.LastName ?? winner.last_name}`},
+        slug
+      )
     }
     
     setLoading(false);
-  }, [loadRegistrationsWithUsers]);
+  }, [activityId, loadRegistrationsWithUsers, slug]);
   
   useEffect(() => {
     if (open) {
