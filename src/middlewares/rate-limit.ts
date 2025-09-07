@@ -1,35 +1,21 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const IMAGE_EXT_RE = /\.(?:avif|webp|png|jpe?g|gif|svg|ico)$/i;
-const SKIP_PREFIXES = ["/_next", "/static", "/favicon", "/robots.txt", "/sitemap.xml", "/images"];
-const RATE_CHECK_PATH = "/api/rate-check";
-
-function isImageRequest(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  if (SKIP_PREFIXES.some(p => pathname.startsWith(p))) return true;
-  if (pathname.startsWith("/_next/image")) return true;
-
+function isPageRefresh(req: NextRequest) {
+  const mode = req.headers.get("sec-fetch-mode");
   const dest = req.headers.get("sec-fetch-dest");
-  if (dest === "image") return true;
-
-  if (IMAGE_EXT_RE.test(pathname)) return true;
-
-  return false;
-}
-
-function shouldBypass(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  if (pathname === RATE_CHECK_PATH) return true;
-  if (req.headers.get("x-internal-ratecheck") === "1") return true;
-  if (req.headers.get("x-middleware-subrequest") === "1") return true;
-  if (isImageRequest(req)) return true;
-  return false;
+  const accept = req.headers.get("accept") || "";
+  return req.method === "GET" && (
+    (mode === "navigate" && dest === "document") ||
+    accept.includes("text/html")
+  );
 }
 
 export async function rateLimit(req: NextRequest, res: NextResponse) {
-  if (shouldBypass(req)) return res
+  const isLinkNav = req.headers.has("next-url");
+  const isRefresh = isPageRefresh(req);
+  if (!isLinkNav && !isRefresh) return res;
 
-  const checkUrl = new URL(RATE_CHECK_PATH, req.nextUrl.origin);
+  const checkUrl = new URL("/api/rate-check", req.nextUrl.origin);
   const checkRes = await fetch(checkUrl, {
     method: "GET",
     headers: {
