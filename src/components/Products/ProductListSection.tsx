@@ -3,7 +3,7 @@
 import { useState, useEffect, type Dispatch, type SetStateAction, useMemo } from "react";
 import ProductModalForm from "./ProductModalForm";
 import type {
-  ProductPurchasesResponseI,
+  // ProductPurchasesResponseI,
   ProductResponseI,
 } from "@/types/product-interfaces";
 import type { ActivityResponseI } from "@/types/activity-interface";
@@ -15,14 +15,15 @@ import { handleGetAllEventActivities } from "@/actions/activity-actions";
 import { cn } from "@/lib/utils";
 import CardSkeleton from "../Loading/CardSkeleton";
 import ProductCard from "./ProductCard";
-import ProductBuyModalForm from "./ProductBuyModalForm";
+// import ProductBuyModalForm from "./ProductBuyModalForm";
 import { runWithToast } from "@/lib/client/run-with-toast";
-import useMercadoPago from "@/hooks/use-mercado-pago";
-import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
-import type { ProductBuyDataI } from "@/schemas/product-schema";
-import { useRouter } from "next/navigation";
+// import useMercadoPago from "@/hooks/use-mercado-pago";
+// import type { IPaymentFormData } from "@mercadopago/sdk-react/esm/bricks/payment/type";
+// import type { ProductBuyDataI } from "@/schemas/product-schema";
+// import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
 import { Boxes, ListFilter, OctagonMinus, Search } from "lucide-react";
+import { toast } from "sonner";
 
 interface ProductListSectionProps {
   currentEvent: { id: string; slug: string };
@@ -45,14 +46,14 @@ export default function ProductListSection({
   setQuery,
   isUserRegistered,
 }: ProductListSectionProps) {
-  const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
+  // const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ProductResponseI>();
   const [allProducts, setAllProducts] = useState<ProductResponseI[]>([]);
   const [allActivities, setAllActivities] = useState<ActivityResponseI[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter(); 
+  // const router = useRouter(); 
 
-  const { selectPaymentMethod } = useMercadoPago();
+  // const { selectPaymentMethod } = useMercadoPago();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -100,7 +101,8 @@ export default function ProductListSection({
   };
   const openPurchaseProductModal = (productToBuy: ProductResponseI) => {
     setSelectedProduct(productToBuy);
-    setIsPurchaseModalOpen(true);
+    toast.warning("Funcionalidade Desabilitada!")
+    // setIsPurchaseModalOpen(true);
   };
 
   const handleProductCreate = (newProduct: ProductResponseI) => {
@@ -113,34 +115,34 @@ export default function ProductListSection({
     );
   };
 
-  const handlePaymentSelector = async (pay: IPaymentFormData, buyableProduct: ProductBuyDataI) => {
-    const result = await selectPaymentMethod(
-      pay,
-      currentEvent.slug,
-      selectedProduct,
-      buyableProduct
-    );
-    if (result.data != null && "product_id" in result.data) handleProductPurchase(result.data);
-    return result;
-  };
+  // const handlePaymentSelector = async (pay: IPaymentFormData, buyableProduct: ProductBuyDataI) => {
+  //   const result = await selectPaymentMethod(
+  //     pay,
+  //     currentEvent.slug,
+  //     selectedProduct,
+  //     buyableProduct
+  //   );
+  //   if (result.data != null && "product_id" in result.data) handleProductPurchase(result.data);
+  //   return result;
+  // };
 
-  const handleProductPurchase = (
-    purchasedProduct: ProductPurchasesResponseI
-  ) => {
-    setAllProducts((prev) =>
-      prev.map((p) =>
-        p.ID === purchasedProduct.product_id
-          ? {
-              ...p,
-              quantity: Math.max(
-                (p.quantity || 0) - purchasedProduct.quantity,
-                0
-              ),
-            }
-          : p
-      )
-    );
-  };
+  // const handleProductPurchase = (
+  //   purchasedProduct: ProductPurchasesResponseI
+  // ) => {
+  //   setAllProducts((prev) =>
+  //     prev.map((p) =>
+  //       p.ID === purchasedProduct.product_id
+  //         ? {
+  //             ...p,
+  //             quantity: Math.max(
+  //               (p.quantity || 0) - purchasedProduct.quantity,
+  //               0
+  //             ),
+  //           }
+  //         : p
+  //     )
+  //   );
+  // };
 
   const handleProductDelete = async (product_id: string) => {
     const result = await runWithToast(
@@ -268,7 +270,7 @@ export default function ProductListSection({
         onProductUpdate={handleProductUpdate}
       />
 
-      {selectedProduct && <ProductBuyModalForm
+      {/* {selectedProduct && <ProductBuyModalForm
         slug={currentEvent.slug}
         product={selectedProduct}
         open={isPurchaseModalOpen}
@@ -277,7 +279,7 @@ export default function ProductListSection({
           if(!open) router.refresh();
         }}
         handlePaymentSelector={handlePaymentSelector}
-      />}
+      />} */}
     </section>
   );
 }
