@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
-import { Linkedin, Github } from "lucide-react";
 import React from "react";
 import SocialIcon from "./SocialIcon";
+import Image from "next/image";
 
 type Props = {
   name: string;
@@ -40,7 +40,9 @@ const CollabsCard = ({
           </div>
         </div>
         <div className="w-[200px] h-[260px] z-40 absolute -bottom-10 -right-5">
-          <img
+          <Image
+            width={1500}
+            height={800}
             src={photo}
             alt={`Foto de ${name} ${last_name}`}
             className="w-[160px] h-[220px]"
