@@ -9,8 +9,8 @@ export function getRedis() {
       port: Number(process.env.REDIS_PORT),
       password: process.env.REDIS_PASSWORD,
       maxRetriesPerRequest: 1,
+      enableAutoPipelining: true,
       enableReadyCheck: true,
-      lazyConnect: true,
     });
   }
   return client;

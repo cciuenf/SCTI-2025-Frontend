@@ -27,28 +27,30 @@ function shouldBypass(req: NextRequest) {
 }
 
 export async function rateLimit(req: NextRequest, res: NextResponse) {
-  if (shouldBypass(req)) return NextResponse.next();
+  if (shouldBypass(req)) return res
 
   const checkUrl = new URL(RATE_CHECK_PATH, req.nextUrl.origin);
   const checkRes = await fetch(checkUrl, {
     method: "GET",
     headers: {
       "x-forwarded-for": req.headers.get("x-forwarded-for") ?? "",
+      "x-internal-ratecheck": "1",
     },
     cache: "no-store",
   });
 
-  const nextHeaders = new Headers({
-    "x-ratelimit-limit": checkRes.headers.get("x-ratelimit-limit") ?? "",
-    "x-ratelimit-remaining": checkRes.headers.get("x-ratelimit-remaining") ?? "",
-    "x-ratelimit-reset": checkRes.headers.get("x-ratelimit-reset") ?? "",
-  });
+  const limited = checkRes.headers.get("x-ratelimit-limited") ?? "";
+  const remaining = checkRes.headers.get("x-ratelimit-remaining") ?? "";
+  const reset = checkRes.headers.get("x-ratelimit-reset") ?? "";
+  const current = checkRes.headers.get("x-ratelimit-current") ?? "";
 
-  if (checkRes.status === 429) {
-    return new NextResponse("Too Many Requests", {
-      status: 429,
-      headers: nextHeaders,
-    });
-  }
+  res.headers.set("x-ratelimit-limited", limited);
+  res.headers.set("x-ratelimit-remaining", remaining);
+  res.headers.set("x-ratelimit-reset", reset);
+  res.headers.set("x-ratelimit-current", current);
+  
+  if (checkRes.status === 429) 
+    return new NextResponse("Too Many Requests", { status: 429, headers: res.headers });
+  
   return res;
 }

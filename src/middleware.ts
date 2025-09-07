@@ -11,7 +11,7 @@ function chain(middlewares: MiddlewareFn[]) {
 
     for (const mw of middlewares) {
       const result = await mw(req, res);
-      if(result !== res) return res;
+      if(result !== res) return result;
     }
 
     return res;
@@ -19,5 +19,3 @@ function chain(middlewares: MiddlewareFn[]) {
 }
 
 export default chain([rateLimit, auth, meta]);
-
-export const config = { matcher: ["/:path*"] };

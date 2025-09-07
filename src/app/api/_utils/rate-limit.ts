@@ -7,17 +7,24 @@ type Result = {
   current: number;
 };
 
-export async function checkRateLimit(
-  ip: string,
-): Promise<Result> {
-  const redis = getRedis();
-  await redis.connect().catch(() => {}); // connect if not already connected
+function cfg() {
   const windowSec = Number(process.env.REDIS_RATE_DURATION);
-  const limit = Number(process.env.REDIS_RATE_LIMIT)
+  const limit = Number(process.env.REDIS_RATE_LIMIT);
+  const prefix = process.env.REDIS_RATE_PREFIX;
+  return { windowSec, limit, prefix };
+}
+
+function nowSec() {
+  return Math.floor(Date.now() / 1000);
+}
+
+export async function checkRateLimit(ip: string): Promise<Result> {
+  const redis = getRedis();
+  const {limit, prefix, windowSec} = cfg();
   
-  const nowSec = Math.floor(Date.now() / 1000);
-  const windowId = Math.floor(nowSec / windowSec);
-  const key = `${process.env.REDIS_RATE_PREFIX}:${ip}:${windowId}`;
+  const n = nowSec();
+  const windowId = Math.floor(n / windowSec);
+  const key = `${prefix}:${ip}:${windowId}`;
 
   const current = await redis.incr(key);
   if (current === 1) await redis.expire(key, windowSec);

@@ -1,5 +1,4 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { clearAuthTokens, getAuthTokens } from "../lib/cookies";
 
 function isProtectedRoute(pathname: string): boolean {
   const protectedPaths = ["/dashboard", "/events", "/profile"];
@@ -9,10 +8,13 @@ function isProtectedRoute(pathname: string): boolean {
 export async function auth(req: NextRequest, res: NextResponse) {
   if (!isProtectedRoute(req.nextUrl.pathname)) return res;
   
-  const { accessToken, refreshToken } = await getAuthTokens();
+  const accessToken = req.cookies.get("access_token")?.value;
+  const refreshToken = req.cookies.get("refresh_token")?.value;
   if (!accessToken || !refreshToken) {
-    await clearAuthTokens();
-    return NextResponse.redirect(new URL("/", req.url));
+    const redirect = NextResponse.redirect(new URL("/", req.url));
+    redirect.cookies.delete("access_token");
+    redirect.cookies.delete("refresh_token");
+    return redirect;
   }
 
   return res;
