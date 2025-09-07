@@ -1,13 +1,15 @@
 "use server";
 
 import type {
+  EventCoffeeBreakResponseI,
+  EventCoffeeRegistrationsI,
   EventResponseI,
   EventSubscriptionResponseI,
 } from "@/types/event-interfaces";
 import { fetchWrapper } from "@/lib/fetch";
 import { getAuthTokens } from "@/lib/cookies";
 import { FetchError } from "@/types/utility-classes";
-import type { EventCreationDataI } from "@/schemas/event-schema";
+import type { EventCoffeeBreakDataI, EventCreationDataI } from "@/schemas/event-schema";
 import { actionRequest } from "./_utils";
 
 export async function handleCreateEvent(data: EventCreationDataI) {
@@ -112,9 +114,58 @@ export async function handleDemoteUserInEvent(slug: string, email: string) {
   });
 }
 
-export async function handleIsPaidByUser(slug: string, id: string) {
-  return actionRequest<{id: string}, boolean>(`/events/${slug}/is-paid`, {
+// export async function handleIsPaidByUser(slug: string, id: string) {
+//   return actionRequest<{id: string}, boolean>(`/events/${slug}/is-paid`, {
+//     method: "POST",
+//     body: { id },
+//   });
+// }
+
+export async function handleCreateCoffeeBreak(slug: string, data: EventCoffeeBreakDataI) {
+  return actionRequest<EventCoffeeBreakDataI, EventCoffeeBreakResponseI>(`/events/${slug}/coffee`, {
     method: "POST",
-    body: { id },
+    body: data,
   });
+}
+
+export async function handleUpdateCoffeeBreak(
+  slug: string, 
+  id: string,
+  data: Partial<EventCoffeeBreakDataI>
+){
+  return actionRequest<
+    Partial<EventCoffeeBreakDataI> & {id: string}, EventCoffeeBreakResponseI
+  >(`/events/${slug}/coffee`, {
+    method: "PATCH",
+    body: {id: id, ...data},
+  });
+}
+
+// export async function handleDeleteCoffeeBreak(slug: string, id: string){
+//   return actionRequest<{id: string}, EventCoffeeBreakResponseI>(`/events/${slug}/coffee`, {
+//     method: "DELETE",
+//     body: {id},
+//   });
+// }
+
+export async function handleGetAllCoffeeBreak(slug: string) {
+  return actionRequest<null, EventCoffeeBreakResponseI[]>(`/events/${slug}/coffee`);
+}
+
+export async function handleRegisterUserInCoffeeBreak(slug: string, user_id: string, coffee_id: string) {
+  return actionRequest<{user_id: string, coffee_id: string}, EventCoffeeBreakResponseI[]>(`/events/${slug}/coffee/register`, {
+    method: "POST",
+    body: { user_id, coffee_id }
+  });
+}
+
+export async function handleUnregisterUserInCoffeeBreak(slug: string, user_id: string, coffee_id: string) {
+  return actionRequest<{user_id: string, coffee_id: string}, EventCoffeeBreakResponseI[]>(`/events/${slug}/coffee/unregister`, {
+    method: "POST",
+    body: { user_id, coffee_id }
+  });
+}
+
+export async function handleGetAllRegistrationsFromCoffee(slug: string, id: string) {
+  return actionRequest<null, EventCoffeeRegistrationsI[]>(`/events/${slug}/coffee/${id}/registrations`);
 }

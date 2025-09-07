@@ -41,6 +41,7 @@ import { formatBR, safeTime, startOfLocalDay, toLocalDateKey } from "@/lib/date-
 import { Input } from "../ui/input";
 import { Select } from "../ui/select";
 import Link from "next/link";
+import UserActivityPrizeDraw from "./UserActivityPrizeDraw";
 
 interface ActivityListSectionProps {
   user_id: string,
@@ -68,6 +69,7 @@ export default function ActivityListSection({
   const [userTokens, setUserTokens] = useState<UserTokensResponseI[]>([]);
   const [isUsersModalOpen, setIsUsersModalOpen] = useState(false);
   const [isPresenceModalOpen, setIsPresenceModalOpen] = useState(false);
+  const [isPrizeDrawModalOpen, setIsPrizeDrawModalOpen] = useState(false);
   const [searchUsersRegistrations, setSearchUsersRegistrations] =
     useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityResponseI>();
@@ -266,6 +268,11 @@ export default function ActivityListSection({
   const openCreationActivityModal = (activityToUpdate?: ActivityResponseI) => {
     setSelectedActivity(activityToUpdate);
     setIsCreationModalOpen(true);
+  };
+
+  const openPrizeDrawActivityModal = (activityToDraw?: ActivityResponseI) => {
+    setSelectedActivity(activityToDraw);
+    setIsPrizeDrawModalOpen(true);
   };
 
   const openPresenceActivityModal = (activityToManager?: ActivityResponseI) => {
@@ -481,6 +488,7 @@ export default function ActivityListSection({
                   isSubscribed={isSubscribed}
                   onRegister={handleRegister}
                   onUnregister={handleUnregister}
+                  onPrizeDrawOpen={openPrizeDrawActivityModal}
                   onUpdateFormOpen={() =>
                     isEventCreator || isAdminStatus.type == "master_admin"
                       ? openCreationActivityModal(act)
@@ -578,6 +586,12 @@ export default function ActivityListSection({
         slug={currentEvent.slug}
         open={isPresenceModalOpen}
         setOpen={setIsPresenceModalOpen}
+      />
+      <UserActivityPrizeDraw
+        activityId={selectedActivity?.ID || ""}
+        slug={currentEvent.slug}
+        open={isPrizeDrawModalOpen}
+        onOpenChange={setIsPrizeDrawModalOpen}
       />
     </section>
   );

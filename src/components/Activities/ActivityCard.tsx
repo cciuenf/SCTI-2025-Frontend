@@ -8,6 +8,7 @@ import {
   Eye,
   Users,
   Coins,
+  Dices,
 } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
@@ -32,6 +33,7 @@ type Props = {
     data: ActivityResponseI
   ) => void | null;
   onRegister?: ((data: ActivityResponseI) => Promise<void>) | null;
+  onPrizeDrawOpen?: (data: ActivityResponseI) => void | null;
   onUnregister?: ((data: ActivityResponseI) => Promise<void>) | null;
   onUpdateFormOpen?: () => void | null;
   onDelete?: (id: string) => Promise<void> | null;
@@ -45,6 +47,7 @@ const ActivityCard = ({
   onViewUsersOpen,
   onPresenceManagerOpen,
   onRegister,
+  onPrizeDrawOpen,
   onUnregister,
   onUpdateFormOpen,
   onDelete,
@@ -202,6 +205,17 @@ const ActivityCard = ({
                 )}
                 onClick={() =>
                   onViewUsersOpen && onViewUsersOpen(true, data.activity)
+                }
+              />
+            </span>
+            <span title="Realizar Sorteio" role="img" aria-label="Realizar Sorteio">
+              <Dices
+                className={cn(
+                  "w-5 h-5 cursor-pointer transition-transform duration-200",
+                  "hover:text-accent hover:scale-125"
+                )}
+                onClick={() =>
+                  onPrizeDrawOpen && onPrizeDrawOpen(data.activity)
                 }
               />
             </span>

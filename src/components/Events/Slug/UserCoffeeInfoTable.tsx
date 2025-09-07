@@ -1,80 +1,54 @@
-import { useCallback, useEffect, useState } from "react";
-import CustomGenericModal from "../ui/Generic/CustomGenericModal"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import LoadingSpinner from "../Loading/LoadingSpinner";
-import type { UserBasicInfo } from "@/types/auth-interfaces";
-import { 
-  handleGetRegisteredUsersInActivity, 
-  handleGetUsersWhoParticipateInActivity 
-} from "@/actions/activity-actions";
-import type { ActivityRegistrationI } from "@/types/activity-interface";
-import { handleGetUsersInfo } from "@/actions/user-actions";
 import type { ActionResult } from "@/actions/_utils";
+import { handleGetUsersInfo } from "@/actions/user-actions";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner";
+import CustomGenericModal from "@/components/ui/Generic/CustomGenericModal";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { runWithToast } from "@/lib/client/run-with-toast";
 import { formatFullDate, safeTime } from "@/lib/date-utils";
+import type { UserBasicInfo } from "@/types/auth-interfaces";
+import type { EventCoffeeRegistrationsI } from "@/types/event-interfaces";
+import { useCallback, useEffect, useState } from "react";
 
 interface Props {
-  activityId: string;
-  activityName: string;
-  slug: string;
-  isRegistrations: boolean;
   open: boolean;
   setOpen: (open: boolean) => void;
+  registrations: EventCoffeeRegistrationsI[]
 }
 
-type Combined = UserBasicInfo & ActivityRegistrationI;
+type Combined = UserBasicInfo & EventCoffeeRegistrationsI;
 
-const UserActivityInfoTable = ({ 
-  activityId, 
-  activityName, 
-  slug, 
-  isRegistrations, 
-  open, 
-  setOpen 
+const UserCoffeeInfoTable = ({ 
+  open,
+  setOpen,
+  registrations
 }: Props) => {
   const [usersRegistrations, setUsersRegistrations] = useState<Combined[]>([])
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const loadRegistrationsWithUsers = useCallback(async (): Promise<ActionResult<Combined[]>> => {
-    const regRes = isRegistrations
-      ? await handleGetRegisteredUsersInActivity({ id: activityId }, slug)
-      : await handleGetUsersWhoParticipateInActivity({ id: activityId }, slug);
-    if (!regRes.success) {
-      return { success: false, data: null, message: regRes.message || 'Falha inesperada' };
-    }
-    if(!regRes.data)
-      return { success: true, data: [], message: 'Nenhum usuário encontrado' };
-
-    const registrations: ActivityRegistrationI[] = regRes.data;
-    if (registrations.length === 0) 
-      return { success: true, data: [], message: 'Nenhum usuário encontrado' };
-    
     const ids = registrations.map(r => r.user_id);
     const usersRes = await handleGetUsersInfo({ id_array: ids });
-
     if (!usersRes.success || !usersRes.data) 
       return { success: false, data: null, message: usersRes.message ?? 'Falha ao ler usuários' };
 
     const users = usersRes.data;
-
     const combined = registrations.map((reg, idx) => ({
       ...reg,
       ...users[idx]
     }));
 
     const sortedData = [...combined].sort((a, b) => {
-      const field = isRegistrations ? "registered_at" : "attended_at";
-      const dateA = safeTime(a[field] || "");
-      const dateB = safeTime(b[field] || "")
-
+      const dateA = safeTime(a.attended_at || "");
+      const dateB = safeTime(b.attended_at || "")
       return dateA - dateB;
     });
 
     return { success: true, data: sortedData, message: 'Usuários carregados' };
-  }, [activityId, isRegistrations, slug]);
+
+  }, [registrations]);
 
   const fetchUsers = useCallback(async () => {
-    setLoading(true);
+    setIsLoading(true);
 
     const res = await runWithToast(
       loadRegistrationsWithUsers(),
@@ -87,9 +61,9 @@ const UserActivityInfoTable = ({
 
     if (res.success && res.data) setUsersRegistrations(res.data);
     
-    setLoading(false);
+    setIsLoading(false);
   }, [loadRegistrationsWithUsers]);
-  
+
   useEffect(() => {
     if (open) {
       setUsersRegistrations([]);
@@ -99,11 +73,11 @@ const UserActivityInfoTable = ({
 
   return(
     <CustomGenericModal
-      title={`${isRegistrations ? "Inscrições" : "Participações"} na Atividade: ${activityName}`}
-      description={`Verifique os usuários que se ${isRegistrations ? "inscreveram na" : "participaram da"} atividade`}
+      title="Participantes do Coffee"
+      description="Verifique os usuários que participaram do Coffee"
       open={open}
       onOpenChange={setOpen}
-      trigger={null}
+      trigger={undefined}
     >
       <Table className="h-full">
         <TableHeader>
@@ -111,18 +85,18 @@ const UserActivityInfoTable = ({
             <TableHead>Nome</TableHead>
             <TableHead>E-mail</TableHead>
             <TableHead>UENF?</TableHead>
-            <TableHead>{isRegistrations ? "Se Registrou" : "Participou"} em</TableHead>
+            <TableHead>Participou em</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {loading ? 
+          {isLoading ? 
             <TableRow>
               <TableCell colSpan={4}><LoadingSpinner/></TableCell>
             </TableRow>
             : usersRegistrations.length === 0 ? 
               <TableRow>
                 <TableCell colSpan={4}>
-                  Nenhum usuário {isRegistrations ? "registrado" : "que participou"} encontrado
+                  Nenhum usuário encontrado
                 </TableCell>
               </TableRow>  
             : usersRegistrations.map((u) => (
@@ -131,10 +105,7 @@ const UserActivityInfoTable = ({
                 <TableCell>{u.Email}</TableCell>
                 <TableCell>{u.is_uenf ? `${u.uenf_semester}º Semestre` : "-"}</TableCell>
                 <TableCell>
-                  {isRegistrations 
-                    ? formatFullDate(u.registered_at) 
-                    : formatFullDate(u.attended_at || new Date().toString())
-                  }
+                  {formatFullDate(u.attended_at || new Date().toString())}
                 </TableCell>
               </TableRow>
             ))
@@ -145,4 +116,4 @@ const UserActivityInfoTable = ({
   )
 }
 
-export default UserActivityInfoTable;
+export default UserCoffeeInfoTable;

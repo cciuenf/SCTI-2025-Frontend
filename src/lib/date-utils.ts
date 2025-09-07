@@ -49,7 +49,7 @@ export function formatEventTimeRange(start_date: Date, end_date: Date) {
   return "Horários em dias diferentes";
 }
 
-export function safeTime (time: string) {
+export function safeTime(time: string) {
   return (normalizeDate(time) || new Date(8640000000000000)).getTime();
 }
 
@@ -68,6 +68,33 @@ export const formatBR = (ms: number) => {
   const yyyy = d.getFullYear();
   return `${dd}/${mm}/${yyyy}`;
 };
+
+export const formatBRDateTime = (ms: number) => {
+  const d = new Date(ms);
+
+  const diasSemana = [
+    "dom",
+    "seg",
+    "ter",
+    "qua",
+    "qui",
+    "sex",
+    "sáb",
+  ];
+
+  const diaSemana = diasSemana[d.getDay()];
+
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  const ss = String(d.getSeconds()).padStart(2, "0");
+
+  return `${diaSemana}, ${dd}/${mm}/${yyyy} ${hh}:${min}:${ss}`;
+};
+
 
 export const startOfLocalDay = (ms: number) => {
   const d = new Date(ms);
