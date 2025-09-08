@@ -13,16 +13,17 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: "/(.*)",
         headers: [
           {
-            key: 'Permissions-Policy',
-            value: 'camera=*, microphone=*',
+            key: "Permissions-Policy",
+            value: "camera=*, microphone=*",
           },
         ],
       },
     ];
   },
+  serverExternalPackages: ["pino"],
 };
 
 export default nextConfig;
