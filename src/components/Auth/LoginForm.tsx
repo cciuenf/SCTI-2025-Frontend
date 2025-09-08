@@ -42,10 +42,12 @@ export default function LoginForm({
           if(setMustShowVerify) setMustShowVerify(true);
           return "Código de verificação enviado para o e-mail cadastrado!"
         },
-        error: () => "Erro ao realizar a criação da conta"
+        error: () => {
+          setIsLoading(false);
+          return "Erro ao realizar a criação da conta";
+        }
       }
     )
-    setIsLoading(false);
   };
 
   const onSubmitLogin = async (values: LoginFormDataI) => {
@@ -59,10 +61,12 @@ export default function LoginForm({
             router.push("/events/scti");
             return "Login bem-sucedido!"
           },
-          error: () => "Erro ao realizar o login"
+          error: () => {
+            setIsLoading(false);
+            return "Erro ao realizar o login"
+          }
         }
       )
-      setIsLoading(false);
     }
   };
 

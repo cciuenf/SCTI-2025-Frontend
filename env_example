@@ -19,3 +19,12 @@ SUPPORTER_PRODUCT_ID="Product ID"
 # Token para forçar o refresh
 
 FORCE_REAUTH="Token de refresh"
+
+# Redis Credentials
+REDIS_HOST="host"
+REDIS_PORT=port
+REDIS_PASSWORD=""
+
+# Rate Limit
+REDIS_RATE_LIMIT=1 # Requests
+REDIS_RATE_DURATION=1 # Seconds
