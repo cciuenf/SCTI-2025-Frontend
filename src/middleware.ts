@@ -6,15 +6,17 @@ import { logs } from "./middlewares/logs";
 
 type MiddlewareFn = (
   req: NextRequest,
-  res: NextResponse
+  res: NextResponse,
+  startTime: number
 ) => NextResponse | Promise<NextResponse>;
 
 function chain(middlewares: MiddlewareFn[]) {
   return async (req: NextRequest) => {
     const res = NextResponse.next();
+    const startTime = Date.now();
 
     for (const mw of middlewares) {
-      const result = await mw(req, res);
+      const result = await mw(req, res, startTime);
       if (result !== res) return result;
     }
 

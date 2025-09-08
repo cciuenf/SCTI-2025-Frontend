@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  //config necessária para que o pino não seja excluído do bundle
   serverExternalPackages: ["pino"],
 };
 
