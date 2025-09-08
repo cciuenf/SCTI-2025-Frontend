@@ -1,15 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  webpack: (config) => {
-    // Configuração para qr-scanner funcionar corretamente
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-    };
-    return config;
-  },
-  // Headers para permitir acesso à câmera
   async headers() {
     return [
       {
@@ -26,5 +17,4 @@ const nextConfig: NextConfig = {
   //config necessária para que o pino não seja excluído do bundle
   serverExternalPackages: ["pino"],
 };
-
 export default nextConfig;
