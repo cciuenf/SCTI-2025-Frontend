@@ -1,4 +1,4 @@
-import pino from "pino";
+import pino, { LogDescriptor } from "pino";
 
 // Define os "transports" (destinos) para os logs
 const transport = pino.transport({
@@ -16,7 +16,7 @@ const transport = pino.transport({
       level: "info",
       target: "pino/file",
       options: {
-        destination: `./logs/app.log`,
+        destination: `./logs/frontend.log`,
         mkdir: true,
       },
     },
@@ -24,4 +24,19 @@ const transport = pino.transport({
 });
 
 // Cria e exporta a instância do logger
-export const logger = pino(transport);
+export const logger = pino(
+  {
+    formatters: {
+      bindings: (bindings) => {
+        return {
+          pid: bindings.pid,
+          hostname: bindings.hostname,
+          app: "scti-frontend-2025",
+        };
+      },
+    },
+    timestamp: () => `,"timestamp":"${new Date().toISOString()}"`,
+    messageKey: "message",
+  },
+  transport
+);

@@ -10,11 +10,11 @@ export async function logs(
   const logPayload = {
     method: req.method,
     path: req.url,
-    ip: res.headers.get("x-client-ip"),
-    userAgent: res.headers.get("x-client-user-agent"),
+    ip_address: res.headers.get("x-client-ip"),
+    user_agent: res.headers.get("x-client-user-agent"),
     timestamp,
+    duration_ms: Date.now() - startTime,
     rateLimit: res.headers.get("x-ratelimit-limited"),
-    duration: `${Date.now() - startTime}ms`,
   };
 
   fetch(`${req.nextUrl.origin}/api/log-ingest`, {

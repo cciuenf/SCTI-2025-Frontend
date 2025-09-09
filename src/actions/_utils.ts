@@ -76,7 +76,7 @@ export async function actionRequest<B, T>(
     const anyRes = res as unknown as {
       result?: { data?: T; message?: string };
     };
-    logger.info(anyRes, "[ACTION REQUEST]");
+    logger.info(anyRes, `[ACTION REQUEST]`);
     return {
       success: true,
       data: anyRes?.result?.data || null,
