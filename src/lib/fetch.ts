@@ -52,10 +52,8 @@ export async function fetchWrapper<T = unknown>(
         !result.success ? result : null
       );
     }
-
     return { result: result, status: res.status };
   } catch (err) {
-    console.error("Erro desconhecido ao realizar a requisição: ", err);
     throw err;
   }
 }

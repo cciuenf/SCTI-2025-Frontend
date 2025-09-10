@@ -1,28 +1,25 @@
 import type { NextConfig } from "next";
 
+const path = require("path");
+
 const nextConfig: NextConfig = {
-  webpack: (config) => {
-    // Configuração para qr-scanner funcionar corretamente
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-    };
-    return config;
+  turbopack: {
+    root: path.join(__dirname, ".."),
   },
-  // Headers para permitir acesso à câmera
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: "/(.*)",
         headers: [
           {
-            key: 'Permissions-Policy',
-            value: 'camera=*, microphone=*',
+            key: "Permissions-Policy",
+            value: "camera=*, microphone=*",
           },
         ],
       },
     ];
   },
+  //config necessária para que o pino não seja excluído do bundle
+  serverExternalPackages: ["pino"],
 };
-
 export default nextConfig;
