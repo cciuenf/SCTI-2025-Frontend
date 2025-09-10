@@ -10,13 +10,13 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import type { 
-  SubmitHandler, 
-  UseFormReturn, 
-  DefaultValues, 
-  FieldValues, 
-  FieldPath, 
-  FieldPathValue 
+import type {
+  SubmitHandler,
+  UseFormReturn,
+  DefaultValues,
+  FieldValues,
+  FieldPath,
+  FieldPathValue
 } from "react-hook-form";
 import type { ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +26,7 @@ type BooleanFieldPath<T extends FieldValues> = {
   [K in FieldPath<T>]: FieldPathValue<T, K> extends boolean ? K : never
 }[FieldPath<T>];
 
-export type FieldType = | "text" | "number" | "price" | "switch" 
+export type FieldType = | "text" | "number" | "price" | "switch"
   | "select" | "multiple_select" | "datetime" | "password" | "email" | "checkbox";
 
 export interface FieldConfig<T extends FieldValues> {

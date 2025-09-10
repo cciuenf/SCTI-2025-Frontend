@@ -1,12 +1,10 @@
-import { NextResponse, type NextRequest } from "next/server";
+import type { NextResponse, NextRequest } from "next/server";
 
 export async function logs(
   req: NextRequest,
   res: NextResponse,
   startTime: number
 ) {
-  const timestamp = new Date();
-
   const logPayload = {
     method: req.method,
     path: req.url,
