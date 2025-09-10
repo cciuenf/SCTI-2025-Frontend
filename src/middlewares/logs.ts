@@ -12,7 +12,6 @@ export async function logs(
     path: req.url,
     ip_address: res.headers.get("x-client-ip"),
     user_agent: res.headers.get("x-client-user-agent"),
-    timestamp,
     duration_ms: Date.now() - startTime,
     rateLimit: res.headers.get("x-ratelimit-limited"),
   };
