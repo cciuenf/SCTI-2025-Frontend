@@ -13,7 +13,7 @@ export async function logs(
     ip_address: res.headers.get("x-client-ip"),
     user_agent: res.headers.get("x-client-user-agent"),
     duration_ms: Date.now() - startTime,
-    rateLimit: res.headers.get("x-ratelimit-limited"),
+    rate_limit: res.headers.get("x-ratelimit-limited"),
   };
 
   fetch(`${req.nextUrl.origin}/api/log-ingest`, {
