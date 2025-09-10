@@ -1,4 +1,4 @@
-import pino, { LogDescriptor } from "pino";
+import pino from "pino";
 
 // Define os "transports" (destinos) para os logs
 const transport = pino.transport({
