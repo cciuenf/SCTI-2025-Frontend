@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const path = require("path");
+import path from "path";
 
 const nextConfig: NextConfig = {
   turbopack: {
